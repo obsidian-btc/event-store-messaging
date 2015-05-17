@@ -10,43 +10,39 @@ module EventStore
 
       module Macro
         def handler(handler_class)
-          register_handler(handler_class)
+          register_handler_class(handler_class)
         end
       end
 
       module HandlerRegistry
-        def handlers
-          @handlers ||= []
+        def handler_classes
+          @handler_classes ||= []
         end
 
-        def register_handler(handler_class)
-          handlers << handler_class
-          register_message_classes(handler_class.message_classes)
-        end
-      end
-
-      module MessageRegistry
-        def message_classes
-          @message_classes ||= []
+        def handler_registered?(handler_class)
+          handler_classes.include? handler_class
         end
 
-        def message_registered?(message_class)
-          message_classes.include? message_class
-        end
+        # def register_handler(handler_class)
+        #   handler_classes << handler_class
+        #   register_message_classes(handler_class.message_classes)
+        # end
 
-        def register_message_class(message_class)
+        def register_handler_class(handler_class)
           logger = Telemetry::Logger.get self
 
-          logger.trace "Registering message class: #{message_class}"
+          logger.trace "Registering handler class: #{handler_class}"
 
-          unless message_registered?(message_class)
-            message_classes.push(message_class)
-            logger.debug "Registered message class: #{message_class}"
+          unless handler_registered?(handler_class)
+            handler_classes.push(handler_class)
+            logger.debug "Registered handler class: #{handler_class}"
           else
-            logger.debug "Message class: #{message_class} is already registered. Not registered again."
+            logger.debug "Handler class: #{handler_class} is already registered. It was not registered again."
           end
 
-          message_classes
+          register_message_classes(handler_class.message_classes)
+
+          handler_classes
         end
 
         def register_message_classes(message_classes)
@@ -61,7 +57,7 @@ module EventStore
       end
 
       def handlers
-        self.class.handlers
+        self.class.handler_classes
       end
 
       def register_handler(handler_class)
@@ -75,7 +71,7 @@ module EventStore
       end
 
       def handles(message)
-        self.class.handlers.select do |handler_class|
+        self.class.handler_classes.select do |handler_class|
           message_class_name = message.class.name.split('::').last
           handler_class.handles? message_class_name
         end

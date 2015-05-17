@@ -9,7 +9,7 @@ describe "Handler" do
     assert(message_classes.include? Fixtures::SomeMessage)
   end
 
-  it "Registers classes once only" do
+  it "Registers message classes once only" do
     handler_class = Fixtures::Anomalies::SomeHandler
 
     handler_class.handle Fixtures::SomeMessage do
