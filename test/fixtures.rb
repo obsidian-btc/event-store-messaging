@@ -22,7 +22,12 @@ module Fixtures
     end
   end
 
-  class OtherHandler < SomeHandler
+  class OtherHandler
+    include EventStore::Messaging::Handler
+
+    handle SomeMessage do |message|
+      message.handlers << self.class.name
+    end
   end
 
   class AnotherHandler
@@ -51,5 +56,19 @@ module Fixtures
 
   def self.message
     SomeMessage.new
+  end
+
+  module Anomalies
+    class HandlerWithDuplicateBlocks
+      include EventStore::Messaging::Handler
+
+      handle SomeMessage do |message|
+        message.handlers << self.class.name
+      end
+
+      handle SomeMessage do |message|
+        raise "Duplicate handler of #{message.class.name}"
+      end
+    end
   end
 end
