@@ -14,8 +14,8 @@ module EventStore
 
           logger.trace "Defining handler method (Message: #{message_class})"
 
-          message_registry.register(message_class)
           define_handler_method(message_class, &blk)
+          message_registry.register(message_class)
         end
         alias :handle :handle_macro
 
