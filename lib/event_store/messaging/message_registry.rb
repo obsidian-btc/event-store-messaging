@@ -18,7 +18,7 @@ module EventStore
           message_classes.push(message_class)
           logger.debug "Registered message class: #{message_class}"
         else
-          logger.debug "Message class: #{message_class} is already registered. Not registered again."
+          logger.debug "Message class: #{message_class} is already registered. It was not registered again."
         end
 
         message_classes

@@ -8,11 +8,6 @@ module EventStore
         base.extend Build
       end
 
-      def handle(message)
-        handler = self.class.handler_name(message)
-        send handler, message
-      end
-
       module Macro
         def handle_macro(message_class, &blk)
           logger = Telemetry::Logger.get self
@@ -64,6 +59,11 @@ module EventStore
         def build
           new
         end
+      end
+
+      def handle(message)
+        handler = self.class.handler_name(message)
+        send handler, message
       end
     end
   end

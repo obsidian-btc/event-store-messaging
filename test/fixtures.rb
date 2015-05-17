@@ -66,5 +66,11 @@ module Fixtures
         message.handlers << self.class.name
       end
     end
+
+    class SomeDispatcher
+      include EventStore::Messaging::Dispatcher
+
+      handler Fixtures::SomeHandler
+    end
   end
 end
