@@ -39,9 +39,14 @@ module EventStore
 
           logger.trace "Registering message class: #{message_class}"
 
-          message_classes.push(message_class).tap do
+          unless message_classes.include? message_class
+            message_classes.push(message_class)
             logger.debug "Registered message class: #{message_class}"
+          else
+            logger.debug "Message class: #{message_class} is already registered. Not registered again."
           end
+
+          message_classes
         end
       end
 

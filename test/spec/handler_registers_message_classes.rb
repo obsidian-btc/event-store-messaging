@@ -8,4 +8,17 @@ describe "Handler" do
 
     assert(message_classes.include? Fixtures::SomeMessage)
   end
+
+  it "Registers classes once only" do
+    handler_class = Fixtures::Anomalies::SomeHandler
+
+    handler_class.handle Fixtures::SomeMessage do
+      puts "Handling the same message is not allowed"
+    end
+
+    message_classes = handler_class.message_classes
+
+    assert(message_classes.include? Fixtures::SomeMessage)
+    assert(message_classes.length == 1)
+  end
 end

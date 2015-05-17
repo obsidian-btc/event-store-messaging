@@ -59,15 +59,11 @@ module Fixtures
   end
 
   module Anomalies
-    class HandlerWithDuplicateBlocks
+    class SomeHandler
       include EventStore::Messaging::Handler
 
       handle SomeMessage do |message|
         message.handlers << self.class.name
-      end
-
-      handle SomeMessage do |message|
-        raise "Duplicate handler of #{message.class.name}"
       end
     end
   end
