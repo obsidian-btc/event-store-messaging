@@ -15,12 +15,12 @@ module EventStore
       end
 
       module HandlerRegistry
-        def handlers
-          @handlers ||= []
+        def handler_classes
+          @handler_classes ||= []
         end
 
         def register_handler(handler_class)
-          handlers << handler_class
+          handler_classes << handler_class
           register_message_classes(handler_class.message_classes)
         end
 
@@ -35,8 +35,8 @@ module EventStore
         end
       end
 
-      def handlers
-        self.class.handlers
+      def handler_classes
+        self.class.handler_classes
       end
 
       def register_handler(handler_class)
@@ -50,7 +50,7 @@ module EventStore
       end
 
       def handles(message)
-        self.class.handlers.select do |handler_class|
+        self.class.handler_classes.select do |handler_class|
           message_class_name = message.class.name.split('::').last
           handler_class.handles? message_class_name
         end
