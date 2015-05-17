@@ -15,16 +15,18 @@ module EventStore
           logger.trace "Defining handler method (Message: #{message_class})"
 
           message_registry.register(message_class)
+          define_handler_method(message_class, &blk)
+        end
+        alias :handle :handle_macro
 
-          # move to after block
-          # define after block in another module so that it's not in all uses of the module
-          # dispatcher just wants the registry function
+        def define_handler_method(message_class, &blk)
+          logger = Telemetry::Logger.get self
+
           handler_method_name = handler_name(message_class)
           send(:define_method, handler_method_name, &blk).tap do
             logger.debug "Defined handler method (Method Name: #{handler_method_name}, Message: #{message_class})"
           end
         end
-        alias :handle :handle_macro
       end
 
       module MessageRegistry

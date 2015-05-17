@@ -3,7 +3,7 @@ module EventStore
     module Dispatcher
       def self.included(cls)
         cls.extend Macro
-        cls.extend EventStore::Messaging::Handler::MessageRegistry
+        cls.extend Handler::MessageRegistry
         cls.extend HandlerRegistry
         cls.extend Build
       end
