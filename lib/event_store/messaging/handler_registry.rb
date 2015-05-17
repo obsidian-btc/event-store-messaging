@@ -2,11 +2,11 @@ module EventStore
   module Messaging
     module HandlerRegistry
       def handler_classes
-        @handler_classes ||= []
+        @handler_classes ||= Object.new.extend EventStore::Messaging::Registry
       end
 
       def handler_registered?(handler_class)
-        handler_classes.include? handler_class
+        handler_classes.registered? handler_class
       end
 
       def register_handler_class(handler_class)
@@ -15,7 +15,7 @@ module EventStore
         logger.trace "Registering handler class: #{handler_class}"
 
         unless handler_registered?(handler_class)
-          handler_classes.push(handler_class)
+          handler_classes.register(handler_class)
           logger.debug "Registered handler class: #{handler_class}"
         else
           logger.debug "Handler class: #{handler_class} is already registered. It was not registered again."

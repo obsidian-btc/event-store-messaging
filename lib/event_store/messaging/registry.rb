@@ -25,6 +25,12 @@ module EventStore
         end
       end
 
+      def select
+        items.select do |i|
+          yield i
+        end
+      end
+
       def length
         items.length
       end

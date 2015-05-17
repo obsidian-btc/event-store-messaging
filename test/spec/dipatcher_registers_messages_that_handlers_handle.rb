@@ -18,7 +18,7 @@ describe "Dispatcher" do
 
     handler_classes = dispatcher_class.handler_classes
 
-    assert(handler_classes.include? Fixtures::SomeHandler)
+    assert(handler_classes.registered? Fixtures::SomeHandler)
     assert(handler_classes.length == 1)
   end
 end
