@@ -25,10 +25,16 @@ describe "Registry" do
   it "Optional, specialized work is done after registration" do
     registry = EventStore::Messaging::Registry.new
 
-    thing = []
+    item = Object.new
+
+    record = []
 
     registry.after_register do |item|
-
+      record << item
     end
+
+    registry.register item
+
+    assert(record.include? item)
   end
 end
