@@ -1,16 +1,7 @@
 require_relative 'spec_init'
 
 describe "Dispatcher" do
-  it "Dispatchers messages to handlers that can handle it" do
-    dispatcher = Fixtures.dispatcher
-    message = Fixtures.message
-
-    dispatcher.dispatch message
-
-    refute(message.handlers.empty?)
-  end
-
-  it "Detects handlers that it can dispatch a message to" do
+  it "Determines handlers that it can dispatch a message to" do
     dispatcher = Fixtures.dispatcher
     message = Fixtures.message
 

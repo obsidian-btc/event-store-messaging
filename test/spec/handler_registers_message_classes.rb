@@ -1,11 +1,11 @@
 require_relative 'spec_init'
 
 describe "Handler" do
-  it "Registers classes of message that they handle" do
+  it "Registers classes of messages that it handles" do
     handler = Fixtures.handler
 
-    message_classes = handler.class.message_classes
+    message_registry = handler.class.message_registry
 
-    assert(message_classes.include? Fixtures.message.class)
+    assert(message_registry.registered? Fixtures::SomeMessage)
   end
 end

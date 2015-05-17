@@ -1,11 +1,13 @@
 module Fixtures
   class SomeMessage
-    include Messaging::Message
+    include EventStore::Messaging::Message
+
+    attribute :some_attribute
 
     attribute :handlers, Array, default: [], lazy: true
 
     def handler?(handler_name)
-      handlers.any? { |name| name.end_with? handler_name }
+      handlers.any? { |handler_class| handler_class.name.end_with? handler_name }
     end
   end
 
@@ -13,26 +15,31 @@ module Fixtures
   end
 
   class SomeHandler
-    include Messaging::Handler
+    include EventStore::Messaging::Handler
 
     handle SomeMessage do |message|
-      message.handlers << self.class.name
+      message.handlers << self.class
     end
   end
 
-  class OtherHandler < SomeHandler
+  class OtherHandler
+    include EventStore::Messaging::Handler
+
+    handle SomeMessage do |message|
+      message.handlers << self.class
+    end
   end
 
   class AnotherHandler
-    include Messaging::Handler
+    include EventStore::Messaging::Handler
 
     handle AnotherMessage do |message|
-      message.handlers << self.class.name
+      message.handlers << self.class
     end
   end
 
   class SomeDispatcher
-    include Messaging::Dispatcher
+    include EventStore::Messaging::Dispatcher
 
     handler SomeHandler
     handler OtherHandler
@@ -49,5 +56,21 @@ module Fixtures
 
   def self.message
     SomeMessage.new
+  end
+
+  module Anomalies
+    class SomeHandler
+      include EventStore::Messaging::Handler
+
+      handle SomeMessage do |message|
+        message.handlers << self.class.name
+      end
+    end
+
+    class SomeDispatcher
+      include EventStore::Messaging::Dispatcher
+
+      handler Fixtures::SomeHandler
+    end
   end
 end

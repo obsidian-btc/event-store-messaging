@@ -1,48 +1,72 @@
-module Messaging
-  module Dispatcher
-    def self.included(cls)
-      cls.extend Macro
-      cls.extend Info
-      cls.extend Build
-    end
-
-    module Macro
-      def handler(handler_class)
-        handlers << handler_class
+module EventStore
+  module Messaging
+    module Dispatcher
+      def self.included(cls)
+        cls.extend Macro
+        cls.extend Handler::MessageRegistry
+        cls.extend HandlerRegistry
+        cls.extend Build
       end
-    end
 
-    module Info
+      module Macro
+        def handler(handler_class)
+          handler_registry.register(handler_class)
+        end
+      end
+
+      module HandlerRegistry
+        def handler_registry
+          @handler_registry ||= build_handler_registry
+        end
+
+        def build_handler_registry
+          handler_registry = EventStore::Messaging::Registry.build
+          this = self
+          handler_registry.after_register do |handler_class|
+            this.register_message_classes(handler_class.message_registry)
+          end
+          handler_registry
+        end
+
+        def register_message_classes(handler_message_registry)
+          handler_message_registry.each do |message_class|
+            unless self.message_registry.registered?(message_class)
+              self.message_registry.register(message_class)
+            end
+          end
+        end
+      end
+
+      module Build
+        def build
+          new
+        end
+      end
+
       def handlers
-        @handlers ||= []
+        self.class.handler_registry
       end
-    end
 
-    module Build
-      def build
-        new
+      def register_handler(handler_class)
+        self.class.handler_registry.register(handler_class)
       end
-    end
 
-    def handlers
-      self.class.handlers
-    end
-
-    def dispatch(message)
-      handles(message).each do |handler_class|
-        handler_class.build.handle message
+      def dispatch(message)
+        handles(message).each do |handler_class|
+          handler_class.build.handle message
+        end
       end
-    end
 
-    def handles(message)
-      self.class.handlers.select do |handler_class|
-        message_class_name = message.class.name.split('::').last
-        handler_class.handles? message_class_name
+      def handles(message)
+        self.class.handler_registry.select do |handler_class|
+          message_class_name = message.class.name.split('::').last
+          handler_class.handles? message_class_name
+        end
       end
-    end
 
-    class Concrete
-      include Dispatcher
+      class Concrete
+        include Dispatcher
+      end
     end
   end
 end
