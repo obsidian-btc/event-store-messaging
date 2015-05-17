@@ -11,7 +11,7 @@ describe "Registry" do
     assert(registry.registered? item)
   end
 
-  it "Registers message classes once only" do
+  it "Registers items once only" do
     registry = EventStore::Messaging::Registry.new
 
     item = Object.new
@@ -19,6 +19,16 @@ describe "Registry" do
 
     assert_raises EventStore::Messaging::Registry::Error do
       registry.register item
+    end
+  end
+
+  it "Optional, specialized work is done after registration" do
+    registry = EventStore::Messaging::Registry.new
+
+    thing = []
+
+    registry.after_register do |item|
+
     end
   end
 end

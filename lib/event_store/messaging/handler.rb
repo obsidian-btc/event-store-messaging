@@ -1,11 +1,11 @@
 module EventStore
   module Messaging
     module Handler
-      def self.included(base)
-        base.extend Macro
-        base.extend MessageRegistry
-        base.extend Info
-        base.extend Build
+      def self.included(cls)
+        cls.extend Macro
+        cls.extend MessageRegistry
+        cls.extend Info
+        cls.extend Build
       end
 
       module Macro
@@ -16,12 +16,21 @@ module EventStore
 
           message_registry.register(message_class)
 
+          # move to after block
+          # define after block in another module so that it's not in all uses of the module
+          # dispatcher just wants the registry function
           handler_method_name = handler_name(message_class)
           send(:define_method, handler_method_name, &blk).tap do
             logger.debug "Defined handler method (Method Name: #{handler_method_name}, Message: #{message_class})"
           end
         end
         alias :handle :handle_macro
+      end
+
+      module MessageRegistry
+        def message_registry
+          @message_registry ||= EventStore::Messaging::Registry.build
+        end
       end
 
       module Info
