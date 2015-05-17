@@ -3,7 +3,7 @@ module EventStore
     module Dispatcher
       def self.included(cls)
         cls.extend Macro
-        cls.extend MessageRegistry
+        cls.extend Handler::MessageRegistry
         cls.extend HandlerRegistry
         cls.extend Build
       end
@@ -11,7 +11,29 @@ module EventStore
       module Macro
         def handler(handler_class)
           handler_registry.register(handler_class)
-          register_message_classes(handler_class.message_registry)
+        end
+      end
+
+      module HandlerRegistry
+        def handler_registry
+          @handler_registry ||= build_handler_registry
+        end
+
+        def build_handler_registry
+          handler_registry = EventStore::Messaging::Registry.build
+          this = self
+          handler_registry.after_register do |handler_class|
+            this.register_message_classes(handler_class.message_registry)
+          end
+          handler_registry
+        end
+
+        def register_message_classes(handler_message_registry)
+          handler_message_registry.each do |message_class|
+            unless self.message_registry.registered?(message_class)
+              self.message_registry.register(message_class)
+            end
+          end
         end
       end
 

@@ -1,10 +1,12 @@
 module EventStore
   module Messaging
-    module Registry
+    class Registry
       class Error < StandardError; end
 
-      def registered?(item)
-        items.include? item
+      attr_accessor :after_register_hook
+
+      def self.build
+        new
       end
 
       def register(item)
@@ -17,6 +19,20 @@ module EventStore
         end
 
         items.push(item)
+
+        if after_register_hook
+          after_register_hook.call item
+        end
+
+        items
+      end
+
+      def after_register(&blk)
+        self.after_register_hook = blk
+      end
+
+      def registered?(item)
+        items.include? item
       end
 
       def each
