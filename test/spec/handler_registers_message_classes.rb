@@ -6,7 +6,7 @@ describe "Handler" do
 
     message_classes = handler.class.message_classes
 
-    assert(message_classes.include? Fixtures::SomeMessage)
+    assert(message_classes.registered? Fixtures::SomeMessage)
   end
 
   it "Registers message classes once only" do
@@ -18,7 +18,7 @@ describe "Handler" do
 
     message_classes = handler_class.message_classes
 
-    assert(message_classes.include? Fixtures::SomeMessage)
+    assert(message_classes.registered? Fixtures::SomeMessage)
     assert(message_classes.length == 1)
   end
 end

@@ -8,6 +8,6 @@ describe "Handler Macro" do
 
   it "Registers message classes" do
     handler = Fixtures.handler
-    handler.class.message_classes.include? Fixtures::SomeMessage
+    handler.class.message_classes.registered? Fixtures::SomeMessage
   end
 end

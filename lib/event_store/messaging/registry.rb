@@ -19,6 +19,16 @@ module EventStore
         items.push(item)
       end
 
+      def each
+        items.each do |i|
+          yield i
+        end
+      end
+
+      def length
+        items.length
+      end
+
       private
       def items
         @items ||= []
