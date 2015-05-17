@@ -14,7 +14,7 @@ module EventStore
 
         logger.trace "Registering handler class: #{handler_class}"
 
-        unless handler_registered?(handler_class)
+        unless handler_classes.registered?(handler_class)
           handler_classes.register(handler_class)
           logger.debug "Registered handler class: #{handler_class}"
         else
@@ -27,7 +27,11 @@ module EventStore
       end
 
       def register_message_classes(message_classes)
-        message_classes.each { |message_class| register_message_class(message_class) }
+        message_classes.each do |message_class|
+          unless self.message_classes.registered?(message_class)
+            self.message_classes.register(message_class)
+          end
+        end
       end
     end
   end
