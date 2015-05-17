@@ -1,25 +1,24 @@
-# require_relative 'spec_init'
+require_relative 'spec_init'
 
-# describe "Handler" do
-#   it "Registers classes of messages that it handles" do
-#     registry = Object.extend EventStore::Messaging::Registry.new
+describe "Registry" do
+  it "Registers items" do
+    registry = Object.extend EventStore::Messaging::Registry
 
+    item = Object.new
 
-#     message_classes = handler.class.message_classes
+    registry.register item
 
-#     assert(message_classes.include? Fixtures::SomeMessage)
-#   end
+    assert(registry.registered? item)
+  end
 
-#   it "Registers message classes once only" do
-#     handler_class = Fixtures::Anomalies::SomeHandler
+  it "Registers message classes once only" do
+    registry = Object.extend EventStore::Messaging::Registry
 
-#     handler_class.handle Fixtures::SomeMessage do
-#       puts "Handling the same message is not allowed"
-#     end
+    item = Object.new
+    registry.register item
 
-#     message_classes = handler_class.message_classes
-
-#     assert(message_classes.include? Fixtures::SomeMessage)
-#     assert(message_classes.length == 1)
-#   end
-# end
+    assert_raises EventStore::Messaging::Registry::Error do
+      registry.register item
+    end
+  end
+end
