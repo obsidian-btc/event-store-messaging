@@ -10,7 +10,8 @@ module EventStore
 
       module Macro
         def handler(handler_class)
-          register_handler_class(handler_class)
+          handler_registry.register(handler_class)
+          register_message_classes(handler_class.message_registry)
         end
       end
 
@@ -21,11 +22,11 @@ module EventStore
       end
 
       def handlers
-        self.class.handler_classes
+        self.class.handler_registry
       end
 
       def register_handler(handler_class)
-        self.class.register_handler(handler_class)
+        self.class.handler_registry.register(handler_class)
       end
 
       def dispatch(message)
@@ -35,7 +36,7 @@ module EventStore
       end
 
       def handles(message)
-        self.class.handler_classes.select do |handler_class|
+        self.class.handler_registry.select do |handler_class|
           message_class_name = message.class.name.split('::').last
           handler_class.handles? message_class_name
         end
