@@ -1,7 +1,11 @@
 module EventStore
   module Messaging
-    module Registry
+    class Registry
       class Error < StandardError; end
+
+      def self.build
+        new
+      end
 
       def registered?(item)
         items.include? item

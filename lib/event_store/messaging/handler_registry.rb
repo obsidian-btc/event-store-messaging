@@ -2,7 +2,7 @@ module EventStore
   module Messaging
     module HandlerRegistry
       def handler_registry
-        @handler_registry ||= Object.new.extend EventStore::Messaging::Registry
+        @handler_registry ||= EventStore::Messaging::Registry.build
       end
 
       def register_message_classes(handler_message_registry)
