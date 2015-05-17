@@ -7,8 +7,8 @@ describe "Dispatcher" do
 
     dispatcher.dispatch message
 
-    assert(message.handlers.include? "Fixtures::SomeHandler")
-    assert(message.handlers.include? "Fixtures::OtherHandler")
+    assert(message.handlers.include? Fixtures::SomeHandler)
+    assert(message.handlers.include? Fixtures::OtherHandler)
     assert(message.handlers.length == 2)
   end
 end

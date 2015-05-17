@@ -7,7 +7,7 @@ module Fixtures
     attribute :handlers, Array, default: [], lazy: true
 
     def handler?(handler_name)
-      handlers.any? { |name| name.end_with? handler_name }
+      handlers.any? { |handler_class| handler_class.name.end_with? handler_name }
     end
   end
 
@@ -18,7 +18,7 @@ module Fixtures
     include EventStore::Messaging::Handler
 
     handle SomeMessage do |message|
-      message.handlers << self.class.name
+      message.handlers << self.class
     end
   end
 
@@ -26,7 +26,7 @@ module Fixtures
     include EventStore::Messaging::Handler
 
     handle SomeMessage do |message|
-      message.handlers << self.class.name
+      message.handlers << self.class
     end
   end
 
@@ -34,7 +34,7 @@ module Fixtures
     include EventStore::Messaging::Handler
 
     handle AnotherMessage do |message|
-      message.handlers << self.class.name
+      message.handlers << self.class
     end
   end
 
