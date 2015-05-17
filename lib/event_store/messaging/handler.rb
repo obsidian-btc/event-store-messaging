@@ -14,7 +14,7 @@ module EventStore
 
           logger.trace "Defining handler method (Message: #{message_class})"
 
-          register_message_class(message_class)
+          message_registry.register(message_class)
 
           handler_method_name = handler_name(message_class)
           send(:define_method, handler_method_name, &blk).tap do
