@@ -4,11 +4,11 @@ describe "Dispatcher" do
   it "Registers classes of messages that its handlers handle" do
     dispatcher = Fixtures.dispatcher
 
-    message_classes = dispatcher.class.message_classes
+    message_registry = dispatcher.class.message_registry
 
-    assert(message_classes.registered? Fixtures::SomeMessage)
-    assert(message_classes.registered? Fixtures::AnotherMessage)
-    assert(message_classes.length == 2)
+    assert(message_registry.registered? Fixtures::SomeMessage)
+    assert(message_registry.registered? Fixtures::AnotherMessage)
+    assert(message_registry.length == 2)
   end
 
   it "Registers classes of messages that its handlers handle" do

@@ -21,15 +21,15 @@ module EventStore
           logger.debug "Handler class: #{handler_class} is already registered. It was not registered again."
         end
 
-        register_message_classes(handler_class.message_classes)
+        register_message_classes(handler_class.message_registry)
 
         handler_classes
       end
 
-      def register_message_classes(message_classes)
-        message_classes.each do |message_class|
-          unless self.message_classes.registered?(message_class)
-            self.message_classes.register(message_class)
+      def register_message_classes(handler_message_registry)
+        handler_message_registry.each do |message_class|
+          unless self.message_registry.registered?(message_class)
+            self.message_registry.register(message_class)
           end
         end
       end
