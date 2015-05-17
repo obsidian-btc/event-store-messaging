@@ -2,7 +2,7 @@ require_relative 'spec_init'
 
 describe "Registry" do
   it "Registers items" do
-    registry = Object.extend EventStore::Messaging::Registry
+    registry = Object.new.extend EventStore::Messaging::Registry
 
     item = Object.new
 
@@ -12,7 +12,7 @@ describe "Registry" do
   end
 
   it "Registers message classes once only" do
-    registry = Object.extend EventStore::Messaging::Registry
+    registry = Object.new.extend EventStore::Messaging::Registry
 
     item = Object.new
     registry.register item
