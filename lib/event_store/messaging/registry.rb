@@ -47,6 +47,12 @@ module EventStore
         end
       end
 
+      def find
+        items.find do |i|
+          yield i
+        end
+      end
+
       def length
         items.length
       end
