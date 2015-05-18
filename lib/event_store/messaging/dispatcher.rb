@@ -53,7 +53,7 @@ module EventStore
 
       def dispatch(message)
         message_handlers(message).each do |handler_class|
-          handler_class.build.handle message
+          handler_class.! message
         end
       end
 

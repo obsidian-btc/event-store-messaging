@@ -5,6 +5,7 @@ module EventStore
         cls.extend Macro
         cls.extend MessageRegistry
         cls.extend Info
+        cls.extend Handle
         cls.extend Build
       end
 
@@ -36,6 +37,8 @@ module EventStore
       end
 
       module Info
+        extend self
+
         def handles?(message)
           method_defined? handler_name(message)
         end
@@ -52,9 +55,16 @@ module EventStore
         end
       end
 
+      module Handle
+        def !(message)
+          handler_method = Info.handler_name(message)
+          instance = build
+          instance.send handler_method, message
+        end
+      end
+
       def handle(message)
-        handler = self.class.handler_name(message)
-        send handler, message
+        self.class.! message
       end
     end
   end
