@@ -41,28 +41,8 @@ module EventStore
         end
 
         def handler_name(message)
-          name = MessageInfo.message_symbol(message)
+          name = Message::Info.message_identifier(message)
           "handle_#{name}"
-        end
-
-        module MessageInfo
-          def self.message_symbol(message)
-            class_name = nil
-            class_name = message if message.instance_of? String
-            class_name ||= message.name if message.instance_of? Class
-            class_name ||= message.class.name
-
-            type = message_class(class_name)
-            box_case(type).downcase
-          end
-
-          def self.message_class(name)
-            name.split('::').last
-          end
-
-          def self.box_case(str)
-            str.gsub(/([^\^])([A-Z])/,'\1_\2')
-          end
         end
       end
 
