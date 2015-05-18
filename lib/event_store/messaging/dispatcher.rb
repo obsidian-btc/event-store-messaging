@@ -59,8 +59,7 @@ module EventStore
 
       def handles(message)
         self.class.handler_registry.select do |handler_class|
-          message_class_name = message.class.name.split('::').last
-          handler_class.handles? message_class_name
+          handler_class.handles? message
         end
       end
 
