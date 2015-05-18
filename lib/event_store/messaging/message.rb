@@ -3,7 +3,7 @@ module EventStore
     module Message
       def self.included(cls)
         cls.send :include, Schema
-        cls.extend MessageInfo
+        cls.extend Info
         cls.extend Build
       end
 
@@ -15,7 +15,7 @@ module EventStore
         self.class.message_identifier
       end
 
-      module MessageInfo
+      module Info
         extend self
 
         def message_name(msg=self)
