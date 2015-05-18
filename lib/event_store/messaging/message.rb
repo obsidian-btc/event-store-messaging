@@ -3,7 +3,33 @@ module EventStore
     module Message
       def self.included(cls)
         cls.send :include, Schema
+        cls.extend MessageInfo
         cls.extend Build
+      end
+
+      def message_name
+        self.class.message_name
+      end
+
+      def message_identifier
+        self.class.message_identifier
+      end
+
+      module MessageInfo
+        def message_name(msg=self)
+          class_name(msg).split('::').last
+        end
+
+        def message_identifier(msg=self)
+          message_name(msg).gsub(/([^\^])([A-Z])/,'\1_\2').downcase
+        end
+
+        def class_name(message)
+          class_name = nil
+          class_name = message if message.instance_of? String
+          class_name ||= message.name if message.instance_of? Class
+          class_name ||= message.class.name
+        end
       end
 
       module Build
