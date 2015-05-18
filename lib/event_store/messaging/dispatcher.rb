@@ -52,12 +52,12 @@ module EventStore
       end
 
       def dispatch(message)
-        handles(message).each do |handler_class|
+        message_handlers(message).each do |handler_class|
           handler_class.build.handle message
         end
       end
 
-      def handles(message)
+      def message_handlers(message)
         self.class.handler_registry.select do |handler_class|
           handler_class.handles? message
         end

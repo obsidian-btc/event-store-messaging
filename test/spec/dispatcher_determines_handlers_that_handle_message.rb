@@ -5,7 +5,7 @@ describe "Dispatcher" do
     dispatcher = Fixtures.dispatcher
     message = Fixtures.message
 
-    handler_classes = dispatcher.handles(message)
+    handler_classes = dispatcher.message_handlers(message)
 
     names = handler_classes.map do |handler_class|
       handler_class.name.split('::').last
