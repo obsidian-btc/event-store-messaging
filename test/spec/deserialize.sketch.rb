@@ -39,9 +39,7 @@ dispatcher.class.class_eval do
   def self.deserialize(item_data)
     item = Stream::Item.build(item_data)
     item_type = item.type
-    msg_class = message_registry.find do |message_class|
-      message_class.message_name == item_type
-    end
+    msg_class = message_registry.get(item_type)
   end
 end
 
