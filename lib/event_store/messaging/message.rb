@@ -16,6 +16,8 @@ module EventStore
       end
 
       module MessageInfo
+        extend self
+
         def message_name(msg=self)
           class_name(msg).split('::').last
         end
