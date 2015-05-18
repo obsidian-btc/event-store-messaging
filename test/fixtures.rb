@@ -58,6 +58,18 @@ module Fixtures
     SomeMessage.new
   end
 
+  def self.item_data
+    {
+      id: '10000000-0000-0000-0000-000000000000',
+      type: 'SomeMessage',
+      version: 1,
+      stream_name: 'SomeStream',
+      data: {
+        some_attribute: 'some value'
+      }
+    }
+  end
+
   module Anomalies
     class SomeHandler
       include EventStore::Messaging::Handler

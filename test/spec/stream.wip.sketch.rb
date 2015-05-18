@@ -4,9 +4,6 @@
 # - gets item raw
 # - read_item(raw_item)
 
-item_data = {
-
-}
 
 msg = Fixtures.some_message
 msg.some_attribute = 'some value'
@@ -37,3 +34,12 @@ class StreamReader
   end
 end
 
+# - - -
+
+class Item
+  def build_message
+  end
+  # XXX No. Won't work. Need message class
+  # - need to go from message string to message class
+  # - and if not there, log or raise error
+end

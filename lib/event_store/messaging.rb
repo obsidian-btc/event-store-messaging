@@ -1,6 +1,8 @@
+require 'set_attributes'
 require 'schema'
 require 'telemetry/logger'
 
+require 'event_store/messaging/data_structure'
 require 'event_store/messaging/message'
 require 'event_store/messaging/registry'
 require 'event_store/messaging/handler'

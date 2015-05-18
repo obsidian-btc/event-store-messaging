@@ -8,6 +8,7 @@ prox_gem 'telemetry_logger'
 prox_gem 'schema'
 prox_gem 'runner'
 prox_gem 'fixture'
+prox_gem 'settings'
 prox_gem 'set_attributes'
 
 source 'https://rubygems.org'
