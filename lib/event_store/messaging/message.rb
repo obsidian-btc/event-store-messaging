@@ -16,12 +16,19 @@ module EventStore
       end
 
       module MessageInfo
-        def message_name(cls=self)
-          cls.name.split('::').last
+        def message_name(msg=self)
+          class_name(msg).split('::').last
         end
 
-        def message_identifier(cls=self)
-          message_name(cls).gsub(/([^\^])([A-Z])/,'\1_\2').downcase
+        def message_identifier(msg=self)
+          message_name(msg).gsub(/([^\^])([A-Z])/,'\1_\2').downcase
+        end
+
+        def class_name(message)
+          class_name = nil
+          class_name = message if message.instance_of? String
+          class_name ||= message.name if message.instance_of? Class
+          class_name ||= message.class.name
         end
       end
 
