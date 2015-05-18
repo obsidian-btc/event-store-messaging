@@ -20,7 +20,8 @@ module EventStore
         end
 
         def build_handler_registry
-          handler_registry = EventStore::Messaging::Registry.build
+          # handler_registry = EventStore::Messaging::Registry.build
+          handler_registry = EventStore::Messaging::MessageRegistry.build
           this = self
           handler_registry.after_register do |handler_class|
             this.register_message_classes(handler_class.message_registry)
