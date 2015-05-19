@@ -84,5 +84,9 @@ module Fixtures
 
       handler Fixtures::SomeHandler
     end
+
+    def self.item_data
+      Fixtures.item_data.merge type: 'SomeUnknownMessage'
+    end
   end
 end

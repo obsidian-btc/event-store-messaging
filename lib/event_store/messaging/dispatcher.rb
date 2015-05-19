@@ -51,10 +51,17 @@ module EventStore
       end
 
       module Deserialize
+        class Error < StandardError; end
+
         def deserialize(item_data)
           item = Stream::Item.build(item_data)
           item_type = item.type
           msg_class = message_registry.get(item_type)
+
+          unless msg_class
+            raise Error, "Unknown item type: \"#{item_type}\""
+          end
+
           msg_class.build item_data
         end
       end
