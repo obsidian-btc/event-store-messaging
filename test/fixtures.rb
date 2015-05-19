@@ -25,8 +25,9 @@ module Fixtures
   class OtherHandler
     include EventStore::Messaging::Handler
 
-    handle SomeMessage do |message|
+    handle SomeMessage do |message, metadata|
       message.handlers << self.class
+      metadata.data[:some_side_effect] = :effected
     end
   end
 
@@ -66,7 +67,7 @@ module Fixtures
     SomeRegistry.new
   end
 
-  def self.item_data
+  def self.stream_item_data
     {
       id: '10000000-0000-0000-0000-000000000000',
       type: 'SomeMessage',
@@ -76,6 +77,10 @@ module Fixtures
         some_attribute: 'some value'
       }
     }
+  end
+
+  def self.stream_item
+    EventStore::Messaging::Stream::Item.build stream_item_data
   end
 
   module Anomalies
@@ -93,8 +98,8 @@ module Fixtures
       handler Fixtures::SomeHandler
     end
 
-    def self.item_data
-      Fixtures.item_data.merge type: 'SomeUnknownMessage'
+    def self.stream_item_data
+      Fixtures.stream_item_data.merge type: 'SomeUnknownMessage'
     end
   end
 end

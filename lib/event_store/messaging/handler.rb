@@ -13,8 +13,6 @@ module EventStore
         def handle_macro(message_class, &blk)
           logger = Telemetry::Logger.get self
 
-          logger.trace "Defining handler method (Message: #{message_class})"
-
           define_handler_method(message_class, &blk)
           message_registry.register(message_class)
         end
@@ -22,6 +20,8 @@ module EventStore
 
         def define_handler_method(message_class, &blk)
           logger = Telemetry::Logger.get self
+
+          logger.trace "Defining handler method (Message: #{message_class})"
 
           handler_method_name = handler_name(message_class)
           send(:define_method, handler_method_name, &blk).tap do
@@ -56,15 +56,27 @@ module EventStore
       end
 
       module Handle
-        def !(message)
-          handler_method = Info.handler_name(message)
+        def !(message, metadata=nil)
           instance = build
-          instance.send handler_method, message
+
+          handler_method_name = Info.handler_name(message)
+
+          method = instance.method(handler_method_name)
+          arity = method.arity
+
+          case method.arity
+          when 0
+            instance.send handler_method_name
+          when 1
+            instance.send handler_method_name, message
+          when 2
+            instance.send handler_method_name, message, metadata
+          end
         end
       end
 
-      def handle(message)
-        self.class.! message
+      def handle(message, metadata=nil)
+        self.class.! message, metadata
       end
     end
   end

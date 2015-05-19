@@ -6,8 +6,9 @@ describe "Dispatcher" do
     dispatcher.handlers.register Fixtures.handler.class
 
     message = Fixtures.message
+    stream_item = Fixtures.stream_item
 
-    dispatcher.dispatch message
+    dispatcher.dispatch message, stream_item
 
     refute(message.handlers.empty?)
   end
