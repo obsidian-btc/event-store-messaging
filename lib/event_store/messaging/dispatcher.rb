@@ -5,6 +5,7 @@ module EventStore
         cls.extend Macro
         cls.extend MessageRegistry
         cls.extend HandlerRegistry
+        cls.extend Deserialize
         cls.extend Build
       end
 
@@ -49,6 +50,15 @@ module EventStore
         end
       end
 
+      module Deserialize
+        def deserialize(item_data)
+          item = Stream::Item.build(item_data)
+          item_type = item.type
+          msg_class = message_registry.get(item_type)
+          msg_class.build item_data
+        end
+      end
+
       def handlers
         self.class.handler_registry
       end
@@ -61,13 +71,6 @@ module EventStore
         handlers.get(message).each do |handler_class|
           handler_class.! message
         end
-      end
-
-      def self.deserialize(item_data)
-        item = Stream::Item.build(item_data)
-        item_type = item.type
-        msg_class = message_registry.get(item_type)
-        msg_class.build item_data
       end
 
       class Concrete
