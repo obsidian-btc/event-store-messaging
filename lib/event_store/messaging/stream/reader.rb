@@ -11,6 +11,11 @@ module EventStore
           new
         end
 
+        def self.start
+          raise NotImplementedError
+          # start listening to receive data items
+        end
+
         def read(data)
           message, stream_item = dispatcher.deserialize(data)
 
