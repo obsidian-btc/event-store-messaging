@@ -46,6 +46,10 @@ module Fixtures
     handler AnotherHandler
   end
 
+  class SomeRegistry
+    include EventStore::Messaging::Registry
+  end
+
   def self.dispatcher
     SomeDispatcher.new
   end
@@ -56,6 +60,10 @@ module Fixtures
 
   def self.message
     SomeMessage.new
+  end
+
+  def self.registry
+    SomeRegistry.new
   end
 
   def self.item_data
