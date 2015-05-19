@@ -6,8 +6,15 @@ module Fixtures
 
     attribute :handlers, Array, default: [], lazy: true
 
-    def handler?(handler_name)
+    def handler?(handler)
+      handler_name = handler if handler.instance_of? String
+      handler_name ||= handler.name if handler.instance_of? Class
+
       handlers.any? { |handler_class| handler_class.name.end_with? handler_name }
+    end
+
+    def handled?
+      handlers.length > 0
     end
   end
 
@@ -45,6 +52,12 @@ module Fixtures
     handler SomeHandler
     handler OtherHandler
     handler AnotherHandler
+  end
+
+  class SingleDispatcher
+    include EventStore::Messaging::Dispatcher
+
+    handler SomeHandler
   end
 
   class SomeRegistry
