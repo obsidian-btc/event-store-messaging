@@ -63,6 +63,13 @@ module EventStore
         end
       end
 
+      def self.deserialize(item_data)
+        item = Stream::Item.build(item_data)
+        item_type = item.type
+        msg_class = message_registry.get(item_type)
+        msg_class.build item_data
+      end
+
       class Concrete
         include Dispatcher
       end

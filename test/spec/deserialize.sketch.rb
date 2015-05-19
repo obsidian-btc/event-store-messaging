@@ -40,10 +40,14 @@ dispatcher.class.class_eval do
     item = Stream::Item.build(item_data)
     item_type = item.type
     msg_class = message_registry.get(item_type)
+    msg = msg_class.build item_data
   end
 end
 
-dispatcher.class.deserialize item_data
+msg = dispatcher.class.deserialize item_data
+
+puts msg.inspect
+puts msg.attributes.inspect
 
 
 
