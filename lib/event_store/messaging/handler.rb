@@ -32,7 +32,7 @@ module EventStore
 
       module MessageRegistry
         def message_registry
-          @message_registry ||= EventStore::Messaging::Registry.build
+          @message_registry ||= EventStore::Messaging::MessageRegistry.build
         end
       end
 

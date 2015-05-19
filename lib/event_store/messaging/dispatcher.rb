@@ -16,7 +16,6 @@ module EventStore
 
       module MessageRegistry
         def message_registry
-          # @message_registry ||= EventStore::Messaging::Registry.build
           @message_registry ||= EventStore::Messaging::MessageRegistry.build
         end
       end
@@ -27,7 +26,7 @@ module EventStore
         end
 
         def build_handler_registry
-          handler_registry = EventStore::Messaging::Registry.build
+          handler_registry = EventStore::Messaging::HandlerRegistry.build
           this = self
           handler_registry.after_register do |handler_class|
             this.register_message_classes(handler_class.message_registry)
@@ -59,14 +58,8 @@ module EventStore
       end
 
       def dispatch(message)
-        message_handlers(message).each do |handler_class|
+        handlers.get(message).each do |handler_class|
           handler_class.! message
-        end
-      end
-
-      def message_handlers(message)
-        self.class.handler_registry.select do |handler_class|
-          handler_class.handles? message
         end
       end
 

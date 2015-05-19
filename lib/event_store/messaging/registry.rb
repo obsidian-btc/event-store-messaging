@@ -57,7 +57,7 @@ module EventStore
         items.length
       end
 
-      private
+      protected
       def items
         @items ||= []
       end
