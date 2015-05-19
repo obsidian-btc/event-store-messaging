@@ -74,9 +74,9 @@ module EventStore
         self.class.handler_registry.register(handler_class)
       end
 
-      def dispatch(message)
+      def dispatch(message, metadata)
         handlers.get(message).each do |handler_class|
-          handler_class.! message
+          handler_class.! message, metadata
         end
       end
 
