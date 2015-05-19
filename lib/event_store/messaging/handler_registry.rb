@@ -1,6 +1,8 @@
 module EventStore
   module Messaging
-    class HandlerRegistry < Registry
+    class HandlerRegistry # < Registry
+      include Registry
+
       def get(message)
         items.select do |handler_class|
           handler_class.handles? message

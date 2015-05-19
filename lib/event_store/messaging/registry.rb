@@ -1,13 +1,19 @@
 module EventStore
   module Messaging
-    class Registry
+    module Registry
       class Error < StandardError; end
 
-      attr_accessor :after_register_hook
-
-      def self.build
-        new
+      def self.included(cls)
+        cls.extend Build
       end
+
+      module Build
+        def build
+          new
+        end
+      end
+
+      attr_accessor :after_register_hook
 
       def register(item)
         logger = Telemetry::Logger.get self
@@ -37,18 +43,6 @@ module EventStore
 
       def each
         items.each do |i|
-          yield i
-        end
-      end
-
-      def select
-        items.select do |i|
-          yield i
-        end
-      end
-
-      def find
-        items.find do |i|
           yield i
         end
       end
