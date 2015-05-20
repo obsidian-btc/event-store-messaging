@@ -64,14 +64,8 @@ module EventStore
           method = instance.method(handler_method_name)
           arity = method.arity
 
-          case method.arity
-          when 0
-            instance.send handler_method_name
-          when 1
-            instance.send handler_method_name, message
-          when 2
-            instance.send handler_method_name, message, metadata
-          end
+          args = [message, metadata]
+          instance.public_send handler_method_name, *args[0...method.arity]
         end
       end
 
