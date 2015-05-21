@@ -20,7 +20,10 @@ module EventStore
         end
 
         def start
-          reader.start
+          this = self
+          subscription.start do |stream_item_data|
+            this.read(stream_item_data)
+          end
         end
 
         def read(data)

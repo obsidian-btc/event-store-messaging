@@ -3,10 +3,15 @@ module EventStore
     module Http
       class Subscription
         def self.configure(receiver)
-
         end
 
-        def start
+        def start(&blk)
+        end
+
+        module Substitute
+        end
+
+        module Controls
         end
       end
     end
