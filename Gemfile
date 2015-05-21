@@ -1,5 +1,6 @@
 require './prox_gem'
 
+prox_gem 'uuid'
 prox_gem 'clock'
 prox_gem 'attribute'
 prox_gem 'null_attr'

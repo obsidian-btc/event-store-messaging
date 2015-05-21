@@ -6,24 +6,31 @@ module EventStore
 
         dependency :subscription
         dependency :dispatcher
+        dependency :logger
 
         def self.build
-          new
+          new().tap do |instance|
+            EventStore::Client::HTTP::Subscription.configure instance
+          end
         end
 
         def self.start
-          raise NotImplementedError
-          # start listening to receive data items
+          instance = build
+          instance.start
+        end
+
+        def start
+          reader.start
         end
 
         def read(data)
           message, stream_item = dispatcher.deserialize(data)
 
-          unless message
-            raise Error, "Unknown message type: \"#{data[:type]}\""
+          if message
+            dispatcher.dispatch(message, stream_item)
+          else
+            logger.debug "Cannot dispatch \"#{stream_item.type}\". The \"#{dispatcher}\" dispatcher has no handlers for it."
           end
-
-          dispatcher.dispatch(message, stream_item)
 
           return message, stream_item
         end
