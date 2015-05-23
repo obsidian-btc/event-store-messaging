@@ -46,19 +46,19 @@ module EventStore
 
         pure_virtual :stream_name
 
-        # class Substitute < Reader
-        #   def reads
-        #     @reads ||= []
-        #   end
+        module Instruments
+          def reads
+            @reads ||= []
+          end
 
-        #   def read(data)
-        #     reads << data
-        #   end
+          def read(data)
+            reads << data
+          end
 
-        #   def read?(data)
-        #     reads.include? data
-        #   end
-        # end
+          def read?(data)
+            reads.include? data
+          end
+        end
       end
     end
   end
