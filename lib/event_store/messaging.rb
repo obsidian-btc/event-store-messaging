@@ -1,6 +1,10 @@
 require 'set_attributes'
 require 'schema'
 require 'telemetry/logger'
+require 'inclusion'
+require 'virtual'; Virtual.activate
+require 'naught'
+require 'dependency'; Dependency.activate
 
 require 'event_store/messaging/data_structure'
 require 'event_store/messaging/message'

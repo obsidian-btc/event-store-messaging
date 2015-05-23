@@ -1,17 +1,26 @@
 module EventStore
   module Client
-    module Http
+    module HTTP
       class Subscription
+        attr_accessor :action
+
         def self.configure(receiver)
+        end
+
+        def initialize
         end
 
         def start(&blk)
         end
 
-        module Substitute
+        def receive(data)
+          action.call data
         end
 
-        module Controls
+        module Instruments
+          def self.extended(obj)
+            Telemetry::Logger.get(self).info "Instrumented #{obj.class.name}"
+          end
         end
       end
     end
