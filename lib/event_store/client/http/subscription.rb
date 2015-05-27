@@ -16,12 +16,6 @@ module EventStore
         def receive(data)
           action.call data
         end
-
-        module Instruments
-          def self.extended(obj)
-            Telemetry::Logger.get(self).info "Instrumented #{obj.class.name}"
-          end
-        end
       end
     end
   end
