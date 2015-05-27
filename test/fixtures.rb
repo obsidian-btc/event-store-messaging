@@ -64,6 +64,10 @@ module Fixtures
     include EventStore::Messaging::Registry
   end
 
+  def self.reader
+    EventStore::Messaging::Stream::Reader::Substitute.build
+  end
+
   def self.dispatcher
     SomeDispatcher.new
   end

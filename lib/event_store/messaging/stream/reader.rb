@@ -46,17 +46,23 @@ module EventStore
 
         pure_virtual :stream_name
 
-        module Instruments
-          def reads
-            @reads ||= []
+        module Substitute
+          def self.build
+            Reader.new.extend Instruments
           end
 
-          def read(data)
-            reads << data
-          end
+          module Instruments
+            def reads
+              @reads ||= []
+            end
 
-          def read?(data)
-            reads.include? data
+            def read(data)
+              reads << data
+            end
+
+            def read?(data)
+              reads.include? data
+            end
           end
         end
       end
