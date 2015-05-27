@@ -52,6 +52,10 @@ module EventStore
           end
 
           module Instruments
+            def self.extended(obj)
+              Telemetry::Logger.get(self).debug "Instrumented #{obj.class.name}"
+            end
+
             def reads
               @reads ||= []
             end
