@@ -53,18 +53,6 @@ module EventStore
       module Deserialize
         class Error < StandardError; end
 
-        # def deserialize(item_data)
-        #   item = Stream::Item.build(item_data)
-        #   item_type = item.type
-        #   msg_class = message_registry.get(item_type)
-
-        #   unless msg_class
-        #     raise Error, "Unknown item type: \"#{item_type}\""
-        #   end
-
-        #   msg_class.build item_data
-        # end
-
         def deserialize(item_data)
           stream_item = Stream::Item.build(item_data)
           item_type = stream_item.type
@@ -76,6 +64,37 @@ module EventStore
           end
 
           return msg, stream_item
+        end
+      end
+
+      module NullObject
+        def self.build
+          Substitute.new
+        end
+      end
+
+      class Substitute
+        include Dispatcher
+
+        def deserialize(item_data)
+          substitute_msg = Object.new.extend(EventStore::Messaging::Message)
+          stream_item = Stream::Item.build(item_data)
+          return substitute_msg, stream_item
+        end
+
+        def dispatch(message, stream_item)
+          record = Struct.new(:message, :stream_item).new(message, stream_item)
+          dispatches << record
+        end
+
+        def dispatches
+          @dispatches ||= []
+        end
+
+        def dispatched?(item_data)
+          dispatches.any? do |record|
+            record.stream_item.data == item_data
+          end
         end
       end
 
@@ -95,10 +114,6 @@ module EventStore
         handlers.get(message).each do |handler_class|
           handler_class.! message, metadata
         end
-      end
-
-      class Concrete
-        include Dispatcher
       end
     end
   end
