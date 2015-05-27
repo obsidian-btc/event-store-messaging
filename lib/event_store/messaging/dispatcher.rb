@@ -115,10 +115,6 @@ module EventStore
           handler_class.! message, metadata
         end
       end
-
-      class Concrete
-        include Dispatcher
-      end
     end
   end
 end
