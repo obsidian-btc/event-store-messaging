@@ -96,6 +96,18 @@ module Fixtures
     }
   end
 
+  def self.stream_item_json_data
+    {
+      id: '10000000-0000-0000-0000-000000000000',
+      type: 'SomeMessage',
+      version: 1,
+      streamName: 'SomeStream',
+      data: {
+        someAttribute: 'some value'
+      }
+    }
+  end
+
   def self.stream_item
     EventStore::Messaging::Stream::Item.build stream_item_data
   end
