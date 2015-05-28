@@ -53,7 +53,12 @@ module EventStore
       module Deserialize
         class Error < StandardError; end
 
+        def format(item_data)
+          Casing::Hash::Underscore.! item_data
+        end
+
         def deserialize(item_data)
+          item_data = format(item_data)
           stream_item = Stream::Item.build(item_data)
           item_type = stream_item.type
           msg_class = message_registry.get(item_type)

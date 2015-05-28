@@ -12,6 +12,7 @@ prox_gem 'fixture'
 prox_gem 'settings'
 prox_gem 'set_attributes'
 prox_gem 'virtual'
+prox_gem 'casing'
 
 source 'https://rubygems.org'
 
