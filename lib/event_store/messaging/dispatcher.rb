@@ -59,13 +59,16 @@ module EventStore
 
         def deserialize(item_data)
           item_data = format(item_data)
+
           stream_item = Stream::Item.build(item_data)
           item_type = stream_item.type
           msg_class = message_registry.get(item_type)
 
           msg = nil
           if msg_class
-            msg = msg_class.build(item_data)
+            msg_data = item_data['data'] || item_data[:data]
+            raise Error, "No data in stream item: #{stream_item.inspect}" unless msg_data
+            msg = msg_class.build(msg_data)
           end
 
           return msg, stream_item
