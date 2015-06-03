@@ -75,14 +75,12 @@ module EventStore
         end
       end
 
-      module NullObject
-        def self.build
-          Substitute.new
-        end
-      end
-
       class Substitute
         include Dispatcher
+
+        def self.build
+          new
+        end
 
         def deserialize(item_data)
           substitute_msg = Object.new.extend(EventStore::Messaging::Message)
