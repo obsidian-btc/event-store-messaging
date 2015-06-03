@@ -1,4 +1,4 @@
-require_relative 'spec_init'
+require_relative 'client_integration_init'
 
 describe "Stream Reader" do
   specify "Is actuated by the subscription's action block" do
