@@ -4,7 +4,7 @@ describe "Stream Reader" do
   specify "Is actuated by the subscription's action block" do
     reader = Fixtures.reader
 
-    subscription = EventStore::Client::HTTP::Subscription.new
+    subscription = EventStore::Client::HTTP::Vertx::Subscription.new
     reader.subscription = subscription
 
     reader.configure_subscription_action

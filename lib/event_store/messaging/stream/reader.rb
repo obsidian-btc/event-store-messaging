@@ -4,13 +4,13 @@ module EventStore
       class Reader
         class Error < StandardError; end
 
-        dependency :subscription, EventStore::Client::HTTP::Subscription
+        dependency :subscription, EventStore::Client::HTTP::Vertx::Subscription
         dependency :dispatcher, EventStore::Messaging::Dispatcher
         dependency :logger, Telemetry::Logger
 
         def self.build
           new().tap do |instance|
-            EventStore::Client::HTTP::Subscription.configure instance
+            EventStore::Client::HTTP::Vertx::Subscription.configure instance
             # here is where http client is added to subs?
           end
         end
