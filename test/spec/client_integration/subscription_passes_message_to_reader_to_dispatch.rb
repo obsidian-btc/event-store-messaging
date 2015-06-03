@@ -12,7 +12,7 @@ describe "Stream Reader" do
 
     data = { data: { foo: 'bar' }}
 
-    reader.subscription.receive data
+    subscription.receive data
 
     assert(reader.read? data)
   end
