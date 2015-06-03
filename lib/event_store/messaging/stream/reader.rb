@@ -20,9 +20,9 @@ module EventStore
           instance.start
         end
 
-        def configure_subscription_action
+        def action
           this = self
-          subscription.action = Proc.new do |data|
+          Proc.new do |data|
             this.read data
           end
         end

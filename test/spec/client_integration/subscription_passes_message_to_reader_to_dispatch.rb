@@ -5,9 +5,10 @@ describe "Stream Reader" do
     reader = Fixtures.reader
 
     subscription = EventStore::Client::HTTP::Vertx::Subscription.new
-    reader.subscription = subscription
 
-    reader.configure_subscription_action
+    subscription.action = reader.action
+
+    reader.subscription = subscription
 
     data = { data: { foo: 'bar' }}
 
