@@ -53,25 +53,25 @@ module EventStore
       module Deserialize
         class Error < StandardError; end
 
-        def format(entry_data)
-          Casing::Hash::Underscore.! entry_data
+        def format(item_data)
+          Casing::Hash::Underscore.! item_data
         end
 
-        def deserialize(entry_data)
-          entry_data = format(entry_data)
+        def deserialize(item_data)
+          item_data = format(item_data)
 
-          stream_entry = Stream::Entry.build(entry_data)
-          entry_type = stream_entry.type
-          msg_class = message_registry.get(entry_type)
+          stream_item = Stream::Entry.build(item_data)
+          item_type = stream_item.type
+          msg_class = message_registry.get(item_type)
 
           msg = nil
           if msg_class
-            msg_data = entry_data['data'] || entry_data[:data]
-            raise Error, "No data in stream entry: #{stream_entry.inspect}" unless msg_data
+            msg_data = item_data['data'] || item_data[:data]
+            raise Error, "No data in stream item: #{stream_item.inspect}" unless msg_data
             msg = msg_class.build(msg_data)
           end
 
-          return msg, stream_entry
+          return msg, stream_item
         end
       end
 
@@ -82,14 +82,14 @@ module EventStore
           new
         end
 
-        def deserialize(entry_data)
+        def deserialize(item_data)
           substitute_msg = Object.new.extend(EventStore::Messaging::Message)
-          stream_entry = Stream::Entry.build(entry_data)
-          return substitute_msg, stream_entry
+          stream_item = Stream::Entry.build(item_data)
+          return substitute_msg, stream_item
         end
 
-        def dispatch(message, stream_entry)
-          record = Struct.new(:message, :stream_entry).new(message, stream_entry)
+        def dispatch(message, stream_item)
+          record = Struct.new(:message, :stream_item).new(message, stream_item)
           dispatches << record
         end
 
@@ -97,9 +97,9 @@ module EventStore
           @dispatches ||= []
         end
 
-        def dispatched?(entry_data)
+        def dispatched?(item_data)
           dispatches.any? do |record|
-            record.stream_entry.data == entry_data
+            record.stream_item.data == item_data
           end
         end
       end
@@ -112,8 +112,8 @@ module EventStore
         self.class.handler_registry.register(handler_class)
       end
 
-      def deserialize(entry_data)
-        self.class.deserialize(entry_data)
+      def deserialize(item_data)
+        self.class.deserialize(item_data)
       end
 
       def dispatch(message, metadata)

@@ -4,9 +4,9 @@ describe "Dispatcher" do
   it "Dispatchers messages to handlers that can handle it" do
     dispatcher = Fixtures.dispatcher
     message = Fixtures.message
-    stream_entry = Fixtures.stream_entry
+    stream_item = Fixtures.stream_item
 
-    dispatcher.dispatch message, stream_entry
+    dispatcher.dispatch message, stream_item
 
     assert(message.handler? Fixtures::SomeHandler)
     assert(message.handler? Fixtures::OtherHandler)

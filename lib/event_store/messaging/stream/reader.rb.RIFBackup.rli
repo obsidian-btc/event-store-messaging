@@ -32,15 +32,15 @@ module EventStore
         end
 
         def read(data)
-          message, stream_entry = dispatcher.deserialize(data)
+          message, stream_item = dispatcher.deserialize(data)
 
           if message
-            dispatcher.dispatch(message, stream_entry)
+            dispatcher.dispatch(message, stream_item)
           else
-            logger.debug "Cannot dispatch \"#{stream_entry.type}\". The \"#{dispatcher}\" dispatcher has no handlers for it."
+            logger.debug "Cannot dispatch \"#{stream_item.type}\". The \"#{dispatcher}\" dispatcher has no handlers for it."
           end
 
-          return message, stream_entry
+          return message, stream_item
         end
 
         pure_virtual :stream_name
