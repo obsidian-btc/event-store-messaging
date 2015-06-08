@@ -1,4 +1,3 @@
-require 'pp'
 require_relative 'spec_init'
 
 module SymbolHashKeys
