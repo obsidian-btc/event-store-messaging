@@ -1,7 +1,7 @@
 module EventStore
   module Messaging
     module Stream
-      class Item
+      class Entry
         include DataStructure
 
         attribute :id

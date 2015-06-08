@@ -84,7 +84,7 @@ module Fixtures
     SomeRegistry.new
   end
 
-  def self.stream_entry_data
+  def self.stream_item_data
     {
       id: '10000000-0000-0000-0000-000000000000',
       type: 'SomeMessage',
@@ -96,7 +96,7 @@ module Fixtures
     }
   end
 
-  def self.stream_entry_json_data
+  def self.stream_item_json_data
     {
       id: '10000000-0000-0000-0000-000000000000',
       type: 'SomeMessage',
@@ -109,7 +109,7 @@ module Fixtures
   end
 
   def self.stream_entry
-    EventStore::Messaging::Stream::Entry.build stream_entry_data
+    EventStore::Messaging::Stream::Entry.build stream_item_data
   end
 
   module Anomalies
@@ -127,8 +127,8 @@ module Fixtures
       handler Fixtures::SomeHandler
     end
 
-    def self.stream_entry_data
-      Fixtures.stream_entry_data.merge type: 'SomeUnknownMessage'
+    def self.stream_item_data
+      Fixtures.stream_item_data.merge type: 'SomeUnknownMessage'
     end
   end
 end

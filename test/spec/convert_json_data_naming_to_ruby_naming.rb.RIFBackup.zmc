@@ -24,14 +24,14 @@ end
 
 describe "Entry data with JSON names" do
   specify "Is converted to data Ruby names" do
-    entry_json_data = Fixtures.stream_entry_json_data
-    _, stream_entry = Fixtures::SomeDispatcher.deserialize entry_json_data
+    item_json_data = Fixtures.stream_item_json_data
+    _, stream_item = Fixtures::SomeDispatcher.deserialize item_json_data
 
-    stream_entry_data = stream_entry.to_h
-    stream_entry_data = SymbolHashKeys.!(stream_entry_data)
+    stream_item_data = stream_item.to_h
+    stream_item_data = SymbolHashKeys.!(stream_item_data)
 
-    control_data = Fixtures.stream_entry_data
+    control_data = Fixtures.stream_item_data
 
-    assert(stream_entry_data == control_data)
+    assert(stream_item_data == control_data)
   end
 end
