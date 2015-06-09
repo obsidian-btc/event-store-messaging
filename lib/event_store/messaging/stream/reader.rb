@@ -19,17 +19,20 @@ module EventStore
           instance.start
         end
 
-        def start
+        def start(&overriding_blk)
           logger.trace "Starting"
+
+          action = overriding_blk || self.action
+
           subscription.start &action
+
           logger.debug "Start completed"
         end
 
         def action
           logger.trace "Composing action"
-          this = self
           Proc.new do |stream_entry|
-            this.read stream_entry
+            read stream_entry
           end.tap do
             logger.debug "Composed action"
           end

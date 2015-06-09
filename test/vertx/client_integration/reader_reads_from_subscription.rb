@@ -9,4 +9,12 @@ reader.subscription = subscription
 dispatcher = Fixtures.dispatcher
 reader.dispatcher = dispatcher
 
-reader.start
+stream_entries = []
+reader.start do |stream_entry|
+  reader.action.call stream_entry
+  stream_entries << stream_entry
+end
+
+Vertx.set_timer(1_500) do
+  logger(__FILE__).debug stream_entries.inspect
+end
