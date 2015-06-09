@@ -5,7 +5,6 @@ require 'inclusion'
 require 'virtual'; Virtual.activate
 require 'naught'
 require 'dependency'; Dependency.activate
-require 'casing'
 require 'event_store/client/http/vertx'
 
 require 'event_store/messaging/data_structure'

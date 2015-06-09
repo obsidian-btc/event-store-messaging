@@ -88,8 +88,11 @@ module Fixtures
     {
       id: '10000000-0000-0000-0000-000000000000',
       type: 'SomeMessage',
-      version: 1,
-      stream_name: 'SomeStream',
+      number: 1,
+      position: 11,
+      stream_name: 'someStream',
+      uri: 'http://127.0.0.1:2113/streams/someStream/1',
+      updated: '2015-06-08T04:37:01.066935Z',
       data: {
         some_attribute: 'some value'
       }
@@ -100,12 +103,19 @@ module Fixtures
     {
       id: '10000000-0000-0000-0000-000000000000',
       type: 'SomeMessage',
-      version: 1,
-      streamName: 'SomeStream',
+      number: 1,
+      position: 11,
+      streamName: 'someStream',
+      uri: 'http://127.0.0.1:2113/streams/someStream/1',
+      updated: '2015-06-08T04:37:01.066935Z',
       data: {
         someAttribute: 'some value'
       }
     }
+
+    def self.stream_entry
+      EventStore::Stream::Entry.build stream_entry_json_data
+    end
   end
 
   def self.stream_entry
