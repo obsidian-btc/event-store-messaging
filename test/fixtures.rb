@@ -19,6 +19,12 @@ module Fixtures
     end
   end
 
+  class SomeMessage
+    include EventStore::Messaging::Message
+
+    attribute :some_attribute
+  end
+
   class AnotherMessage < SomeEvent
   end
 
@@ -79,6 +85,10 @@ module Fixtures
 
   def self.message
     SomeEvent.new
+  end
+
+  def self.some_message
+    SomeMessage.new
   end
 
   def self.registry
