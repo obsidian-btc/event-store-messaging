@@ -40,7 +40,7 @@ module EventStore
             logger.debug "Cannot dispatch \"#{stream_entry.type}\". The \"#{dispatcher}\" dispatcher has no handlers for it."
           end
 
-          return message, stream_entry
+          return message
         end
 
         pure_virtual :stream_name
