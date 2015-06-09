@@ -53,25 +53,18 @@ module EventStore
       module Deserialize
         class Error < StandardError; end
 
-        def format(entry_data)
-          Casing::Hash::Underscore.! entry_data
-        end
-
-        def deserialize(entry_data)
-          entry_data = format(entry_data)
-
-          stream_entry = Stream::Entry.build(entry_data)
+        def deserialize(stream_entry)
           entry_type = stream_entry.type
           msg_class = message_registry.get(entry_type)
 
           msg = nil
           if msg_class
-            msg_data = entry_data['data'] || entry_data[:data]
+            msg_data = stream_entry.data
             raise Error, "No data in stream entry: #{stream_entry.inspect}" unless msg_data
             msg = msg_class.build(msg_data)
           end
 
-          return msg, stream_entry
+          return msg
         end
       end
 
