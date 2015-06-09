@@ -8,7 +8,7 @@ describe "Stream Subscription" do
     reader = EventStore::Messaging::Stream::Reader.new
     reader.dispatcher = dispatcher
 
-    message, stream_entry = reader.read(stream_entry)
+    message = reader.read(stream_entry)
 
     assert(message.handled?)
     assert(message.handler? Fixtures::SomeHandler.name)
@@ -21,7 +21,7 @@ describe "Stream Subscription" do
     reader = EventStore::Messaging::Stream::Reader.new
     reader.dispatcher = dispatcher
 
-    message, stream_entry = reader.read(stream_entry)
+    message = reader.read(stream_entry)
 
     assert(message.nil?)
   end

@@ -64,7 +64,7 @@ module EventStore
             msg = msg_class.build(msg_data)
           end
 
-          return msg, stream_entry
+          return msg
         end
       end
 

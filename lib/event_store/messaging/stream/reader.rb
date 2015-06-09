@@ -32,7 +32,7 @@ module EventStore
         end
 
         def read(stream_entry)
-          message, stream_entry = dispatcher.deserialize(stream_entry)
+          message = dispatcher.deserialize(stream_entry)
 
           if message
             dispatcher.dispatch(message, stream_entry)
