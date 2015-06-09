@@ -10,11 +10,15 @@ dispatcher = Fixtures.dispatcher
 reader.dispatcher = dispatcher
 
 stream_entries = []
-reader.start do |stream_entry|
-  reader.action.call stream_entry
+probe = Proc.new do |stream_entry|
   stream_entries << stream_entry
 end
 
+reader.start &probe
+
 Vertx.set_timer(1_500) do
+  assert(stream_entries.length == 1)
+  assert(stream_entries[0].type == "SomeEvent")
+
   logger(__FILE__).debug stream_entries.inspect
 end
