@@ -8,10 +8,9 @@ module EventStore
         dependency :dispatcher, EventStore::Messaging::Dispatcher
         dependency :logger, Telemetry::Logger
 
-        # TODO Needs dispatcher [Scott, Thu Jun 4 2015]
-        def self.build(subscription)
+        def self.build
           new.tap do |instance|
-            instance.subscription = subscription
+            Telemetry::Logger.configure instance
           end
         end
 

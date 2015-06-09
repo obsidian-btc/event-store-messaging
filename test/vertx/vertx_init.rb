@@ -1,6 +1,7 @@
 require_relative '../test_init'
 
 require 'vertx'
+require 'event_store/client/http/controls'
 
 def assert(val, message=nil)
   logger = logger(caller[0])
