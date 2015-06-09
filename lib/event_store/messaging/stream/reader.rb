@@ -20,17 +20,24 @@ module EventStore
         end
 
         def start
+          logger.trace "Starting"
           subscription.start &action
+          logger.debug "Start completed"
         end
 
         def action
+          logger.trace "Composing action"
           this = self
           Proc.new do |stream_entry|
             this.read stream_entry
+          end.tap do
+            logger.debug "Composed action"
           end
         end
 
         def read(stream_entry)
+          logger.trace "Reading stream entry (Type: #{stream_entry.type}, ID: #{stream_entry.id}"
+
           message = dispatcher.deserialize(stream_entry)
 
           if message
@@ -38,6 +45,8 @@ module EventStore
           else
             logger.debug "Cannot dispatch \"#{stream_entry.type}\". The \"#{dispatcher}\" dispatcher has no handlers for it."
           end
+
+          logger.debug "Read stream entry (Type: #{stream_entry.type}, ID: #{stream_entry.id}"
 
           return message
         end
