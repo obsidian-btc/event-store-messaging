@@ -4,7 +4,7 @@ describe "Deserialize Entry Data" do
   specify "Message corresponding to the entry type is built with the entry's data" do
     stream_entry = Fixtures.stream_entry
     msg = Fixtures::SomeDispatcher.deserialize stream_entry
-    assert(msg.is_a? Fixtures::SomeMessage)
+    assert(msg.is_a? Fixtures::SomeEvent)
   end
 end
 

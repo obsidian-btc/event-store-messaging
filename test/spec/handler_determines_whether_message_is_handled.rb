@@ -3,7 +3,7 @@ require_relative 'spec_init'
 describe "Handler" do
   it "Determine whether it handles based on a message class name" do
     handler = Fixtures.handler
-    message_name = "SomeMessage"
+    message_name = "SomeEvent"
 
     assert(handler.class.handles? message_name)
   end
