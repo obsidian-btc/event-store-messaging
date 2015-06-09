@@ -6,6 +6,6 @@ describe "Handler" do
 
     message_registry = handler.class.message_registry
 
-    assert(message_registry.registered? Fixtures::SomeMessage)
+    assert(message_registry.registered? Fixtures::SomeEvent)
   end
 end

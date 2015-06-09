@@ -6,7 +6,7 @@ describe "Dispatcher" do
 
     message_registry = dispatcher.class.message_registry
 
-    assert(message_registry.registered? Fixtures::SomeMessage)
+    assert(message_registry.registered? Fixtures::SomeEvent)
     assert(message_registry.registered? Fixtures::AnotherMessage)
     assert(message_registry.length == 2)
   end

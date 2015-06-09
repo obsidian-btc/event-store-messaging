@@ -1,5 +1,5 @@
 module Fixtures
-  class SomeMessage
+  class SomeEvent
     include EventStore::Messaging::Message
 
     attribute :some_attribute
@@ -18,13 +18,13 @@ module Fixtures
     end
   end
 
-  class AnotherMessage < SomeMessage
+  class AnotherMessage < SomeEvent
   end
 
   class SomeHandler
     include EventStore::Messaging::Handler
 
-    handle SomeMessage do |message|
+    handle SomeEvent do |message|
       message.handlers << self.class
     end
   end
@@ -32,7 +32,7 @@ module Fixtures
   class OtherHandler
     include EventStore::Messaging::Handler
 
-    handle SomeMessage do |message, metadata|
+    handle SomeEvent do |message, metadata|
       message.handlers << self.class
       metadata.data[:some_side_effect] = :effected
     end
@@ -77,7 +77,7 @@ module Fixtures
   end
 
   def self.message
-    SomeMessage.new
+    SomeEvent.new
   end
 
   def self.registry
@@ -87,7 +87,7 @@ module Fixtures
   def self.stream_entry_data
     {
       id: '10000000-0000-0000-0000-000000000000',
-      type: 'SomeMessage',
+      type: 'SomeEvent',
       number: 1,
       position: 11,
       stream_name: 'someStream',
@@ -107,7 +107,7 @@ module Fixtures
     class SomeHandler
       include EventStore::Messaging::Handler
 
-      handle SomeMessage do |message|
+      handle SomeEvent do |message|
         message.handlers << self.class.name
       end
     end
