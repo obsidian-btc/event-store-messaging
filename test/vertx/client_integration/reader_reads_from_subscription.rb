@@ -10,11 +10,11 @@ dispatcher = Fixtures.dispatcher
 reader.dispatcher = dispatcher
 
 stream_entries = []
-probe = Proc.new do |stream_entry|
+intercept = Proc.new do |stream_entry|
   stream_entries << stream_entry
 end
 
-reader.start &probe
+reader.start &intercept
 
 Vertx.set_timer(1_500) do
   assert(stream_entries.length == 1)
