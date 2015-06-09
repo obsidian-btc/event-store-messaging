@@ -2,7 +2,7 @@ require_relative 'spec_init'
 
 describe "Message Class" do
   specify "Message name is the inner-most namespace of message's class name" do
-    name = Fixtures::SomeEvent.message_name
+    name = Fixtures::SomeEvent.message_type
     assert(name == "SomeEvent")
   end
 
@@ -14,7 +14,7 @@ end
 
 describe "Message Instance" do
   specify "Message name is the inner-most namespace of message's class name" do
-    name = Fixtures.message.message_name
+    name = Fixtures.message.message_type
     assert(name == "SomeEvent")
   end
 
