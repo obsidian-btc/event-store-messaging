@@ -8,10 +8,9 @@ module EventStore
         dependency :dispatcher, EventStore::Messaging::Dispatcher
         dependency :logger, Telemetry::Logger
 
-        # TODO Needs dispatcher [Scott, Thu Jun 4 2015]
-        def self.build(subscription)
+        def self.build
           new.tap do |instance|
-            instance.subscription = subscription
+            Telemetry::Logger.configure instance
           end
         end
 
@@ -20,18 +19,29 @@ module EventStore
           instance.start
         end
 
-        def start
+        def start(&supplemental_action)
+          logger.trace "Starting"
+
+          action = self.action(&supplemental_action)
+
           subscription.start &action
+
+          logger.debug "Start completed"
         end
 
-        def action
-          this = self
+        def action(&supplemental_action)
+          logger.trace "Composing action"
           Proc.new do |stream_entry|
-            this.read stream_entry
+            read stream_entry
+            supplemental_action.call(stream_entry) if supplemental_action
+          end.tap do
+            logger.debug "Composed action"
           end
         end
 
         def read(stream_entry)
+          logger.trace "Reading stream entry (Type: #{stream_entry.type}, ID: #{stream_entry.id}"
+
           message = dispatcher.deserialize(stream_entry)
 
           if message
@@ -39,6 +49,8 @@ module EventStore
           else
             logger.debug "Cannot dispatch \"#{stream_entry.type}\". The \"#{dispatcher}\" dispatcher has no handlers for it."
           end
+
+          logger.debug "Read stream entry (Type: #{stream_entry.type}, ID: #{stream_entry.id}"
 
           return message
         end

@@ -10,3 +10,8 @@ require 'runner'
 require 'fixture'
 
 TestLogger = Telemetry::Logger.get 'Test Output'
+
+def logger(name)
+  name = name.split('/').last
+  Telemetry::Logger.get "-- TEST -- #{name}"
+end
