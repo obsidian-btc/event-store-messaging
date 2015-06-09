@@ -26,13 +26,13 @@ module EventStore
 
         def action
           this = self
-          Proc.new do |data|
-            this.read data
+          Proc.new do |stream_entry|
+            this.read stream_entry
           end
         end
 
-        def read(data)
-          message, stream_entry = dispatcher.deserialize(data)
+        def read(stream_entry)
+          message, stream_entry = dispatcher.deserialize(stream_entry)
 
           if message
             dispatcher.dispatch(message, stream_entry)

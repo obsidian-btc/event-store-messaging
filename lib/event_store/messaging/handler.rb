@@ -56,7 +56,7 @@ module EventStore
       end
 
       module Handle
-        def !(message, metadata=nil)
+        def !(message, stream_item=nil)
           instance = build
 
           handler_method_name = Info.handler_name(message)
@@ -70,13 +70,13 @@ module EventStore
           when 1
             instance.send handler_method_name, message
           when 2
-            instance.send handler_method_name, message, metadata
+            instance.send handler_method_name, message, stream_item
           end
         end
       end
 
-      def handle(message, metadata=nil)
-        self.class.! message, metadata
+      def handle(message, stream_item=nil)
+        self.class.! message, stream_item
       end
     end
   end
