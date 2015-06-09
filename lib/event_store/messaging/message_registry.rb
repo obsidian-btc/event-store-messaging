@@ -3,9 +3,9 @@ module EventStore
     class MessageRegistry # < Registry
       include Registry
 
-      def get(message_name)
+      def get(message_type)
         items.find do |message_class|
-          message_class.message_name == message_name
+          message_class.message_type == message_type
         end
       end
     end

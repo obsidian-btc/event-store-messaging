@@ -7,8 +7,8 @@ module EventStore
         cls.extend Build
       end
 
-      def message_name
-        self.class.message_name
+      def message_type
+        self.class.message_type
       end
 
       def message_identifier
@@ -18,12 +18,12 @@ module EventStore
       module Info
         extend self
 
-        def message_name(msg=self)
+        def message_type(msg=self)
           class_name(msg).split('::').last
         end
 
         def message_identifier(msg=self)
-          message_name(msg).gsub(/([^\^])([A-Z])/,'\1_\2').downcase
+          message_type(msg).gsub(/([^\^])([A-Z])/,'\1_\2').downcase
         end
 
         def class_name(message)
