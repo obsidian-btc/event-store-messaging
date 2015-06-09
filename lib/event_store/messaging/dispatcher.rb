@@ -59,7 +59,7 @@ module EventStore
 
           msg = nil
           if msg_class
-            msg_data = entry_data['data'] || entry_data[:data]
+            msg_data = stream_entry.data
             raise Error, "No data in stream entry: #{stream_entry.inspect}" unless msg_data
             msg = msg_class.build(msg_data)
           end
