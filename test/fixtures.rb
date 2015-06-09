@@ -99,27 +99,8 @@ module Fixtures
     }
   end
 
-  def self.stream_entry_json_data
-    {
-      id: '10000000-0000-0000-0000-000000000000',
-      type: 'SomeMessage',
-      number: 1,
-      position: 11,
-      streamName: 'someStream',
-      uri: 'http://127.0.0.1:2113/streams/someStream/1',
-      updated: '2015-06-08T04:37:01.066935Z',
-      data: {
-        someAttribute: 'some value'
-      }
-    }
-
-    def self.stream_entry
-      EventStore::Stream::Entry.build stream_entry_json_data
-    end
-  end
-
   def self.stream_entry
-    EventStore::Messaging::Stream::Entry.build stream_entry_data
+    EventStore::Stream::Entry.build stream_entry_data
   end
 
   module Anomalies
@@ -139,6 +120,10 @@ module Fixtures
 
     def self.stream_entry_data
       Fixtures.stream_entry_data.merge type: 'SomeUnknownMessage'
+    end
+
+    def self.stream_entry
+      EventStore::Stream::Entry.build stream_entry_data
     end
   end
 end
