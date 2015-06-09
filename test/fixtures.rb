@@ -3,6 +3,7 @@ module Fixtures
     include EventStore::Messaging::Message
 
     attribute :some_attribute
+    attribute :some_time
 
     attribute :handlers, Array, default: [], lazy: true
 
