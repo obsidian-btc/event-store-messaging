@@ -33,3 +33,4 @@ module EventStore
       end
     end
   end
+end
