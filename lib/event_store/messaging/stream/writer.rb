@@ -2,6 +2,9 @@ module EventStore
   module Messaging
     module Stream
       class Writer
+        # TODO Dependency on client writer (writes stream entry)
+        # dependency :entry_writer
+
         pure_virtual :write
 
         # def self.stream_name_macro(stream_name)
@@ -16,18 +19,16 @@ module EventStore
             new
           end
 
-          def entries
-            @entries ||= []
+          def messages
+            @messages ||= []
           end
 
           def write(msg)
-            entry = EventStore::Messaging::Message::StreamEntry.! msg
-            entries << entry
-            entry
+            messages << msg
           end
 
-          def written?(entry)
-            entries.include? entry
+          def written?(msg)
+            messages.include? msg
           end
         end
       end

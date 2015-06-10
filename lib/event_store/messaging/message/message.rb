@@ -15,6 +15,13 @@ module EventStore
         self.class.message_name
       end
 
+      def ==(other)
+        (
+          to_h == other.to_h
+        )
+      end
+      alias :eql :==
+
       module Info
         extend self
 
