@@ -24,6 +24,7 @@ module EventStore
 
         def write(msg)
           messages << msg
+          msg
         end
 
         def written?(msg)
