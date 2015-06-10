@@ -17,7 +17,6 @@ module EventStore
 
       def ==(other)
         (
-          self.class == other.message.class &&
           to_h == other.to_h
         )
       end

@@ -19,11 +19,6 @@ module Fixtures
     end
   end
 
-  class SomeMessage
-    include EventStore::Messaging::Message
-    attribute :some_attribute
-  end
-
   class AnotherMessage < SomeEvent
   end
 
@@ -70,6 +65,14 @@ module Fixtures
     include EventStore::Messaging::Registry
   end
 
+  class SomeMessage
+    include EventStore::Messaging::Message
+    attribute :some_attribute
+  end
+
+  class SomeOtherMessage < SomeMessage
+  end
+
   def self.reader
     EventStore::Messaging::Stream::Reader::Substitute.build
   end
@@ -88,6 +91,10 @@ module Fixtures
 
   def self.some_message
     SomeMessage.new
+  end
+
+  def self.some_other_message
+    SomeOtherMessage.new
   end
 
   def self.registry
