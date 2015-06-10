@@ -21,7 +21,6 @@ module Fixtures
 
   class SomeMessage
     include EventStore::Messaging::Message
-
     attribute :some_attribute
   end
 
