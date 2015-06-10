@@ -11,8 +11,8 @@ module EventStore
         self.class.message_type
       end
 
-      def message_identifier
-        self.class.message_identifier
+      def message_name
+        self.class.message_name
       end
 
       module Info
@@ -22,7 +22,7 @@ module EventStore
           class_name(msg).split('::').last
         end
 
-        def message_identifier(msg=self)
+        def message_name(msg=self)
           message_type(msg).gsub(/([^\^])([A-Z])/,'\1_\2').downcase
         end
 

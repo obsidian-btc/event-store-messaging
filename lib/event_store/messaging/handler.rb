@@ -44,7 +44,7 @@ module EventStore
         end
 
         def handler_name(message)
-          name = Message::Info.message_identifier(message)
+          name = Message::Info.message_name(message)
           "handle_#{name}"
         end
       end
