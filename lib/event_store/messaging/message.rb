@@ -2,7 +2,7 @@ module EventStore
   module Messaging
     module Message
       def self.included(cls)
-        cls.send :include, DataStructure
+        cls.send :include, Schema::DataStructure
         cls.extend Info
         cls.extend Build
       end
