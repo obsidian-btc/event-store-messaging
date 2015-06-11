@@ -5,7 +5,7 @@ describe "Stream Subscription" do
     dispatcher = Fixtures::SingleDispatcher.new
     stream_entry = Fixtures.stream_entry
 
-    reader = EventStore::Messaging::Stream::Reader.new
+    reader = EventStore::Messaging::Reader.new
     reader.dispatcher = dispatcher
 
     message = reader.read(stream_entry)
@@ -18,7 +18,7 @@ describe "Stream Subscription" do
     dispatcher = Fixtures.dispatcher
     stream_entry = Fixtures::Anomalies.stream_entry
 
-    reader = EventStore::Messaging::Stream::Reader.new
+    reader = EventStore::Messaging::Reader.new
     reader.dispatcher = dispatcher
 
     message = reader.read(stream_entry)

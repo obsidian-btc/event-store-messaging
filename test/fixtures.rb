@@ -74,7 +74,7 @@ module Fixtures
   end
 
   def self.reader
-    EventStore::Messaging::Stream::Reader::Substitute.build
+    EventStore::Messaging::Reader::Substitute.build
   end
 
   def self.dispatcher
