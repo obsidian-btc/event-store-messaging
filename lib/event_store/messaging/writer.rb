@@ -1,17 +1,33 @@
 module EventStore
   module Messaging
     class Writer
-      # TODO Dependency on client writer (writes stream entry)
-      # dependency :entry_writer
+      attr_accessor :category_name
 
-      pure_virtual :write
+      dependency :writer, Client::HTTP::Vertx::Writer
+      dependency :logger, Telemetry::Logger
 
-      # def self.stream_name_macro(stream_name)
-      def self.stream_name(stream_name)
-        # define stream name instance method with return value
+      def initialize(category_name)
+        @category_name = category_name
       end
-      # alias :stream_name :stream_name_macro
-      # NOTE: will alias work like this given inheritance?
+
+      def self.build(category_name)
+        logger.trace "Building (Category Name: #{category_name})"
+        new(category_name).tap do |instance|
+          Client::HTTP::Vertx::Writer.configure instance, category_name
+          Telemetry::Logger.configure instance
+          logger.debug "Built (Category Name: #{category_name})"
+        end
+      end
+
+      def write(message)
+        event_data = EventStore::Messaging::Message::Conversion::EventData.! message
+        writer.! event_data
+        event_data
+      end
+
+      def self.logger
+        @logger ||= Telemetry::Logger.get self
+      end
 
       class Substitute
         def self.build
