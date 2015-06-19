@@ -20,5 +20,5 @@ Vertx.set_timer(1_500) do
   assert(stream_entries.length == 1)
   assert(stream_entries[0].type == "SomeEvent")
 
-  logger(__FILE__).debug stream_entries.inspect
+  logger(__FILE__).data stream_entries.inspect
 end
