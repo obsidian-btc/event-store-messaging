@@ -19,9 +19,21 @@ module EventStore
         end
       end
 
+      def self.configure(receiver, category_name)
+        logger.trace "Configuring (Receiver: #{receiver.inspect}, Category Name: #{category_name})"
+        instance = build(category_name)
+        receiver.writer = instance
+        logger.debug "Configured (Receiver: #{receiver.inspect}, Category Name: #{category_name})"
+
+        instance
+      end
+
       def write(message)
+        logger.trace "Writing (Message Type: #{message.message_type}, Category Name: #{category_name})"
         event_data = EventStore::Messaging::Message::Conversion::EventData.! message
         writer.! event_data
+        logger.debug "Wrote (Message Type: #{message.message_type}, Category Name: #{category_name})"
+
         event_data
       end
 
