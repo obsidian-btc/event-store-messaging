@@ -7,6 +7,8 @@ module EventStore
         cls.extend Info
         cls.extend Handle
         cls.extend Build
+
+        cls.send :virtual, :configure_dependencies
       end
 
       module Macro
@@ -51,7 +53,9 @@ module EventStore
 
       module Build
         def build
-          new
+          new.tap do |instance|
+            instance.configure_dependencies
+          end
         end
       end
 
