@@ -53,6 +53,26 @@ module EventStore
           SetAttributes.! instance, data
         end
       end
+
+      class Metadata
+        include Schema::DataStructure
+
+        attribute :id
+        attribute :correlation_id
+        attribute :causation_id
+
+        def type
+          puts "!!! WARN: type not implemented (Messsage::Metadata)"
+        end
+
+        def name
+          puts "!!! WARN: name not implemented (Messsage::Metadata)"
+        end
+      end
+
+      def metadata
+        @metadata ||= Metadata.new
+      end
     end
   end
 end
