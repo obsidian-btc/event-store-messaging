@@ -6,11 +6,11 @@ module EventStore
       dependency :writer, Client::HTTP::Vertx::Writer
       dependency :logger, Telemetry::Logger
 
-      def initialize(category_name)
+      def initialize(category_name=nil)
         @category_name = category_name
       end
 
-      def self.build(category_name)
+      def self.build(category_name=nil)
         logger.trace "Building (Category Name: #{category_name})"
         new(category_name).tap do |instance|
           Client::HTTP::Vertx::Writer.configure instance, category_name
@@ -19,7 +19,7 @@ module EventStore
         end
       end
 
-      def self.configure(receiver, category_name, attribute_name=nil)
+      def self.configure(receiver, category_name=nil, attribute_name=nil)
         attribute_name ||= :writer
         logger.trace "Configuring (Receiver: #{receiver.inspect}, Category Name: #{category_name})"
         instance = build(category_name)
@@ -31,7 +31,8 @@ module EventStore
         instance
       end
 
-      def write(message)
+      # TODO Remove nillability for stream ID [Scott, Tue Jun 23 2015]
+      def write(message, stream_id=nil)
         logger.trace "Writing (Message Type: #{message.message_type}, Category Name: #{category_name})"
         event_data = EventStore::Messaging::Message::Conversion::EventData.! message
         writer.! event_data
@@ -53,7 +54,8 @@ module EventStore
           @messages ||= []
         end
 
-        def write(msg)
+        # TODO Remove nillability for stream ID [Scott, Tue Jun 23 2015]
+        def write(msg, stream_id=nil)
           messages << msg
           msg
         end
