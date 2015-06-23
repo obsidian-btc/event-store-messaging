@@ -42,15 +42,40 @@ module EventStore
       end
 
       module Build
-        def build(data=nil)
+        # def build(data=nil, metadata: nil)
+        #   data ||= {}
+        #   metadata = build_metadata(metadata)
+
+        #   new.tap do |instance|
+        #     set_attributes(instance, data)
+        #     instance.metadata = metadata
+        #   end
+        # end
+
+        def build(data=nil, metadata=nil)
           data ||= {}
+          metadata = build_metadata(metadata)
+
           new.tap do |instance|
             set_attributes(instance, data)
+            instance.metadata = metadata
           end
+        end
+
+        def linked(metadata)
+          build(nil, metadata)
         end
 
         def set_attributes(instance, data)
           SetAttributes.! instance, data
+        end
+
+        def build_metadata(metadata)
+          if metadata.nil?
+            Metadata.new
+          else
+            Metadata.build(metadata.to_h)
+          end
         end
       end
 
@@ -60,16 +85,24 @@ module EventStore
         attribute :id
         attribute :correlation_id
         attribute :causation_id
+        attribute :reply_id
+        attribute :type
+        attribute :name
 
         def type
-          puts "!!! WARN: type not implemented (Messsage::Metadata)"
+          puts "!!! WARN: type not implemented - it will be an attribute (Messsage::Metadata)"
         end
 
         def name
-          puts "!!! WARN: name not implemented (Messsage::Metadata)"
+          puts "!!! WARN: name not implemented - it will be an attribute (Messsage::Metadata)"
+        end
+
+        def reply_to
+          reply_id || correlation_id
         end
       end
 
+      attr_writer :metadata
       def metadata
         @metadata ||= Metadata.new
       end

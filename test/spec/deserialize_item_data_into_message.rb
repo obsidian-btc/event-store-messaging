@@ -5,6 +5,7 @@ describe "Deserialize Entry Data" do
     stream_entry = Fixtures.stream_entry
     msg = Fixtures::SomeDispatcher.deserialize stream_entry
     assert(msg.is_a? Fixtures::SomeEvent)
+    assert(msg.some_attribute == 'some value')
   end
 end
 

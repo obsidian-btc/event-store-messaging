@@ -61,7 +61,11 @@ module EventStore
           if msg_class
             msg_data = stream_entry.data
             raise Error, "No data in stream entry: #{stream_entry.inspect}" unless msg_data
-            msg = msg_class.build(msg_data)
+
+            # TODO Get metadata [Scott, Mon Jun 22 2015] [metadata]
+            metadata = nil
+
+            msg = msg_class.build(msg_data, metadata)
           end
 
           return msg
