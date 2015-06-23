@@ -42,16 +42,6 @@ module EventStore
       end
 
       module Build
-        # def build(data=nil, metadata: nil)
-        #   data ||= {}
-        #   metadata = build_metadata(metadata)
-
-        #   new.tap do |instance|
-        #     set_attributes(instance, data)
-        #     instance.metadata = metadata
-        #   end
-        # end
-
         def build(data=nil, metadata=nil)
           data ||= {}
           metadata = build_metadata(metadata)
