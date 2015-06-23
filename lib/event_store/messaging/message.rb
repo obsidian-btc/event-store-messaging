@@ -83,22 +83,24 @@ module EventStore
         include Schema::DataStructure
 
         attribute :id
-        attribute :correlation_id
-        attribute :causation_id
-        attribute :reply_id
+
+        attribute :source_stream
+
+        attribute :correlation_stream
+        # TODO Causation id need to be set to previous message id [Scott, Tue Jun 23 2015]
+        attribute :causation_stream
+        attribute :reply_stream
         attribute :type
         attribute :name
 
         def type
           puts "!!! WARN: type not implemented - it will be an attribute (Messsage::Metadata)"
+          # NOTE: Delegate from message instance interface
         end
 
         def name
           puts "!!! WARN: name not implemented - it will be an attribute (Messsage::Metadata)"
-        end
-
-        def reply_to
-          reply_id || correlation_id
+          # NOTE: Delegate from message instance interface
         end
       end
 
