@@ -19,10 +19,13 @@ module EventStore
         end
       end
 
-      def self.configure(receiver, category_name)
+      def self.configure(receiver, category_name, attribute_name=nil)
+        attribute_name ||= :writer
         logger.trace "Configuring (Receiver: #{receiver.inspect}, Category Name: #{category_name})"
         instance = build(category_name)
-        receiver.writer = instance
+
+        receiver.send attribute_name, instance
+
         logger.debug "Configured (Receiver: #{receiver.inspect}, Category Name: #{category_name})"
 
         instance
