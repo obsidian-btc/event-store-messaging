@@ -8,6 +8,7 @@ require 'dependency'; Dependency.activate
 require 'event_store'
 require 'event_store/client/http/vertx'
 
+require 'event_store/messaging/message/metadata'
 require 'event_store/messaging/message'
 require 'event_store/messaging/message/conversion/event_data'
 require 'event_store/messaging/message/conversion/stream_entry'

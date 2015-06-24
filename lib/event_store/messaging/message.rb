@@ -7,10 +7,17 @@ module EventStore
         cls.extend Build
       end
 
+      attr_writer :metadata
+      def metadata
+        @metadata ||= Metadata.new
+      end
+
+      # TODO Delegate to metadata [Scott, Tue Jun 23 2015]
       def message_type
         self.class.message_type
       end
 
+      # TODO Delegate to metadata [Scott, Tue Jun 23 2015]
       def message_name
         self.class.message_name
       end
@@ -44,6 +51,11 @@ module EventStore
       module Build
         def build(data=nil, metadata=nil)
           data ||= {}
+          metadata ||= {}
+
+          metadata[:type] = message_type
+          metadata[:name] = message_name
+
           metadata = build_metadata(metadata)
 
           new.tap do |instance|
@@ -67,36 +79,6 @@ module EventStore
             Metadata.build(metadata.to_h)
           end
         end
-      end
-
-      class Metadata
-        include Schema::DataStructure
-
-        attribute :id
-
-        attribute :source_stream
-
-        attribute :correlation_stream
-        # TODO Causation id need to be set to previous message id [Scott, Tue Jun 23 2015]
-        attribute :causation_stream
-        attribute :reply_stream
-        attribute :type
-        attribute :name
-
-        def type
-          puts "!!! WARN: type not implemented - it will be an attribute (Messsage::Metadata)"
-          # NOTE: Delegate from message instance interface
-        end
-
-        def name
-          puts "!!! WARN: name not implemented - it will be an attribute (Messsage::Metadata)"
-          # NOTE: Delegate from message instance interface
-        end
-      end
-
-      attr_writer :metadata
-      def metadata
-        @metadata ||= Metadata.new
       end
     end
   end

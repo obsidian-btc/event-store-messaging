@@ -15,13 +15,12 @@ describe "Message Metadata" do
     puts message.metadata.causation_stream
     puts message.metadata.reply_stream
 
-
-    puts message.message_type # => SomeMessage
-    puts message.message_name # => some_message
-
     # - - -
 
     puts message.metadata.type
     puts message.metadata.name
+
+    puts message.message_type # => SomeMessage
+    puts message.message_name # => some_message
   end
 end
