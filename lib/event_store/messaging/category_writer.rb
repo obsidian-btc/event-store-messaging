@@ -6,14 +6,14 @@ module EventStore
       dependency :writer, Client::HTTP::Vertx::Writer
       dependency :logger, Telemetry::Logger
 
-      def initialize(category_name=nil)
+      def initialize(category_name)
         @category_name = category_name
       end
 
-      def self.build(category_name=nil)
+      def self.build(category_name)
         logger.trace "Building (Category Name: #{category_name})"
         new(category_name).tap do |instance|
-          Client::HTTP::Vertx::Writer.configure instance, category_name
+          Client::HTTP::Vertx::Writer.configure instance
           Telemetry::Logger.configure instance
           logger.debug "Built (Category Name: #{category_name})"
         end
@@ -36,7 +36,6 @@ module EventStore
 
         stream_name = stream_name(id)
 
-        # TODO Put reply_stream in metadata [Scott, Thu Jun 25 2015]
         event_data = EventStore::Messaging::Message::Conversion::EventData.! message
 
         writer.write stream_name, event_data

@@ -1,42 +1,38 @@
 module EventStore
   module Messaging
     class Writer
-      attr_accessor :category_name
-
       dependency :writer, Client::HTTP::Vertx::Writer
       dependency :logger, Telemetry::Logger
 
-      def initialize(category_name=nil)
-        @category_name = category_name
-      end
-
-      def self.build(category_name=nil)
-        logger.trace "Building (Category Name: #{category_name})"
-        new(category_name).tap do |instance|
-          Client::HTTP::Vertx::Writer.configure instance, category_name
+      def self.build
+        logger.trace "Building"
+        new.tap do |instance|
+          Client::HTTP::Vertx::Writer.configure instance
           Telemetry::Logger.configure instance
-          logger.debug "Built (Category Name: #{category_name})"
+          logger.debug "Built"
         end
       end
 
       def self.configure(receiver)
-        attribute_name ||= :writer
-        logger.trace "Configuring (Receiver: #{receiver.inspect}, Category Name: #{category_name})"
+        logger.trace "Configuring (Receiver: #{receiver.inspect})"
 
-        instance = build(category_name)
+        instance = build
 
         receiver.writer = instance
 
-        logger.debug "Configured (Receiver: #{receiver.inspect}, Category Name: #{category_name})"
+        logger.debug "Configured (Receiver: #{receiver.inspect})"
 
         instance
       end
 
       def write(message, stream_name)
-        logger.trace "Writing (Message Type: #{message.message_type}, Category Name: #{category_name})"
+        logger.trace "Writing (Message Type: #{message.message_type})"
+
+        # TODO Put reply_stream in metadata [Scott, Thu Jun 25 2015]
         event_data = EventStore::Messaging::Message::Conversion::EventData.! message
+
         writer.write stream_name, event_data
-        logger.debug "Wrote (Message Type: #{message.message_type}, Category Name: #{category_name})"
+        logger.debug "Wrote (Message Type: #{message.message_type})"
 
         event_data
       end
