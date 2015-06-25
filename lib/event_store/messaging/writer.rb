@@ -32,11 +32,10 @@ module EventStore
         instance
       end
 
-      # TODO Remove nillability for stream ID [Scott, Tue Jun 23 2015]
-      def write(message, stream_id=nil)
+      def write(message, stream_name)
         logger.trace "Writing (Message Type: #{message.message_type}, Category Name: #{category_name})"
         event_data = EventStore::Messaging::Message::Conversion::EventData.! message
-        writer.! event_data
+        writer.write stream_name, event_data
         logger.debug "Wrote (Message Type: #{message.message_type}, Category Name: #{category_name})"
 
         event_data
@@ -55,8 +54,7 @@ module EventStore
           @messages ||= []
         end
 
-        # TODO Remove nillability for stream ID [Scott, Tue Jun 23 2015]
-        def write(msg, stream_id=nil)
+        def write(msg, stream_id)
           messages << msg
           msg
         end

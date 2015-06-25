@@ -3,8 +3,10 @@ require_relative 'client_integration_init'
 message = Fixtures.some_message
 message.some_attribute = 'some value'
 
-category_name ||= "someStream#{UUID.random.gsub('-', '')}"
+writer = EventStore::Messaging::Writer.build
 
-writer = EventStore::Messaging::Writer.build category_name
+category_name = "testWriter#{UUID.random.gsub('-', '')}"
 
-writer.write message
+stream_name = "#{category_name}-#{UUID.random}"
+
+writer.write message, stream_name
