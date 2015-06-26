@@ -14,12 +14,10 @@ module EventStore
         @metadata ||= Metadata.new
       end
 
-      # TODO Delegate to metadata [Scott, Tue Jun 23 2015]
       def message_type
         self.class.message_type
       end
 
-      # TODO Delegate to metadata [Scott, Tue Jun 23 2015]
       def message_name
         self.class.message_name
       end
