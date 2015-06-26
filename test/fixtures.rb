@@ -33,9 +33,9 @@ module Fixtures
   class OtherHandler
     include EventStore::Messaging::Handler
 
-    handle SomeEvent do |message, metadata|
+    handle SomeEvent do |message, stream_entry|
       message.handlers << self.class
-      metadata.data[:some_side_effect] = :effected
+      stream_entry.data[:some_side_effect] = :effected
     end
   end
 

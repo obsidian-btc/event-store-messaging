@@ -49,14 +49,13 @@ module EventStore
       end
 
       module Build
-        def build(data=nil, metadata=nil)
+        def build(data=nil, metadata=nil, &blk)
           data ||= {}
           metadata ||= {}
 
-          metadata[:type] = message_type
-          metadata[:name] = message_name
-
           metadata = build_metadata(metadata)
+
+          blk.call(metadata) if block_given?
 
           new.tap do |instance|
             set_attributes(instance, data)
@@ -65,6 +64,11 @@ module EventStore
         end
 
         def linked(metadata)
+          # Note: metadata should have been a named arg,
+          # but Ruby binds hashes strangely when the first
+          # arg is nilable and the second arg is a nilable
+          # named arg
+          # [Scott, Thu Jun 25 2015]
           build(nil, metadata)
         end
 

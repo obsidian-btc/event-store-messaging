@@ -6,35 +6,28 @@ module EventStore
       class Metadata
         include Schema::DataStructure
 
-        attribute :id
-
-        attribute :source_stream # from streamId in stream entry data
-        attribute :source_stream_id # from streamId in stream entry data
-
-        attribute :correlation_stream
-        attribute :correlation_stream_id
-
-        attribute :causation_stream # source stream of previous
-        attribute :causation_stream_id # source stream id of previous
+        attribute :event_id
+        attribute :source_stream_name # from streamId in stream entry data
+        attribute :correlation_stream_name
         attribute :causation_event_id
+        attribute :causation_stream_name # source stream of previous
+        attribute :reply_stream_name
 
-        attribute :reply_stream
-        attribute :reply_id
+        def source_stream_id
+          raise NotImplementedError
+        end
 
-#---
-# maybe
-        attribute :type
-        attribute :name
-#---
+        def correlation_stream_id
+          raise NotImplementedError
+        end
 
-        # def type
-        #   puts "!!! WARN: type not implemented - it will be an attribute (Messsage::Metadata)"
-        #   # NOTE: Delegate from message instance interface
-        # end
-        # def name
-        #   puts "!!! WARN: name not implemented - it will be an attribute (Messsage::Metadata)"
-        #   # NOTE: Delegate from message instance interface
-        # end
+        def causation_stream_id
+          raise NotImplementedError
+        end
+
+        def reply_stream_id
+          raise NotImplementedError
+        end
       end
     end
   end
