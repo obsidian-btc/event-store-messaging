@@ -1,6 +1,8 @@
 module EventStore
   module Messaging
     class Writer
+      class Error < StandardError; end
+
       dependency :writer, Client::HTTP::Vertx::Writer
       dependency :logger, Telemetry::Logger
 
@@ -25,16 +27,38 @@ module EventStore
         instance
       end
 
+      # TODO Reply to stream name semantics for the write method [Scott, Fri Jun 26 2015]
       def write(message, stream_name)
-        logger.trace "Writing (Message Type: #{message.message_type})"
+        logger.trace "Writing (Message Type: #{message.message_type}, Stream Name: #{stream_name})"
 
         # TODO Put reply_stream in metadata [Scott, Thu Jun 25 2015]
         event_data = EventStore::Messaging::Message::Conversion::EventData.! message
 
         writer.write stream_name, event_data
-        logger.debug "Wrote (Message Type: #{message.message_type})"
+        logger.debug "Wrote (Message Type: #{message.message_type}, Stream Name: #{stream_name})"
 
         event_data
+      end
+
+      def reply(message)
+        metadata = message.metadata
+        reply_stream_name = metadata.reply_stream_name
+
+        logger.trace "Replying (Message Type: #{message.message_type}, Stream Name: #{reply_stream_name})"
+
+        unless reply_stream_name
+          error_msg = "Message has no reply stream name. Cannot reply. (Message Type: #{message.message_type})"
+          logger.error error_msg
+          raise Error, error_msg
+        end
+
+        metadata.clear_reply_stream_name
+
+        write message, reply_stream_name
+
+        logger.debug "Replied (Message Type: #{message.message_type}, Stream Name: #{reply_stream_name})"
+
+        message
       end
 
       def self.logger
