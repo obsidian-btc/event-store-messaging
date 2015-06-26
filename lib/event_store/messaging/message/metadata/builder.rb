@@ -11,8 +11,9 @@ module EventStore
             @other_metadata ||= Metadata.new
           end
 
-          def reply
-            @reply ||= true
+          def reply?
+            @reply = true if @reply.nil?
+            @reply
           end
 
           def set(other_metadata)
@@ -34,6 +35,10 @@ module EventStore
               metadata.correlation_stream_name = initiated_stream_name
             else
               copy(metadata)
+            end
+
+            unless reply?
+              metadata.reply_stream_name = nil
             end
 
             metadata

@@ -1,6 +1,5 @@
 require_relative 'spec_init'
 
-# causation stream is the source stream of previous event
 # reply stream is set in the writer.write method
 
 describe "Metadata Builder" do
@@ -28,13 +27,9 @@ describe "Metadata Builder" do
   previous_metadata.causation_stream_name = causation_stream_name
   previous_metadata.reply_stream_name = reply_stream_name
 
-  builder = EventStore::Messaging::Message::Metadata::Builder.new
-
-    # builder.no_reply
-    # builder.initiate(source_stream_name)
-
-
   describe "Copying Metadata" do
+    builder = EventStore::Messaging::Message::Metadata::Builder.new
+
     builder.set(previous_metadata)
 
     metadata = builder.get
@@ -65,12 +60,14 @@ describe "Metadata Builder" do
   end
 
   describe "Initiating an Event Stream" do
-    builder.set(previous_metadata)
+    builder = EventStore::Messaging::Message::Metadata::Builder.new
 
     initiated_stream_id = UUID.random
     initiated_stream = "initiatedStream-#{initiated_stream_id}"
 
     builder.initiate_stream(initiated_stream)
+
+    builder.set(previous_metadata)
 
     metadata = builder.get
 
@@ -83,6 +80,26 @@ describe "Metadata Builder" do
 
     specify "Sets the correlation stream to the new stream name" do
       assert(metadata.correlation_stream_name == initiated_stream)
+    end
+  end
+
+  describe "No Reply" do
+    builder = EventStore::Messaging::Message::Metadata::Builder.new
+
+    builder.no_reply
+
+    builder.set(previous_metadata)
+
+    metadata = builder.get
+
+    specify "Clears the reply stream name" do
+      assert(metadata.reply_stream_name.nil?)
+    end
+
+    specify "Doesn't remove the other data" do
+      refute(metadata.causation_event_id.nil?)
+      refute(metadata.causation_stream_name.nil?)
+      refute(metadata.correlation_stream_name.nil?)
     end
   end
 end
