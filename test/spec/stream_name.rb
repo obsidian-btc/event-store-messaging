@@ -26,3 +26,13 @@ describe "Stream Name" do
     assert(stream_name == 'someCategory-some_id')
   end
 end
+
+describe "Stream ID" do
+  id = UUID.random
+  stream_name = "someStream-#{id}"
+
+  specify "Can be derived from the stream name" do
+    stream_id = EventStore::Messaging::StreamName.get_id stream_name
+    assert(stream_id == id)
+  end
+end
