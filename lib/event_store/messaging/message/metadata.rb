@@ -7,24 +7,24 @@ module EventStore
         include Schema::DataStructure
 
         attribute :event_id
+        attribute :source_stream_name # from streamId in stream entry data
+        attribute :correlation_stream_name
+        attribute :causation_event_id
+        attribute :causation_stream_name # source stream of previous
+        attribute :reply_stream_name
 
-        attribute :source_stream # from streamId in stream entry data
         def source_stream_id
           raise NotImplementedError
         end
 
-        attribute :correlation_stream
         def correlation_stream_id
           raise NotImplementedError
         end
 
-        attribute :causation_event_id
-        attribute :causation_stream # source stream of previous
         def causation_stream_id
           raise NotImplementedError
         end
 
-        attribute :reply_stream
         def reply_stream_id
           raise NotImplementedError
         end

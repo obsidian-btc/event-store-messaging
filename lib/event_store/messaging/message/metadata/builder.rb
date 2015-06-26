@@ -31,7 +31,7 @@ module EventStore
             metadata = Metadata.new
 
             if initiated?
-              metadata.correlation_stream = initiated_stream_name
+              metadata.correlation_stream_name = initiated_stream_name
             else
               copy(metadata)
             end
@@ -39,19 +39,11 @@ module EventStore
             metadata
           end
 
-          # def clear(metadata)
-          #   metadata.source_stream = nil
-          #   metadata.causation_event_id = nil
-          #   metadata.causation_stream = nil
-          #   metadata.reply_stream = nil
-          # end
-
           def copy(metadata)
-            data = other_metadata.to_h rescue {}
-
-            data.delete :event_id
-
-            SetAttributes.! metadata, data
+            metadata.causation_event_id = other_metadata.event_id
+            metadata.causation_stream_name = other_metadata.source_stream_name
+            metadata.correlation_stream_name = other_metadata.correlation_stream_name
+            metadata.reply_stream_name = other_metadata.reply_stream_name
 
             metadata
           end
