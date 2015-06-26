@@ -40,5 +40,4 @@ describe "Stream ID" do
     stream_id = EventStore::Messaging::StreamName.get_id 'someStream'
     assert(stream_id.nil?)
   end
-
 end

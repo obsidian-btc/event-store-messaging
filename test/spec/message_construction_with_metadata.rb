@@ -1,14 +1,12 @@
 require_relative 'spec_init'
 
-describe "Metadata Builder" do
+describe "Message Construction with Metadata" do
   previous_metadata = Fixtures::Metadata.metadata
 
-  describe "Copying Metadata" do
-    builder = EventStore::Messaging::Message::Metadata::Builder.new
+  describe "Linked message copies metadata" do
+    msg = Fixtures::SomeMessage.linked previous_metadata
 
-    builder.copy(previous_metadata)
-
-    metadata = builder.get
+    metadata = msg.metadata
 
     specify "Sets the causation event ID to the previous event ID" do
       assert(metadata.causation_event_id == previous_metadata.event_id)
@@ -36,46 +34,21 @@ describe "Metadata Builder" do
   end
 
   describe "Initiating an Event Stream" do
-    builder = EventStore::Messaging::Message::Metadata::Builder.new
+    initiated_stream_name = Fixtures::Metadata.source_stream_name
 
-    initiated_stream_id = UUID.random
-    initiated_stream_name = "initiatedStream-#{initiated_stream_id}"
+    msg = Fixtures::SomeMessage.initial initiated_stream_name
 
-    builder.initiate_stream(initiated_stream_name)
-
-    builder.copy(previous_metadata)
-
-    metadata = builder.get
-
-    specify "Clears all data except for the correlation stream" do
-      assert(metadata.source_stream_name.nil?)
-      assert(metadata.causation_event_id.nil?)
-      assert(metadata.causation_stream_name.nil?)
-      assert(metadata.reply_stream_name.nil?)
-    end
+    metadata = msg.metadata
 
     specify "Sets the correlation stream to the new stream name" do
       assert(metadata.correlation_stream_name == initiated_stream_name)
     end
-  end
 
-  describe "No Reply" do
-    builder = EventStore::Messaging::Message::Metadata::Builder.new
-
-    builder.no_reply
-
-    builder.copy(previous_metadata)
-
-    metadata = builder.get
-
-    specify "Clears the reply stream name" do
+    specify "Leaves the reset of the metadata empty" do
+      assert(metadata.source_stream_name.nil?)
+      assert(metadata.causation_event_id.nil?)
+      assert(metadata.causation_stream_name.nil?)
       assert(metadata.reply_stream_name.nil?)
-    end
-
-    specify "Doesn't remove the other data" do
-      refute(metadata.causation_event_id.nil?)
-      refute(metadata.causation_stream_name.nil?)
-      refute(metadata.correlation_stream_name.nil?)
     end
   end
 end

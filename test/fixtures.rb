@@ -130,6 +130,64 @@ module Fixtures
     EventStore::Stream::Entry.build stream_entry_data
   end
 
+  module Metadata
+    def self.uuid
+      UUID.random
+    end
+
+    def self.event_id
+      uuid
+    end
+
+    def self.source_stream_id
+      uuid
+    end
+
+    def self.source_stream_name
+      "sourceStream-#{source_stream_id}"
+    end
+
+    def self.correlation_stream_id
+      uuid
+    end
+
+    def self.correlation_stream_name
+      "correlationStream-#{correlation_stream_id}"
+    end
+
+    def self.causation_event_id
+      uuid
+    end
+
+    def self.causation_stream_id
+      uuid
+    end
+
+    def self.causation_stream_name
+      "causationStream-#{causation_stream_id}"
+    end
+
+    def self.reply_stream_id
+      uuid
+    end
+
+    def self.reply_stream_name
+      "replyStream-#{reply_stream_id}"
+    end
+
+    def self.metadata
+      metadata = EventStore::Messaging::Message::Metadata.new
+      metadata.event_id = event_id
+      metadata.source_stream_name = source_stream_name
+      metadata.correlation_stream_name = correlation_stream_name
+      metadata.causation_event_id = causation_event_id
+      metadata.causation_stream_name = causation_stream_name
+      metadata.reply_stream_name = reply_stream_name
+
+      metadata
+    end
+  end
+
   module Anomalies
     class SomeHandler
       include EventStore::Messaging::Handler

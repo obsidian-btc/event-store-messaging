@@ -16,7 +16,7 @@ module EventStore
             @reply
           end
 
-          def set(other_metadata)
+          def copy(other_metadata)
             self.other_metadata = other_metadata
           end
 
@@ -34,7 +34,7 @@ module EventStore
             if initiated?
               metadata.correlation_stream_name = initiated_stream_name
             else
-              copy(metadata)
+              copy_data(metadata)
             end
 
             unless reply?
@@ -44,7 +44,7 @@ module EventStore
             metadata
           end
 
-          def copy(metadata)
+          def copy_data(metadata)
             metadata.causation_event_id = other_metadata.event_id
             metadata.causation_stream_name = other_metadata.source_stream_name
             metadata.correlation_stream_name = other_metadata.correlation_stream_name

@@ -5,6 +5,8 @@ module EventStore
         cls.send :include, Schema::DataStructure
         cls.extend Info
         cls.extend Build
+        cls.extend Linked
+        cls.extend Initial
       end
 
       attr_writer :metadata
@@ -49,27 +51,16 @@ module EventStore
       end
 
       module Build
-        def build(data=nil, metadata=nil, &blk)
+        def build(data=nil, metadata=nil)
           data ||= {}
           metadata ||= {}
 
           metadata = build_metadata(metadata)
 
-          blk.call(metadata) if block_given?
-
           new.tap do |instance|
             set_attributes(instance, data)
             instance.metadata = metadata
           end
-        end
-
-        def linked(metadata)
-          # Note: metadata should have been a named arg,
-          # but Ruby binds hashes strangely when the first
-          # arg is nilable and the second arg is a nilable
-          # named arg
-          # [Scott, Thu Jun 25 2015]
-          build(nil, metadata)
         end
 
         def set_attributes(instance, data)
@@ -82,6 +73,32 @@ module EventStore
           else
             Metadata.build(metadata.to_h)
           end
+        end
+      end
+
+      module Linked
+        def linked(metadata)
+          metadata = copy_metadata(metadata)
+          build(nil, metadata)
+        end
+
+        def copy_metadata(other_metadata)
+          metadata = Metadata.new
+
+          metadata.causation_event_id = other_metadata.event_id
+          metadata.causation_stream_name = other_metadata.source_stream_name
+          metadata.correlation_stream_name = other_metadata.correlation_stream_name
+          metadata.reply_stream_name = other_metadata.reply_stream_name
+
+          metadata
+        end
+      end
+
+      module Initial
+        def initial(initiated_stream_name)
+          metadata = Metadata.new
+          metadata.correlation_stream_name = initiated_stream_name
+          build(nil, metadata)
         end
       end
     end
