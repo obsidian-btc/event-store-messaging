@@ -9,13 +9,14 @@ module EventStore
         attribute :id
 
         attribute :source_stream # from streamId in stream entry data
-        attribute :source_id # from streamId in stream entry data
+        attribute :source_stream_id # from streamId in stream entry data
 
         attribute :correlation_stream
-        attribute :correlation_id
+        attribute :correlation_stream_id
 
-        attribute :causation_stream
-        attribute :causation_id
+        attribute :causation_stream # source stream of previous
+        attribute :causation_stream_id # source stream id of previous
+        attribute :causation_event_id
 
         attribute :reply_stream
         attribute :reply_id
