@@ -68,17 +68,28 @@ module EventStore
       end
 
       class Substitute
+        attr_accessor :writer
+
         def self.build
-          new
+          new.tap do |instance|
+            instance.writer = EventStore::Messaging::Writer.new
+          end
         end
 
         def messages
           @messages ||= []
         end
 
-        def write(msg, stream_id)
-          messages << msg
-          msg
+        def write(msg, stream_id, reply_stream_name: nil)
+          writer.write(msg, stream_id, reply_stream_name: reply_stream_name).tap do
+            messages << msg
+          end
+        end
+
+        def reply(msg)
+          result = writer.reply(msg).tap do
+            messages << msg
+          end
         end
 
         def written?(msg)
