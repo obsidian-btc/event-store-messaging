@@ -29,7 +29,8 @@ describe "Convert message to event data" do
       correlation_stream_name: metadata.correlation_stream_name,
       causation_event_id: metadata.causation_event_id,
       causation_stream_name: metadata.causation_stream_name,
-      reply_stream_name: metadata.reply_stream_name
+      reply_stream_name: metadata.reply_stream_name,
+      version: metadata.version
     }
 
     assert(event_data.metadata == compare_data)

@@ -10,6 +10,7 @@ module EventStore
         attribute :causation_event_id
         attribute :causation_stream_name
         attribute :reply_stream_name
+        attribute :version
 
         def clear_reply_stream_name
           self.reply_stream_name = nil

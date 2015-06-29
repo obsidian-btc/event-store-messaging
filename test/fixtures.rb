@@ -181,6 +181,10 @@ module Fixtures
       "replyStream-#{reply_stream_id}"
     end
 
+    def self.version
+      -1
+    end
+
     def self.metadata
       metadata = EventStore::Messaging::Message::Metadata.new
       metadata.event_id = event_id
@@ -189,6 +193,7 @@ module Fixtures
       metadata.causation_event_id = causation_event_id
       metadata.causation_stream_name = causation_stream_name
       metadata.reply_stream_name = reply_stream_name
+      metadata.version = version
 
       metadata
     end
