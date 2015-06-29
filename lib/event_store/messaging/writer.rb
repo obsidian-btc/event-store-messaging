@@ -27,8 +27,12 @@ module EventStore
         instance
       end
 
-      def write(message, stream_name)
+      def write(message, stream_name, reply_stream_name: nil)
         logger.trace "Writing (Message Type: #{message.message_type}, Stream Name: #{stream_name})"
+
+        if reply_stream_name
+          message.metadata.reply_stream_name = reply_stream_name
+        end
 
         event_data = EventStore::Messaging::Message::Conversion::EventData.! message
 
