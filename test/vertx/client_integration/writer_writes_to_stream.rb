@@ -1,6 +1,6 @@
 require_relative 'client_integration_init'
 
-message = Fixtures.some_message
+message = Fixtures.some_message_with_metadata
 message.some_attribute = 'some value'
 
 writer = EventStore::Messaging::Writer.build

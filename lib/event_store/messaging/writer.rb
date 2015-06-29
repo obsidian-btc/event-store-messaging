@@ -27,11 +27,9 @@ module EventStore
         instance
       end
 
-      # TODO Reply to stream name semantics for the write method [Scott, Fri Jun 26 2015]
       def write(message, stream_name)
         logger.trace "Writing (Message Type: #{message.message_type}, Stream Name: #{stream_name})"
 
-        # TODO Put reply_stream in metadata [Scott, Thu Jun 25 2015]
         event_data = EventStore::Messaging::Message::Conversion::EventData.! message
 
         writer.write stream_name, event_data
