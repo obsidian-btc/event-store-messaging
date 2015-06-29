@@ -103,6 +103,12 @@ module Fixtures
     SomeMessage.new
   end
 
+  def self.some_message_with_metadata
+    message = SomeMessage.new
+    message.metadata = Metadata.metadata
+    message
+  end
+
   def self.some_other_message
     SomeOtherMessage.new
   end
