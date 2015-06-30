@@ -25,6 +25,11 @@ describe "Stream Name" do
     stream_name = example.stream_name('some_id')
     assert(stream_name == 'someCategory-some_id')
   end
+
+  specify "Composes the command stream name from the category name and an ID" do
+    command_stream_name = example.command_stream_name('some_id')
+    assert(command_stream_name == 'someCategory:command-some_id')
+  end
 end
 
 describe "Stream ID" do
