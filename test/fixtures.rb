@@ -128,6 +128,14 @@ module Fixtures
       updated: '2015-06-08T04:37:01.066935Z',
       data: {
         some_attribute: 'some value'
+      },
+      metadata: {
+        source_stream_name: 'some_source_stream',
+        correlation_stream_name: 'some_correlation_stream',
+        causation_event_id: 'some_causation_event_id',
+        causation_stream_name: 'some_causation_stream',
+        reply_stream_name: 'some_reply_stream',
+        version: -1
       }
     }
   end
