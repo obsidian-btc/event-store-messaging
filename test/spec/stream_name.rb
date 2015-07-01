@@ -32,6 +32,32 @@ describe "Stream Name" do
   end
 end
 
+describe "Category Stream Name (Mixin)" do
+  example = Fixtures::StreamName.example
+
+  specify "Composes the category stream name from the declared category name" do
+    category_stream_name = example.category_stream_name
+    assert(category_stream_name == '$ce-someCategory')
+  end
+
+  specify "Composes the category command stream name from the declared category name" do
+    command_category_stream_name = example.command_category_stream_name
+    assert(command_category_stream_name == '$ce-someCategory:command')
+  end
+end
+
+describe "Category Stream Name (Module Function)" do
+  specify "Composes the category stream name from the declared category name" do
+    category_stream_name = EventStore::Messaging::StreamName.category_stream_name('someCategory')
+    assert(category_stream_name == '$ce-someCategory')
+  end
+
+  specify "Composes the category command stream name from the declared category name" do
+    command_category_stream_name = EventStore::Messaging::StreamName.command_category_stream_name('someCategory')
+    assert(command_category_stream_name == '$ce-someCategory:command')
+  end
+end
+
 describe "Stream ID" do
   specify "Can be derived from the stream name" do
     id = UUID.random

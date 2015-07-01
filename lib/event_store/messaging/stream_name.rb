@@ -1,6 +1,7 @@
 module EventStore
   module Messaging
     module StreamName
+      extend self
       def self.included(cls)
         cls.extend Macro
       end
@@ -27,6 +28,16 @@ module EventStore
 
       def command_stream_name(id)
         "#{category_name}:command-#{id}"
+      end
+
+      def category_stream_name(category_name=nil)
+        category_name ||= self.category_name
+        "$ce-#{category_name}"
+      end
+
+      def command_category_stream_name(category_name=nil)
+        category_name ||= self.category_name
+        "$ce-#{category_name}:command"
       end
 
       def self.get_id(stream_name)
