@@ -9,7 +9,7 @@ module EventStore
 
           def self.!(msg)
             logger.trace "Converting message to event data (Message Type: #{msg.message_type})"
-            event_data = EventStore::EventData.build
+            event_data = EventStore::Client::HTTP::EventData.build
 
             event_data.assign_id
 

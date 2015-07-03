@@ -141,7 +141,7 @@ module Fixtures
   end
 
   def self.stream_entry
-    EventStore::Stream::Entry.build stream_entry_data
+    EventStore::Client::HTTP::Stream::Entry.build stream_entry_data
   end
 
   module Metadata
@@ -227,7 +227,7 @@ module Fixtures
     end
 
     def self.stream_entry
-      EventStore::Stream::Entry.build stream_entry_data
+      EventStore::Client::HTTP::Stream::Entry.build stream_entry_data
     end
   end
 end
