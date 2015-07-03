@@ -5,7 +5,6 @@ require 'inclusion'
 require 'virtual'; Virtual.activate
 require 'dependency'; Dependency.activate
 
-require 'event_store'
 require 'event_store/client/http/vertx'
 
 require 'event_store/messaging/message/metadata'
