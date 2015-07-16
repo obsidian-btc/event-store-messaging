@@ -57,3 +57,27 @@ The remaining attributes are assigned when the message is written:
 - source_stream_name (the stream name to which the event/message is written)
 - reply_stream_name (the stream name to which a command should reply when the command has been executed, if needed)
 - version
+
+
+## Building a Message Object
+
+A message object serves two main purposes:
+
+1. Provided a data schema for passing data
+2. Tracking metadata
+
+### Using the `build` Method
+
+If the message is purely being used for the provided data schema and will not be sent on, the message can be built using the basic build method:
+
+```
+data = {
+  some_attribute: 'some value',
+  some_other_attribute: 'some other value',
+  some_other_data: 'some other data'
+}
+
+message = Messages::SomeMessage.build(data: data)
+```
+
+One potential use case for this is filtering out extraneous data from an incoming http request. Metadata values are not set using this method.
