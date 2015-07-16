@@ -70,7 +70,7 @@ A message object serves two main purposes:
 
 If the message is purely being used for the provided data schema and will not be sent on, the message can be built using the basic build method:
 
-```
+```ruby
 data = {
   some_attribute: 'some value',
   some_other_attribute: 'some other value',
@@ -80,4 +80,18 @@ data = {
 message = Messages::SomeMessage.build(data: data)
 ```
 
-One potential use case for this is filtering out extraneous data from an incoming http request. Metadata values are not set using this method.
+One potential use case for this is filtering out extraneous data from an incoming http request. The `metadata` values are not set using this method.
+
+
+### Using the `initial` Method
+
+The first message object for a process is built by using the `initial` method and passing in the correlation stream name for the overarching process.
+
+```ruby
+some_process_id = uuid.get
+correlation_stream_name = 'someProcess-#{some_process_id}'
+
+message = Messages::SomeMessage.initial correlation_stream_name
+```
+
+In this case, the correlation_stream_name would be set to the process stream name that is being passed in. The causation_event_id and causation_stream_name would not be set, as it is the first message in this process.
