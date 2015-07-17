@@ -39,7 +39,7 @@ message.to_h[:some_other_attribute] == 'some_other_value'
 
 ### Message Info
 
-Given a message, you can determine the message type and/or the message name:
+Given a message, you can determine the message type (the class name of the message) and the message name (the snake case version of the class name):
 
 ```ruby
 message = Messages::SomeMessage.new
@@ -66,7 +66,7 @@ The remaining attributes are assigned when the message is written:
 - event_id (the id of the event/message in EventStore)
 - source_stream_name (the stream name to which the event/message is written)
 - reply_stream_name (the stream name to which a command should reply when the command has been executed, if needed)
-- version
+- version (this is the EventStore version number for the stream being written to)
 
 
 ## Building a Message Object
@@ -117,3 +117,17 @@ metadata = message.metadata
 another_message = Messages::AnotherMessage.linked(metadata)
 ```
 
+## Writing a Message to EventStore
+
+To write a message to EventStore, use an instance of the EventStore::Messaging::Writer class.
+
+```ruby
+writer = EventStore::Messaging::Writer.new
+
+message = Messages::SomeMessage.new
+
+some_process_id = uuid.get
+stream_name = 'someProcess-#{some_process_id}'
+
+writer.write message, stream_name
+```
