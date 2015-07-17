@@ -53,11 +53,11 @@ message.message_name
 
 ### Message Metadata
 
-In addition to structure and messaging capabilities, this also provides each message class with a `metadata` attribute. **The `metadata` attribute is not something that should be edited directly. Rather, it is created automically when the message is built.**
+Including the EventStore::Messaging::Message module within a message class also provides each message with a `metadata` attribute. **The `metadata` attribute is not something that should be edited directly. Rather, it is created with the relevant when the message is built and updated when the message is written.**
 
-EventStore::Messaging::Message::Metadata is a class with specified attributes. The following attributes are assigned when a message is built, based on the information provided:
+The `metadata` attribute is an instance of the EventStore::Messaging::Message::Metadata class. The following `metadata` attributes are assigned when a message is built, based on the information provided:
 
-- correlation_stream_name (the stream name of the correlating process coordinating this succession of messages)
+- correlation_stream_name (the stream name of the correlating process coordinating this set of messages)
 - causation_event_id (the id of the specific event/message that initiated the creation of the current message, if there was a causation event)
 - causation_stream_name (the stream name to which the causation event was written, if there was a causation event)
 
@@ -76,9 +76,9 @@ A message object serves two main purposes:
 1. Provided a data schema for passing data
 2. Tracking metadata
 
-### Using the `build` Method
+### Building a Message for Data Schema Use
 
-If the message is purely being used for the provided data schema and will not be sent on, the message can be built using the basic build method:
+If the message is purely being used for the provided data schema and will not be sent on, the message can be built using the `build` method:
 
 ```ruby
 data = {
@@ -93,7 +93,7 @@ message = Messages::SomeMessage.build(data: data)
 One potential use case for this is filtering out extraneous data from an incoming http request. The `metadata` values are not set using this method.
 
 
-### Using the `initial` Method
+### Building the First Message in a Process
 
 The first message object for a process is built by using the `initial` method and passing in the correlation stream name for the overarching process.
 
@@ -101,7 +101,19 @@ The first message object for a process is built by using the `initial` method an
 some_process_id = uuid.get
 correlation_stream_name = 'someProcess-#{some_process_id}'
 
-message = Messages::SomeMessage.initial correlation_stream_name
+message = Messages::SomeMessage.initial(correlation_stream_name)
 ```
 
 In this case, the correlation_stream_name would be set to the process stream name that is being passed in. The causation_event_id and causation_stream_name would not be set, as it is the first message in this process.
+
+
+### Building Subsequent Messages in a Process
+
+Any additional message for a process is built by using the `linked` method and passing in the metadata from the previous message:
+
+```ruby
+metadata = message.metadata
+
+another_message = Messages::AnotherMessage.linked(metadata)
+```
+
