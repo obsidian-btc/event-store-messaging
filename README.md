@@ -2,7 +2,7 @@
 
 ## Creating a Message Class
 
-A message class should sit within a Messages namespace and include the EventStore::Messaging::Message module. Any data that a message includes is written as an attribute in the class:
+A message class should sit within a Messages namespace and include the EventStore::Messaging::Message module. Any message data is defined as an attribute in the class:
 
 ```ruby
 module Messages
@@ -39,7 +39,17 @@ message.to_h[:some_other_attribute] == 'some_other_value'
 
 ### Message Info
 
+Given a message, you can determine the message type and/or the message name:
 
+```ruby
+message = Messages::SomeMessage.new
+
+message.message_type
+# => SomeMessage
+
+message.message_name
+# => some_message
+```
 
 ### Message Metadata
 
