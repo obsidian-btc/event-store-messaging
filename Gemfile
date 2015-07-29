@@ -13,7 +13,7 @@ prox_gem 'settings'
 prox_gem 'set_attributes'
 prox_gem 'virtual'
 prox_gem 'casing'
-prox_gem 'event_store_client_http_vertx'
+prox_gem 'event_store_client_http'
 
 source 'https://rubygems.org'
 
