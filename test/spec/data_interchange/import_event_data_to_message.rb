@@ -15,6 +15,7 @@ describe "Import Event Data to Message" do
     specify "Some Attribute" do
       assert(message.some_attribute == event_data.data[:some_attribute])
     end
+
     specify "Some Time" do
       assert(message.some_time == event_data.data[:some_time])
     end
@@ -23,12 +24,16 @@ describe "Import Event Data to Message" do
   describe "Message metadata is the event metadata" do
     metadata = message.metadata
 
-    specify "Correlation Stream Name" do
-      assert(metadata.correlation_stream_name == event_data.metadata[:correlation_stream_name])
+    specify "Source Event URI" do
+      assert(metadata.causation_event_uri == event_data.metadata[:causation_event_uri])
     end
 
     specify "Causation Event URI" do
       assert(metadata.causation_event_uri == event_data.metadata[:causation_event_uri])
+    end
+
+    specify "Correlation Stream Name" do
+      assert(metadata.correlation_stream_name == event_data.metadata[:correlation_stream_name])
     end
 
     specify "Reply Stream Name" do

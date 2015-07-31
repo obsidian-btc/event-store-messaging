@@ -34,6 +34,16 @@ module EventStore
 
             EventStore::Client::HTTP::EventData::Read.build data
           end
+
+          module Anomaly
+            def self.data
+              Read.data type: 'SomeUnknownMessage'
+            end
+
+            def self.example
+              EventStore::Client::HTTP::EventData::Read.build data
+            end
+          end
         end
       end
     end

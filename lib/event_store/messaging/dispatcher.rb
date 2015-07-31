@@ -5,7 +5,7 @@ module EventStore
         cls.extend Macro
         cls.extend MessageRegistry
         cls.extend HandlerRegistry
-        cls.extend Deserialize
+        cls.extend BuildMessage
         cls.extend Build
       end
 
@@ -50,35 +50,40 @@ module EventStore
         end
       end
 
-      module Deserialize
-        class Error < StandardError; end
+      module BuildMessage
+        def build_message(event_data)
+          type = event_data.type
+          message_class = message_registry.get(type)
 
-        def deserialize(stream_entry)
-          entry_type = stream_entry.type
-          msg_class = message_registry.get(entry_type)
-
-          msg = nil
-          if msg_class
-            msg_data = stream_entry.data
-            raise Error, "No data in stream entry: #{stream_entry.inspect}" unless msg_data
-
-            metadata = stream_entry.metadata
-
-            msg = msg_class.build(msg_data, metadata)
+          message = nil
+          if !!message_class
+            message = Message::Import::EventData.! event_data, message_class
           end
 
-          return msg
+          return message
+        end
+      end
+
+      def handlers
+        self.class.handler_registry
+      end
+
+      def register_handler(handler_class)
+        self.class.handler_registry.register(handler_class)
+      end
+
+      def build_message(entry_data)
+        self.class.build_message(entry_data)
+      end
+
+      def dispatch(message, metadata)
+        handlers.get(message).each do |handler_class|
+          handler_class.! message, metadata
         end
       end
 
       class Substitute
-        include Dispatcher
-
-        def self.build
-          new
-        end
-
-        def deserialize(entry_data)
+        def build_message(event_data)
           substitute_msg = Object.new.extend(EventStore::Messaging::Message)
           stream_entry = Stream::Entry.build(entry_data)
           return substitute_msg, stream_entry
@@ -97,24 +102,6 @@ module EventStore
           dispatches.any? do |record|
             record.stream_entry.data == entry_data
           end
-        end
-      end
-
-      def handlers
-        self.class.handler_registry
-      end
-
-      def register_handler(handler_class)
-        self.class.handler_registry.register(handler_class)
-      end
-
-      def deserialize(entry_data)
-        self.class.deserialize(entry_data)
-      end
-
-      def dispatch(message, metadata)
-        handlers.get(message).each do |handler_class|
-          handler_class.! message, metadata
         end
       end
     end

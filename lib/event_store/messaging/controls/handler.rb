@@ -11,6 +11,18 @@ module EventStore
           end
         end
 
+        class OtherHandler < SomeHandler
+        end
+
+        class AnotherHandler
+          include EventStore::Messaging::Handler
+          include EventStore::Messaging::Controls::Message
+
+          handle AnotherMessage do |message|
+            Telemetry::Logger.get(self).data message.inspect
+          end
+        end
+
         class HandlesHandledMessage
           include EventStore::Messaging::Handler
           include EventStore::Messaging::Controls::Message

@@ -1,9 +1,9 @@
-require_relative 'spec_init'
+require_relative 'dispatcher_init'
 
 describe "Dispatcher" do
   it "Determines handlers that it can dispatch a message to" do
-    dispatcher = Fixtures.dispatcher
-    message = Fixtures.message
+    dispatcher = EventStore::Messaging::Controls::Dispatcher.example
+    message = EventStore::Messaging::Controls::Message.example
 
     handler_classes = dispatcher.handlers.get(message)
 
