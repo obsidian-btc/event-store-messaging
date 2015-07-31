@@ -6,19 +6,19 @@ module EventStore
           include EventStore::Messaging::Handler
           include EventStore::Messaging::Controls::Message
 
+          handle SomeMessage do |message|
+            Telemetry::Logger.get(self).data message.inspect
+          end
+        end
+
+        class HandlesHandledMessage
+          include EventStore::Messaging::Handler
+          include EventStore::Messaging::Controls::Message
+
           handle HandledMessage do |message|
             message.handlers << self.class
           end
         end
-
-        # class HandlesHandledMessage
-        #   include EventStore::Messaging::Handler
-        #   include EventStore::Messaging::Controls::Message
-
-        #   handle HandledMessage do |message|
-        #     message.handlers << self.class
-        #   end
-        # end
 
         def self.example
           SomeHandler.new
