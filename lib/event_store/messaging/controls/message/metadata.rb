@@ -40,6 +40,12 @@ module EventStore
             EventStore::Messaging::Message::Metadata.build data
           end
 
+          module Empty
+            def self.example
+              EventStore::Messaging::Message::Metadata.build {}
+            end
+          end
+
           module JSON
             def self.data
               {

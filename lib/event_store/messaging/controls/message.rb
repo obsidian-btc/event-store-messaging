@@ -24,12 +24,14 @@ module EventStore
           }
         end
 
-        def self.example(time=nil)
+        def self.example(time=nil, metadata: nil)
+          time ||= time(time)
+          metadata ||= EventStore::Messaging::Controls::Message::Metadata.example
+
           msg = SomeMessage.new
           msg.some_attribute = attribute
-          msg.some_time = time(time)
+          msg.some_time = time
 
-          metadata = EventStore::Messaging::Controls::Message::Metadata.example
           msg.metadata = metadata
 
           msg
