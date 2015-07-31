@@ -9,6 +9,10 @@ module EventStore
           attribute :some_time
         end
 
+        def self.message_class
+          SomeMessage
+        end
+
         def self.attribute
           'some value'
         end

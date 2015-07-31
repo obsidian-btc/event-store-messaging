@@ -1,39 +1,41 @@
-module EventStore
-  module Messaging
-    module Message
-      module Conversion
-        module EventData
-          def self.logger
-            @logger ||= Telemetry::Logger.get self
-          end
+# TODO Remove (obsolete) [Scott, Thu Jul 30 2015]
 
-          def self.!(msg)
-            logger.trace "Converting message to event data (Message Type: #{msg.message_type})"
-            event_data = EventStore::Client::HTTP::EventData::Write.build
+# module EventStore
+#   module Messaging
+#     module Message
+#       module Conversion
+#         module EventData
+#           def self.logger
+#             @logger ||= Telemetry::Logger.get self
+#           end
 
-            event_data.assign_id
+#           def self.!(msg)
+#             logger.trace "Converting message to event data (Message Type: #{msg.message_type})"
+#             event_data = EventStore::Client::HTTP::EventData::Write.build
 
-            event_data.type = msg.message_type
-            event_data.data = msg.to_h
-            event_data.metadata = Metadata.! msg.metadata
+#             event_data.assign_id
 
-            logger.debug "Converted message to event data (Message Type: #{msg.message_type})"
+#             event_data.type = msg.message_type
+#             event_data.data = msg.to_h
+#             event_data.metadata = Metadata.! msg.metadata
 
-            event_data
-          end
+#             logger.debug "Converted message to event data (Message Type: #{msg.message_type})"
 
-          module Metadata
-            def self.!(metadata)
-              data = metadata.to_h
-              data.delete :event_id
+#             event_data
+#           end
 
-              data.delete_if { |k, v| v.nil? }
+#           module Metadata
+#             def self.!(metadata)
+#               data = metadata.to_h
+#               data.delete :event_id
 
-              data
-            end
-          end
-        end
-      end
-    end
-  end
-end
+#               data.delete_if { |k, v| v.nil? }
+
+#               data
+#             end
+#           end
+#         end
+#       end
+#     end
+#   end
+# end
