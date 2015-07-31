@@ -32,6 +32,15 @@ module EventStore
           end
         end
 
+        class ChangesEventData
+          include EventStore::Messaging::Handler
+          include EventStore::Messaging::Controls::Message
+
+          handle SomeMessage do |message, event_data|
+            event_data.data[:some_side_effect] = 1
+          end
+        end
+
         class ConfiguredHandler
           include EventStore::Messaging::Handler
 
