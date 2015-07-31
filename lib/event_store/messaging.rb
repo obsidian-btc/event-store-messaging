@@ -9,7 +9,6 @@ require 'event_store/client/http'
 
 require 'event_store/messaging/message/metadata'
 require 'event_store/messaging/message'
-require 'event_store/messaging/message/conversion/event_data'
 require 'event_store/messaging/registry'
 require 'event_store/messaging/message_registry'
 require 'event_store/messaging/handler'
