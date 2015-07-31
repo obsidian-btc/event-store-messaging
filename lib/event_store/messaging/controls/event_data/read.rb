@@ -17,10 +17,7 @@ module EventStore
               'number' => number,
               'stream_name' => stream_name,
               'created_time' => reference_time,
-              'data' => {
-                'someAttribute' => 'some value',
-                'someTime' => time
-              },
+              'data' => Controls::Message.data,
               'metadata' => metadata,
               'links' => [
                 {
@@ -33,8 +30,6 @@ module EventStore
 
           def self.example
             data = data()
-
-            data['metadata'] = EventStore::Messaging::Message::Metadata.build data['metadata']
             data['links'] = EventStore::Client::HTTP::EventData::Read::Links.build data['links']
 
             EventStore::Client::HTTP::EventData::Read.build data
