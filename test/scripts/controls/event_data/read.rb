@@ -1,6 +1,6 @@
-require_relative './event_data_init'
+# require_relative './event_data_init'
 
-subject = EventStore::Messaging::Controls::EventData::Read
+# subject = EventStore::Messaging::Controls::EventData::Read
 
-Controls.output subject, :data
-Controls.output subject, :example
+# Controls.output subject, :data
+# Controls.output subject, :example
