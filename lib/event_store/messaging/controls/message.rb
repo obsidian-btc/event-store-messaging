@@ -9,6 +9,23 @@ module EventStore
           attribute :some_time
         end
 
+        class HandledMessage
+          include EventStore::Messaging::Message
+
+          attribute :handlers, Array, default: [], lazy: true
+
+          def handler?(handler)
+            handler_name = handler if handler.instance_of? String
+            handler_name ||= handler.name if handler.instance_of? Class
+
+            handlers.any? { |handler_class| handler_class.name.end_with? handler_name }
+          end
+
+          def handled?
+            handlers.length > 0
+          end
+        end
+
         def self.message_class
           SomeMessage
         end

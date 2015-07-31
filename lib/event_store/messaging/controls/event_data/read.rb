@@ -3,7 +3,7 @@ module EventStore
     module Controls
       module EventData
         module Read
-          def self.data(number=nil, time: nil, stream_name: nil, metadata: nil, type: type)
+          def self.data(number=nil, time: nil, stream_name: nil, metadata: nil, type: nil)
             reference_time = ::Controls::Time.reference
 
             number ||= 0
