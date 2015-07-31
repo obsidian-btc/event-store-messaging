@@ -20,6 +20,16 @@ module EventStore
           end
         end
 
+        class ConfiguredHandler
+          include EventStore::Messaging::Handler
+
+          attr_accessor :configured_dependencies
+
+          def configure_dependencies
+            self.configured_dependencies = true
+          end
+        end
+
         def self.example
           SomeHandler.new
         end
