@@ -9,6 +9,8 @@ require_relative './fixtures.rb'
 require 'runner'
 require 'fixture'
 
+require 'event_store/messaging/controls'
+
 TestLogger = Telemetry::Logger.get 'Test Output'
 
 def logger(name)

@@ -2,7 +2,7 @@ module EventStore
   module Messaging
     module StreamName
       extend self
-      include EventStore::Client::HTTP::Stream::Name
+      include EventStore::Client::StreamName
 
       def self.included(cls)
         cls.extend Macro

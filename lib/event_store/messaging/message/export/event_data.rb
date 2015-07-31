@@ -1,23 +1,24 @@
 module EventStore
   module Messaging
     module Message
-      module Conversion
+      module Export
         module EventData
           def self.logger
             @logger ||= Telemetry::Logger.get self
           end
 
-          def self.!(msg)
-            logger.trace "Converting message to event data (Message Type: #{msg.message_type})"
+          def self.!(message)
+            logger.trace "Converting message to event data (Message Type: #{message.message_type})"
+
             event_data = EventStore::Client::HTTP::EventData::Write.build
 
             event_data.assign_id
+            event_data.type = message.message_type
+            event_data.data = message.to_h
 
-            event_data.type = msg.message_type
-            event_data.data = msg.to_h
-            event_data.metadata = Metadata.! msg.metadata
+            event_data.metadata = Metadata.! message.metadata
 
-            logger.debug "Converted message to event data (Message Type: #{msg.message_type})"
+            logger.debug "Converted message to event data (Message Type: #{message.message_type})"
 
             event_data
           end
