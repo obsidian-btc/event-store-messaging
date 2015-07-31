@@ -28,7 +28,7 @@ module EventStore
           include EventStore::Messaging::Controls::Message
 
           handle HandledMessage do |message|
-            message.handlers << self.class
+            message.handlers << self.class.name.split('::').last
           end
         end
 

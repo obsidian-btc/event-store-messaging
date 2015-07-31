@@ -22,15 +22,8 @@ module EventStore
 
           attribute :handlers, Array, default: [], lazy: true
 
-          def handler?(handler)
-            handler_name = handler if handler.instance_of? String
-            handler_name ||= handler.name if handler.instance_of? Class
-
-            handlers.any? { |handler_class| handler_class.name.end_with? handler_name }
-          end
-
-          def handled?
-            handlers.length > 0
+          def handler?(handler_name)
+            handlers.any? { |name| name == handler_name }
           end
         end
 

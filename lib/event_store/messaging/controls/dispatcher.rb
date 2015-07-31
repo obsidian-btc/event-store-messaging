@@ -11,6 +11,14 @@ module EventStore
           handler AnotherHandler
         end
 
+        class DispatcherHandlesHandledMessage
+          include EventStore::Messaging::Dispatcher
+          include EventStore::Messaging::Controls::Handler
+
+          handler HandlesHandledMessage
+          handler SomeHandler
+        end
+
         def self.example
           SomeDispatcher.new
         end
