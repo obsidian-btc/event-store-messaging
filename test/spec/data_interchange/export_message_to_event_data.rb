@@ -26,3 +26,20 @@ describe "Export Message to Event Data" do
   end
 end
 
+describe "Metadata with empty fields" do
+  specify "Empty fields are excluded" do
+    metadata = EventStore::Messaging::Controls::Message::Metadata::Empty.example
+
+    message = EventStore::Messaging::Controls::Message.example metadata: metadata
+
+    event_data = EventStore::Messaging::Message::Export::EventData.! message
+
+    metadata = message.metadata
+
+    compare_data = {
+    }
+
+    assert(event_data.metadata == compare_data)
+  end
+end
+

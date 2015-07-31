@@ -1,0 +1,1 @@
+/Users/sbellware/projects/obsidian/event-store-messaging/lib/event_store/messaging/message.rb

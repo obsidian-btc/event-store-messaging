@@ -45,6 +45,7 @@ module EventStore
           class_name = message if message.instance_of? String
           class_name ||= message.name if message.instance_of? Class
           class_name ||= message.class.name
+          class_name
         end
       end
 

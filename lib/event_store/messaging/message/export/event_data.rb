@@ -8,7 +8,7 @@ module EventStore
           end
 
           def self.!(message)
-            logger.trace "Converting message to event data (Message Type: #{message.message_type})"
+            logger.trace "Exporting event data to message (Message Type: #{message.message_type})"
 
             event_data = EventStore::Client::HTTP::EventData::Write.build
 
@@ -18,17 +18,21 @@ module EventStore
 
             event_data.metadata = Metadata.! message.metadata
 
-            logger.debug "Converted message to event data (Message Type: #{message.message_type})"
+            logger.debug "Exported event data to message (Message Type: #{message.message_type})"
 
             event_data
           end
 
           module Metadata
             def self.!(metadata)
+              logger.trace "Converting message metadata to event data metadata"
+
               data = metadata.to_h
               data.delete :event_id
 
               data.delete_if { |k, v| v.nil? }
+
+              logger.debug "Converted message metadata to event data metadata"
 
               data
             end

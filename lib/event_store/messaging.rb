@@ -20,3 +20,4 @@ require 'event_store/messaging/dispatcher'
 require 'event_store/messaging/stream_name'
 
 require 'event_store/messaging/message/export/event_data'
+require 'event_store/messaging/message/import/event_data'
