@@ -25,16 +25,16 @@ module EventStore
       end
 
       def stream_name(id)
-        EventStore::Client::HTTP::Stream::Name.stream_name category_name, id
+        EventStore::Client::StreamName.stream_name category_name, id
       end
 
       def command_stream_name(id)
-        EventStore::Client::HTTP::Stream::Name.stream_name "#{category_name}:command", id
+        EventStore::Client::StreamName.stream_name "#{category_name}:command", id
       end
 
       def category_stream_name(category_name=nil)
         category_name ||= self.category_name
-        EventStore::Client::HTTP::Stream::Name.category_stream_name(category_name)
+        EventStore::Client::StreamName.category_stream_name(category_name)
       end
 
       def command_category_stream_name(category_name=nil)
@@ -45,7 +45,7 @@ module EventStore
       end
 
       def self.get_id(stream_name)
-        EventStore::Client::HTTP::Stream::Name.get_id stream_name
+        EventStore::Client::StreamName.get_id stream_name
       end
     end
   end

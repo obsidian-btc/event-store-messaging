@@ -1,4 +1,4 @@
-require_relative 'spec_init'
+require_relative 'message_init'
 
 describe "Message Equality" do
   message = Fixtures.some_message
