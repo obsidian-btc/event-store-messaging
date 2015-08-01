@@ -31,6 +31,10 @@ module EventStore
             11
           end
 
+          def self.initial_stream_name
+            "streams/initialStream-#{uuid}/0"
+          end
+
           def self.data
             {
               source_event_uri: Metadata.source_event_uri,

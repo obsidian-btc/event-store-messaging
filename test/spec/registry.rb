@@ -1,9 +1,9 @@
 require_relative 'spec_init'
 
 describe "Registry" do
-  it "Registers items" do
-    registry = Fixtures.registry
+  registry = EventStore::Messaging::Controls::Registry.example
 
+  it "Registers items" do
     item = Object.new
 
     registry.register item
@@ -12,8 +12,6 @@ describe "Registry" do
   end
 
   it "Registers items once only" do
-    registry = Fixtures.registry
-
     item = Object.new
     registry.register item
 
@@ -23,8 +21,6 @@ describe "Registry" do
   end
 
   it "Optional, specialized work is done after registration" do
-    registry = Fixtures.registry
-
     item = Object.new
 
     record = []

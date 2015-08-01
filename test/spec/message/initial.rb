@@ -3,7 +3,7 @@ require_relative 'message_init'
 describe "Initial message in a stream" do
   previous_metadata = EventStore::Messaging::Controls::Message::Metadata.example
 
-  initiated_stream_name = Fixtures::Metadata.source_stream_name
+  initiated_stream_name = EventStore::Messaging::Controls::Message::Metadata.initial_stream_name
 
   message = EventStore::Messaging::Controls::Message::SomeMessage.initial initiated_stream_name
 
