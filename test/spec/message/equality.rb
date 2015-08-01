@@ -8,10 +8,9 @@ describe "Message Equality" do
   message.some_attribute = val_1
   message.some_time = val_2
 
-  other_message = EventStore::Messaging::Controls::Message.example
-
   describe "Equal" do
     specify "When attributes are equal" do
+      other_message = EventStore::Messaging::Controls::Message.example
       other_message.some_attribute = val_1
       other_message.some_time = val_2
 
@@ -30,6 +29,7 @@ describe "Message Equality" do
     end
 
     specify "When data isn't equal" do
+      other_message = EventStore::Messaging::Controls::Message.example
       other_message.some_attribute = "X #{val_1}"
       other_message.some_time = "X #{val_2}"
 

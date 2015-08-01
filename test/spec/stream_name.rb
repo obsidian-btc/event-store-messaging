@@ -1,21 +1,7 @@
 require_relative 'spec_init'
 
-module Fixtures
-  module StreamName
-    class Example
-      include EventStore::Messaging::StreamName
-
-      category 'someCategory'
-    end
-
-    def self.example
-      Example.new
-    end
-  end
-end
-
 describe "Stream Name" do
-  example = Fixtures::StreamName.example
+  example = EventStore::Messaging::Controls::StreamName.example
 
   specify "Category macro adds the category_name method" do
     assert(example.category_name == 'someCategory')
@@ -33,7 +19,7 @@ describe "Stream Name" do
 end
 
 describe "Category Stream Name (Mixin)" do
-  example = Fixtures::StreamName.example
+  example = EventStore::Messaging::Controls::StreamName.example
 
   specify "Composes the category stream name from the declared category name" do
     category_stream_name = example.category_stream_name
