@@ -1,30 +1,39 @@
 require_relative 'message_init'
 
 describe "Message Equality" do
-  message = Fixtures.some_message
-  message.some_attribute = 'some value'
+  val_1 = Controls::ID.get
+  val_2 = Controls::ID.get
 
-  other_message = Fixtures.some_message
-  other_message.some_attribute = 'some value'
+  message = EventStore::Messaging::Controls::Message.example
+  message.some_attribute = val_1
+  message.some_time = val_2
 
-  specify "When data is equal" do
-    assert(message == other_message)
-  end
-end
+  other_message = EventStore::Messaging::Controls::Message.example
 
-describe "Message Inequality" do
-  message = Fixtures.some_message
-  message.some_attribute = 'some value'
+  describe "Equal" do
+    specify "When attributes are equal" do
+      other_message.some_attribute = val_1
+      other_message.some_time = val_2
 
-  specify "When message classes aren't equal" do
-    other_message = Fixtures.some_other_message
-    other_message.some_attribute = 'some value'
-    assert(message == other_message)
+      assert(message == other_message)
+    end
   end
 
-  specify "When data isn't equal" do
-    other_message = Fixtures.some_message
-    other_message.some_attribute = 'some other value'
-    refute(message == other_message)
+  describe "Not Equal" do
+    specify "When message classes aren't equal" do
+      other_message = EventStore::Messaging::Controls::Message::NotEqualMessage.new
+
+      other_message.some_attribute = val_1
+      other_message.some_time = val_2
+
+      refute(message == other_message)
+    end
+
+    specify "When data isn't equal" do
+      other_message.some_attribute = "X #{val_1}"
+      other_message.some_time = "X #{val_2}"
+
+      refute(message == other_message)
+    end
   end
 end

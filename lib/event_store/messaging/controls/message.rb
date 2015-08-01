@@ -27,6 +27,13 @@ module EventStore
           end
         end
 
+        class NotEqualMessage
+          include EventStore::Messaging::Message
+
+          attribute :some_attribute
+          attribute :some_time
+        end
+
         def self.message_class
           SomeMessage
         end

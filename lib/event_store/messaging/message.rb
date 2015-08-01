@@ -24,6 +24,7 @@ module EventStore
 
       def ==(other)
         (
+          self.class == other.class &&
           to_h == other.to_h
         )
       end

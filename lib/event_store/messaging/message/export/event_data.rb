@@ -36,6 +36,10 @@ module EventStore
 
               data
             end
+
+            def self.logger
+              Telemetry::Logger.get self
+            end
           end
         end
       end
