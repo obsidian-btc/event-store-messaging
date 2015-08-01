@@ -1,4 +1,4 @@
-require_relative 'spec_init'
+require_relative 'message_init'
 
 describe "Message Class" do
   specify "Message name is the inner-most namespace of message's class name" do

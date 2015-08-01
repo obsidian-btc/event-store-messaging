@@ -4,8 +4,8 @@ module EventStore
       class Metadata
         include Schema::DataStructure
 
-        attribute :source_event_uri ## linked
-        attribute :causation_event_uri ## linked
+        attribute :source_event_uri
+        attribute :causation_event_uri
         attribute :correlation_stream_name
         attribute :reply_stream_name
         attribute :schema_version

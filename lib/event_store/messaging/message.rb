@@ -84,8 +84,7 @@ module EventStore
         def copy_metadata(other_metadata)
           metadata = Metadata.new
 
-          metadata.causation_event_id = other_metadata.event_id
-          metadata.causation_stream_name = other_metadata.source_stream_name
+          metadata.causation_event_uri = other_metadata.source_event_uri
           metadata.correlation_stream_name = other_metadata.correlation_stream_name
           metadata.reply_stream_name = other_metadata.reply_stream_name
 
