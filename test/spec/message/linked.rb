@@ -6,6 +6,10 @@ describe "Linked message copies metadata" do
 
   metadata = message.metadata
 
+  specify "Constructs the message" do
+    assert(message.class == EventStore::Messaging::Controls::Message::SomeMessage)
+  end
+
   specify "Sets the causation event URI to the previous source event URI" do
     assert(metadata.causation_event_uri == previous_metadata.source_event_uri)
   end
