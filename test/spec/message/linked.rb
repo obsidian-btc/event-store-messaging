@@ -1,6 +1,6 @@
 require_relative 'message_init'
 
-describe "Linked message copies metadata" do
+describe "Linked message" do
   previous_metadata = EventStore::Messaging::Controls::Message::Metadata.example
   message = EventStore::Messaging::Controls::Message::SomeMessage.linked previous_metadata
 

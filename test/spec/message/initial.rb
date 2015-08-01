@@ -1,0 +1,26 @@
+require_relative 'message_init'
+
+describe "Initial message in a stream" do
+  previous_metadata = EventStore::Messaging::Controls::Message::Metadata.example
+
+  initiated_stream_name = Fixtures::Metadata.source_stream_name
+
+  message = EventStore::Messaging::Controls::Message::SomeMessage.initial initiated_stream_name
+
+  metadata = message.metadata
+
+  specify "Constructs the message" do
+    assert(message.class == EventStore::Messaging::Controls::Message::SomeMessage)
+  end
+
+  specify "Sets the correlation stream to the new stream name" do
+    assert(metadata.correlation_stream_name == initiated_stream_name)
+  end
+
+  specify "Leaves the reset of the metadata empty" do
+    assert(metadata.source_event_uri.nil?)
+    assert(metadata.causation_event_uri.nil?)
+    assert(metadata.reply_stream_name.nil?)
+    assert(metadata.schema_version.nil?)
+  end
+end

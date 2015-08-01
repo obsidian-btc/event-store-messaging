@@ -50,7 +50,7 @@ module EventStore
       end
 
       module Build
-        def build(data=nil, metadata=nil)
+        def build(data=nil, metadata=nil) ## why pass metadata here? when used?
           data ||= {}
           metadata ||= {}
 
@@ -66,6 +66,7 @@ module EventStore
           SetAttributes.! instance, data
         end
 
+        ## check if still used after redesign done
         def build_metadata(metadata)
           if metadata.nil?
             Metadata.new
@@ -95,8 +96,13 @@ module EventStore
       module Initial
         def initial(initiated_stream_name)
           metadata = Metadata.new
+
           metadata.correlation_stream_name = initiated_stream_name
-          build(nil, metadata)
+
+          message = build
+          message.metadata = metadata
+
+          message
         end
       end
     end
