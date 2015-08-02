@@ -3,13 +3,13 @@ module EventStore
     class Writer
       class Error < StandardError; end
 
-      dependency :writer, Client::HTTP::Vertx::Writer
+      dependency :writer, EventStore::Client::HTTP::EventWriter
       dependency :logger, Telemetry::Logger
 
       def self.build
         logger.trace "Building"
         new.tap do |instance|
-          Client::HTTP::Vertx::Writer.configure instance
+          EventStore::Client::HTTP::EventWriter.configure instance
           Telemetry::Logger.configure instance
           logger.debug "Built"
         end
@@ -17,29 +17,44 @@ module EventStore
 
       def self.configure(receiver)
         logger.trace "Configuring (Receiver: #{receiver.inspect})"
-
         instance = build
-
         receiver.writer = instance
-
         logger.debug "Configured (Receiver: #{receiver.inspect})"
-
         instance
       end
 
-      def write(message, stream_name, reply_stream_name: nil)
-        logger.trace "Writing (Message Type: #{message.message_type}, Stream Name: #{stream_name})"
+      def write(message, stream_name, reply_stream_name: nil, expected_version: nil)
+        unless message.is_a? Array
+          logger.trace "Writing (Message Type: #{message.message_type}, Stream Name: #{stream_name})"
+        else
+          logger.trace "Writing batch (Stream Name: #{stream_name})"
+        end
 
         if reply_stream_name
           message.metadata.reply_stream_name = reply_stream_name
         end
 
-        event_data = EventStore::Messaging::Message::Conversion::EventData.! message
+        event_data = event_data_batch(message)
 
-        writer.write stream_name, event_data
-        logger.debug "Wrote (Message Type: #{message.message_type}, Stream Name: #{stream_name})"
+        writer.write(event_data, stream_name, expected_version: expected_version)
+
+        unless message.is_a? Array
+          logger.debug "Wrote (Message Type: #{message.message_type}, Stream Name: #{stream_name})"
+        else
+          logger.trace "Wrote batch (Stream Name: #{stream_name})"
+        end
 
         event_data
+      end
+
+      def event_data_batch(messages)
+        messages = [messages] unless messages.is_a? Array
+
+        batch = messages.map do |message|
+          EventStore::Messaging::Message::Export::EventData.! message
+        end
+
+        batch
       end
 
       def reply(message)

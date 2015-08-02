@@ -25,3 +25,5 @@ writer.write batch, stream_name, reply_stream_name: nil
 # add each event_data to array
 # pass array to client writer
 # client writer adds single to array if single, then proceeds with common case (multiple)
+
+
