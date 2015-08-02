@@ -3,13 +3,13 @@ module EventStore
     class Writer
       class Error < StandardError; end
 
-      dependency :writer, Client::HTTP::Vertx::Writer
+      dependency :writer, EventStore::Client::HTTP::EventWriter
       dependency :logger, Telemetry::Logger
 
       def self.build
         logger.trace "Building"
         new.tap do |instance|
-          Client::HTTP::Vertx::Writer.configure instance
+          EventStore::Client::HTTP::EventWriter.configure instance
           Telemetry::Logger.configure instance
           logger.debug "Built"
         end
@@ -17,26 +17,23 @@ module EventStore
 
       def self.configure(receiver)
         logger.trace "Configuring (Receiver: #{receiver.inspect})"
-
         instance = build
-
         receiver.writer = instance
-
         logger.debug "Configured (Receiver: #{receiver.inspect})"
-
         instance
       end
 
-      def write(message, stream_name, reply_stream_name: nil)
+      def write(message, stream_name, reply_stream_name: nil, expected_version: nil)
         logger.trace "Writing (Message Type: #{message.message_type}, Stream Name: #{stream_name})"
 
         if reply_stream_name
           message.metadata.reply_stream_name = reply_stream_name
         end
 
-        event_data = EventStore::Messaging::Message::Conversion::EventData.! message
+        event_data = EventStore::Messaging::Message::Export::EventData.! message
 
-        writer.write stream_name, event_data
+        writer.write(event_data, stream_name, expected_version: expected_version)
+
         logger.debug "Wrote (Message Type: #{message.message_type}, Stream Name: #{stream_name})"
 
         event_data
