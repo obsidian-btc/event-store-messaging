@@ -40,10 +40,6 @@ module EventStore
         reader.read do |event_data|
           message = dispatch(event_data)
 
-          # if message && !!supplemental_action
-          #   supplemental_action.call(message, event_data)
-          # end
-
           supplemental_action.call(message, event_data) if !!supplemental_action
         end
 

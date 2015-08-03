@@ -8,16 +8,18 @@ describe "Reader a Stream's Events" do
 
   reader = EventStore::Messaging::Reader.build stream_name, dispatcher, slice_size: 1
 
-  messages = []
-  reader.read do |message|
-    messages << message
+  results = []
+  reader.read do |message, event_data|
+    record = Struct.new(:message, :event_data).new(message, event_data)
+    results << record
   end
 
-  messages.each do |message|
-    logger(__FILE__).data message.inspect
+  results.each do |result|
+    logger(__FILE__).data result.message.inspect
+    logger(__FILE__).data result.event_data.inspect
   end
 
   specify "Messages are read" do
-    assert(messages.length == 2)
+    assert(results.length == 2)
   end
 end
