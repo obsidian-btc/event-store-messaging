@@ -25,9 +25,9 @@ module EventStore
 
       def write(message, stream_name, reply_stream_name: nil, expected_version: nil)
         unless message.is_a? Array
-          logger.trace "Writing (Message Type: #{message.message_type}, Stream Name: #{stream_name})"
+          logger.trace "Writing (Message Type: #{message.message_type}, Stream Name: #{stream_name}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
         else
-          logger.trace "Writing batch (Stream Name: #{stream_name})"
+          logger.trace "Writing batch (Stream Name: #{stream_name}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
         end
 
         if reply_stream_name
@@ -39,9 +39,9 @@ module EventStore
         writer.write(event_data, stream_name, expected_version: expected_version)
 
         unless message.is_a? Array
-          logger.debug "Wrote (Message Type: #{message.message_type}, Stream Name: #{stream_name})"
+          logger.debug "Wrote (Message Type: #{message.message_type}, Stream Name: #{stream_name}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
         else
-          logger.trace "Wrote batch (Stream Name: #{stream_name})"
+          logger.trace "Wrote batch (Stream Name: #{stream_name}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
         end
 
         event_data
