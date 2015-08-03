@@ -6,8 +6,9 @@ module EventStore
           include EventStore::Messaging::Handler
           include EventStore::Messaging::Controls::Message
 
-          handle SomeMessage do |message|
-            Telemetry::Logger.get(self).data message.inspect
+          handle SomeMessage do |message, event_data|
+            logger.data message.inspect
+            logger.data event_data.inspect
           end
         end
 

@@ -7,6 +7,8 @@ module EventStore
         cls.extend HandlerRegistry
         cls.extend BuildMessage
         cls.extend Build
+
+        cls.send :dependency, :logger, Telemetry::Logger
       end
 
       module Macro
@@ -46,7 +48,9 @@ module EventStore
 
       module Build
         def build
-          new
+          new.tap do |instance|
+            Telemetry::Logger.configure instance
+          end
         end
       end
 
@@ -76,21 +80,21 @@ module EventStore
         self.class.build_message(entry_data)
       end
 
-      def dispatch(message, metadata)
+      def dispatch(message, event_data)
         handlers.get(message).each do |handler_class|
-          handler_class.! message, metadata
+          handler_class.! message, event_data
         end
+        nil
       end
 
       class Substitute
         def build_message(event_data)
           substitute_msg = Object.new.extend(EventStore::Messaging::Message)
-          stream_entry = Stream::Entry.build(entry_data)
-          return substitute_msg, stream_entry
+          return substitute_msg
         end
 
-        def dispatch(message, stream_entry)
-          record = Struct.new(:message, :stream_entry).new(message, stream_entry)
+        def dispatch(message, event_data)
+          record = Struct.new(:message, :event_data).new(message, event_data)
           dispatches << record
         end
 
@@ -100,7 +104,7 @@ module EventStore
 
         def dispatched?(entry_data)
           dispatches.any? do |record|
-            record.stream_entry.data == entry_data
+            record.event_data == entry_data
           end
         end
       end

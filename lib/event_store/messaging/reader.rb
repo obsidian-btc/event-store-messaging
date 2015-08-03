@@ -1,83 +1,75 @@
 module EventStore
   module Messaging
     class Reader
-      class Error < StandardError; end
+      attr_reader :stream_name
 
-      dependency :subscription, ::EventStore::Client::HTTP::Vertx::Subscription
+      dependency :reader, EventStore::Client::HTTP::EventReader
       dependency :dispatcher, EventStore::Messaging::Dispatcher
       dependency :logger, Telemetry::Logger
 
-      def self.build
-        new.tap do |instance|
+      def starting_position
+        @starting_position ||= 0
+      end
+
+      def slice_size
+        @slice_size ||= 20
+      end
+
+      def initialize(stream_name, starting_position=nil, slice_size=nil)
+        @stream_name = stream_name
+        @starting_position = starting_position
+        @slice_size = slice_size
+      end
+
+      def self.build(stream_name, dispatcher, starting_position: nil, slice_size: nil)
+        logger.trace "Building event reader"
+
+        new(stream_name, starting_position, slice_size).tap do |instance|
+          EventStore::Client::HTTP::EventReader.configure instance, stream_name, starting_position: starting_position, slice_size: slice_size
           Telemetry::Logger.configure instance
+
+          instance.dispatcher = dispatcher
+
+          logger.debug "Built event reader"
         end
       end
 
-      def self.start
-        instance = build
-        instance.start
-      end
+      def read(&supplemental_action)
+        logger.trace "Reading messages (Stream Name: #{stream_name})"
 
-      def start(&supplemental_action)
-        logger.trace "Starting"
+        reader.read do |event_data|
+          message = dispatch(event_data)
 
-        action = self.action(&supplemental_action)
+          # if message && !!supplemental_action
+          #   supplemental_action.call(message, event_data)
+          # end
 
-        subscription.start &action
-
-        logger.debug "Start completed"
-      end
-
-      def action(&supplemental_action)
-        logger.trace "Composing action"
-        Proc.new do |stream_entry|
-          read stream_entry
-          supplemental_action.call(stream_entry) if supplemental_action
-        end.tap do
-          logger.debug "Composed action"
+          supplemental_action.call(message, event_data) if !!supplemental_action
         end
+
+        logger.debug "Read messages (Stream Name: #{stream_name})"
+        nil
       end
 
-      def read(stream_entry)
-        logger.trace "Reading stream entry (Type: #{stream_entry.type}, ID: #{stream_entry.id}"
+      def dispatch(event_data)
+        logger.trace "Dispatching event data (Type: #{event_data.type})"
+        logger.data event_data.inspect
 
-        message = dispatcher.deserialize(stream_entry)
+        message = dispatcher.build_message(event_data)
 
-        if message
-          dispatcher.dispatch(message, stream_entry)
+        if !!message
+          dispatcher.dispatch(message, event_data)
         else
-          logger.debug "Cannot dispatch \"#{stream_entry.type}\". The \"#{dispatcher}\" dispatcher has no handlers for it."
+          logger.debug "Cannot dispatch \"#{event_data.type}\". The \"#{dispatcher}\" dispatcher has no handlers that handle it."
         end
 
-        logger.debug "Read stream entry (Type: #{stream_entry.type}, ID: #{stream_entry.id}"
+        logger.debug "Dispatched event data (Type: #{event_data.type})"
 
-        return message
+        message
       end
 
-      pure_virtual :stream_name
-
-      module Substitute
-        def self.build
-          Reader.new.extend Instruments
-        end
-
-        module Instruments
-          def self.extended(obj)
-            Telemetry::Logger.get(self).debug "Instrumented #{obj.class.name}"
-          end
-
-          def reads
-            @reads ||= []
-          end
-
-          def read(data)
-            reads << data
-          end
-
-          def read?(data)
-            reads.include? data
-          end
-        end
+      def self.logger
+        Telemetry::Logger.get self
       end
     end
   end
