@@ -9,6 +9,7 @@ module EventStore
         cls.extend Build
 
         cls.send :virtual, :configure_dependencies
+        cls.send :dependency, :logger, Telemetry::Logger
       end
 
       module Macro
@@ -54,6 +55,7 @@ module EventStore
       module Build
         def build
           new.tap do |instance|
+            Telemetry::Logger.configure instance
             instance.configure_dependencies
           end
         end

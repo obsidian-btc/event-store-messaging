@@ -20,4 +20,4 @@ require 'event_store/messaging/message/export/event_data'
 require 'event_store/messaging/message/import/event_data'
 
 require 'event_store/messaging/writer'
-# require 'event_store/messaging/reader'
+require 'event_store/messaging/reader'
