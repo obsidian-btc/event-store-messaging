@@ -15,4 +15,3 @@ reader = EventStore::Messaging::Reader.build stream_name, dispatcher, slice_size
 reader.subscribe do |message|
   logger(__FILE__).info message.inspect
 end
-
