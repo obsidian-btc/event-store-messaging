@@ -1,6 +1,6 @@
 module EventStore
   module Messaging
-    class MessageRegistry # < Registry
+    class MessageRegistry
       include Registry
 
       def get(message_type)

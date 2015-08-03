@@ -40,10 +40,27 @@ module EventStore
         reader.read do |event_data|
           message = dispatch(event_data)
 
-          supplemental_action.call(message, event_data) if !!supplemental_action
+          if !!supplemental_action && !!message
+            supplemental_action.call(message, event_data)
+          end
         end
 
         logger.debug "Read messages (Stream Name: #{stream_name})"
+        nil
+      end
+
+      def subscribe(&supplemental_action)
+        logger.trace "Subscribing messages (Stream Name: #{stream_name})"
+
+        reader.subscribe do |event_data|
+          message = dispatch(event_data)
+
+          if !!supplemental_action && !!message
+            supplemental_action.call(message, event_data)
+          end
+        end
+
+        logger.debug "Subscription complete (Stream Name: #{stream_name})"
         nil
       end
 

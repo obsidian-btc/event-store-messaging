@@ -7,6 +7,7 @@ module EventStore
         cls.extend HandlerRegistry
         cls.extend BuildMessage
         cls.extend Build
+        cls.extend Logger
 
         cls.send :dependency, :logger, Telemetry::Logger
       end
@@ -54,14 +55,27 @@ module EventStore
         end
       end
 
+      module Logger
+        def logger
+          Telemetry::Logger.get self
+        end
+      end
+
       module BuildMessage
         def build_message(event_data)
           type = event_data.type
+
+          logger.trace "Building message (Type: #{type})"
+
           message_class = message_registry.get(type)
 
           message = nil
-          if !!message_class
+
+          unless message_class.nil?
+            logger.debug "Building message (Class: #{message_class.name})"
             message = Message::Import::EventData.! event_data, message_class
+          else
+            logger.debug "No message class registered (Type: #{type})"
           end
 
           return message
