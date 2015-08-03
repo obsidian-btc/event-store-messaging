@@ -37,13 +37,7 @@ module EventStore
       def read(&supplemental_action)
         logger.trace "Reading messages (Stream Name: #{stream_name})"
 
-        reader.read do |event_data|
-          message = dispatch(event_data)
-
-          if !!supplemental_action && !!message
-            supplemental_action.call(message, event_data)
-          end
-        end
+        read_message :read, &supplemental_action
 
         logger.debug "Read messages (Stream Name: #{stream_name})"
         nil
@@ -52,16 +46,20 @@ module EventStore
       def subscribe(&supplemental_action)
         logger.trace "Subscribing messages (Stream Name: #{stream_name})"
 
-        reader.subscribe do |event_data|
+        read_message :subscribe, &supplemental_action
+
+        logger.debug "Subscription complete (Stream Name: #{stream_name})"
+        nil
+      end
+
+      def read_message(meth, &supplemental_action)
+        reader.send(meth) do |event_data|
           message = dispatch(event_data)
 
           if !!supplemental_action && !!message
             supplemental_action.call(message, event_data)
           end
         end
-
-        logger.debug "Subscription complete (Stream Name: #{stream_name})"
-        nil
       end
 
       def dispatch(event_data)
