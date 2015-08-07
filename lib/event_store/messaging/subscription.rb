@@ -1,8 +1,8 @@
 module EventStore
   module Messaging
-    class Reader < MessageReader
+    class Subscription < MessageReader
       def self.http_reader
-        Client::HTTP::Reader
+        Client::HTTP::Subscription
       end
     end
   end

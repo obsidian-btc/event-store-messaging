@@ -9,7 +9,7 @@ describe "Read a Stream" do
   reader = EventStore::Messaging::Reader.build stream_name, dispatcher, slice_size: 1
 
   results = []
-  reader.read do |message, event_data|
+  reader.each do |message, event_data|
     record = Struct.new(:message, :event_data).new(message, event_data)
     results << record
   end
