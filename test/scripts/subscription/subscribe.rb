@@ -12,6 +12,6 @@ dispatcher.class.handler EventStore::Messaging::Controls::Handler::SomeHandler
 
 reader = EventStore::Messaging::Subscription.build stream_name, dispatcher, slice_size: 1
 
-reader.each do |message|
+reader.start do |message|
   logger(__FILE__).info message.inspect
 end

@@ -34,7 +34,7 @@ module EventStore
         end
       end
 
-      def each(&supplemental_action)
+      def start(&supplemental_action)
         logger.trace "Reading messages (Stream Name: #{stream_name})"
 
         reader.each do |event_data|
