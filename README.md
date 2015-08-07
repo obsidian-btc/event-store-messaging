@@ -44,3 +44,13 @@ reader = EventStore::Messaging::Reader.build stream_name, dispatcher
 
 reader.subscribe
 ```
+
+## Publishing
+
+```ruby
+writer = EventStore::Messaging::Writer.build
+
+message = SomeMessage.build ...
+
+writer.write message, stream_name
+```
