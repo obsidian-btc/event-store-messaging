@@ -34,6 +34,12 @@ module EventStore
         end
       end
 
+      def self.configure(receiver, stream_name, dispatcher, starting_position: nil, slice_size: nil)
+        instance = build(stream_name, dispatcher, starting_position: nil, slice_size: nil)
+        receiver.reader = instance
+        instance
+      end
+
       def start(&supplemental_action)
         logger.trace "Reading messages (Stream Name: #{stream_name})"
 
