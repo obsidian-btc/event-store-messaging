@@ -22,7 +22,7 @@ module EventStore
       end
 
       def self.build(stream_name, dispatcher, starting_position: nil, slice_size: nil)
-        logger.trace "Building event reader"
+        logger.trace "Building message reader"
 
         new(stream_name, starting_position, slice_size).tap do |instance|
           http_reader.configure instance, stream_name, starting_position: starting_position, slice_size: slice_size
@@ -30,7 +30,7 @@ module EventStore
 
           instance.dispatcher = dispatcher
 
-          logger.debug "Built event reader"
+          logger.debug "Built message reader"
         end
       end
 
