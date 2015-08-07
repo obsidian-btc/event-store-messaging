@@ -2,7 +2,7 @@ module EventStore
   module Messaging
     module Dispatcher
       def self.included(cls)
-        cls.extend Macro
+        cls.extend HandlerMacro
         cls.extend MessageRegistry
         cls.extend HandlerRegistry
         cls.extend BuildMessage
@@ -12,7 +12,7 @@ module EventStore
         cls.send :dependency, :logger, Telemetry::Logger
       end
 
-      module Macro
+      module HandlerMacro
         def handler(handler_class)
           handler_registry.register(handler_class)
         end

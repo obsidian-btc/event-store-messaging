@@ -1,4 +1,4 @@
-module EventStore
+ module EventStore
   module Messaging
     module Handler
       def self.included(cls)
