@@ -2,7 +2,7 @@
   module Messaging
     module Handler
       def self.included(cls)
-        cls.extend Macro
+        cls.extend HandleMacro
         cls.extend MessageRegistry
         cls.extend Info
         cls.extend Handle
@@ -12,7 +12,7 @@
         cls.send :dependency, :logger, Telemetry::Logger
       end
 
-      module Macro
+      module HandleMacro
         def handle_macro(message_class, &blk)
           logger = Telemetry::Logger.get self
 
