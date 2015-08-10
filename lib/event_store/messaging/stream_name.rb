@@ -10,6 +10,7 @@ module EventStore
 
       module Macro
         def category_macro(category_name)
+          category_name = Casing::Camel.! category_name
           self.send :define_method, :category_name do
             category_name
           end
