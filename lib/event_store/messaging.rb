@@ -4,6 +4,7 @@ require 'telemetry/logger'
 require 'inclusion'
 require 'virtual'; Virtual.activate
 require 'dependency'; Dependency.activate
+require 'casing'
 
 require 'event_store/client/http'
 
