@@ -18,6 +18,14 @@ describe "Stream Name" do
   end
 end
 
+describe "Underscore Cased Stream Name" do
+  example = EventStore::Messaging::Controls::StreamName::Anomaly::Underscore.example
+
+  specify "Is converted to camel case" do
+    assert(example.category_name == 'someCategory')
+  end
+end
+
 describe "Category Stream Name (Mixin)" do
   example = EventStore::Messaging::Controls::StreamName.example
 

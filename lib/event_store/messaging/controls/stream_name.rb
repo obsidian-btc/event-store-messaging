@@ -19,6 +19,20 @@ module EventStore
         def self.reference
           EventStore::Client::HTTP::Controls::StreamName.reference
         end
+
+        module Anomaly
+          module Underscore
+            class Example
+              include EventStore::Messaging::StreamName
+
+              category 'some_category'
+            end
+
+            def self.example
+              Example.new
+            end
+          end
+        end
       end
     end
   end
