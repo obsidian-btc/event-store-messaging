@@ -12,7 +12,7 @@ module EventStore
         def category_macro(category_name)
           category_name = Casing::Camel.!(category_name)
           self.send :define_method, :category_name do
-            category_name
+            @category_name || category_name
           end
         end
         alias :category :category_macro
