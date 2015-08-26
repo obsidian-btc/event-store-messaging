@@ -3,10 +3,6 @@ module EventStore
     module Controls
       module Message
         module Metadata
-          def self.foo
-            raise 'in foo'
-          end
-
           def self.uuid
             ::Controls::ID.get
           end
