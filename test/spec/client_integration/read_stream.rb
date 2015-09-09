@@ -3,7 +3,6 @@ require_relative 'client_integration_init'
 describe "Read a Stream" do
   stream_name = EventStore::Messaging::Controls::Writer.write 2, 'testMessageReader'
 
-  # dispatcher = EventStore::Messaging::Controls::Dispatcher::BasicDispatcher.new
   dispatcher = EventStore::Messaging::Controls::Dispatcher.unique
   dispatcher.register_handler EventStore::Messaging::Controls::Handler::SomeHandler
 

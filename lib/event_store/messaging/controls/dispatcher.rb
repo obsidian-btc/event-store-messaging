@@ -26,10 +26,6 @@ module EventStore
           handler ChangesEventData
         end
 
-        class BasicDispatcher
-          include EventStore::Messaging::Dispatcher
-        end
-
         def self.unique
           Class.new do
             include EventStore::Messaging::Dispatcher
