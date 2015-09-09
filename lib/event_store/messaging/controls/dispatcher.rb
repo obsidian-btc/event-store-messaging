@@ -30,6 +30,12 @@ module EventStore
           include EventStore::Messaging::Dispatcher
         end
 
+        def self.unique
+          Class.new do
+            include EventStore::Messaging::Dispatcher
+          end.new
+        end
+
         def self.example
           SomeDispatcher.new
         end

@@ -7,7 +7,7 @@ rescue
   raise "Stream name file is missing (tmp/stream_name). It's created by the write_events_periodically.rb script, which must be run concurrently with #{__FILE__}."
 end
 
-dispatcher = EventStore::Messaging::Controls::Dispatcher::BasicDispatcher.new
+dispatcher = EventStore::Messaging::Controls::Dispatcher.unique
 dispatcher.class.handler EventStore::Messaging::Controls::Handler::SomeHandler
 
 reader = EventStore::Messaging::Subscription.build stream_name, dispatcher, slice_size: 1
