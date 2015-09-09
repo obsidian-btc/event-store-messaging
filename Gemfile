@@ -15,6 +15,7 @@ prox_gem 'virtual'
 prox_gem 'casing'
 prox_gem 'event_store_client_http'
 prox_gem 'controls'
+prox_gem 'http-protocol'
 
 source 'https://rubygems.org'
 
