@@ -10,7 +10,6 @@ end
 dispatcher = EventStore::Messaging::Controls::Dispatcher.unique
 dispatcher.register_handler EventStore::Messaging::Controls::Handler::SomeHandler
 
-
 reader = EventStore::Messaging::Subscription.build stream_name, dispatcher, slice_size: 1
 
 reader.start do |message|
