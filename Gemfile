@@ -16,6 +16,7 @@ prox_gem 'casing'
 prox_gem 'event_store_client_http'
 prox_gem 'controls'
 prox_gem 'http-protocol'
+prox_gem 'process-host'
 
 source 'https://rubygems.org'
 
