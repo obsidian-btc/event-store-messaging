@@ -11,8 +11,12 @@ describe "Hosting a subscription process" do
   class StreamingWriter
     def self.build(stream_name, events_to_write)
       message_writer = EventStore::Messaging::Writer.build
-      new events_to_write, message_writer, stream_name
+      instance = new events_to_write, message_writer, stream_name
+      Telemetry::Logger.configure instance
+      instance
     end
+
+    dependency :logger
 
     attr_reader :events_to_write
     attr_reader :message_writer
@@ -25,14 +29,15 @@ describe "Hosting a subscription process" do
     end
 
     def start(io)
-      client.socket = io
+      client.connector = ->{io}
       until events_to_write.zero?
+        logger.pass "Wrote event ##{events_to_write}"
         message_writer.write next_message, stream_name
       end
     end
 
     def connect(io)
-      client.establish_connection io
+      io.socket = client.connect
     end
 
     def next_message
@@ -57,6 +62,7 @@ describe "Hosting a subscription process" do
     handle CountdownMessage do |message|
       countdown = message.events_remaining
       Telemetry::Logger.get(__FILE__).info "countdown=#{countdown}/#{events_to_read}"
+      logger.pass "Countdown is down to #{countdown}"
       raise StopIteration if countdown.zero?
     end
   end
@@ -75,6 +81,7 @@ describe "Hosting a subscription process" do
     config.poll_period_ms = 200
   end
 
+  t0 = Time.now
   begin
     process_host.run do
       add "some-subscription", writer_process
@@ -82,6 +89,10 @@ describe "Hosting a subscription process" do
     end
   rescue StopIteration
   end
+  t1 = Time.now
+  delta = t1 - t0
+
+  Telemetry::Logger.get(__FILE__).warn "#{events_to_read} events in #{Rational(delta, 1).to_f.round(2)}s; #{Rational(events_to_read, delta).to_f.round(2)}m/s"
 
   specify "Messages are read" do
     assert_equal 0, countdown

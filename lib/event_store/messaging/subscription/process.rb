@@ -39,14 +39,14 @@ module EventStore
       end
 
       def start(io)
-        client.socket = io
+        client.connector = ->{io}
         logger.info "Starting subscription"
         subscription.start
       end
 
       def connect(io)
-        client.establish_connection io
-        logger.info "Established connection: #{io.socket.inspect}"
+        io.socket = client.connect
+        logger.pass "Established connection: #{io.socket.inspect}"
       end
     end
   end
