@@ -29,7 +29,7 @@ describe "Hosting a subscription process" do
     end
 
     def start(io)
-      client.connector = ->{io}
+      session.connector = ->{io}
       until events_to_write.zero?
         logger.pass "Wrote event ##{events_to_write}"
         message_writer.write next_message, stream_name
@@ -37,7 +37,7 @@ describe "Hosting a subscription process" do
     end
 
     def connect(io)
-      io.socket = client.connect
+      io.socket = session.connect
     end
 
     def next_message
@@ -47,8 +47,8 @@ describe "Hosting a subscription process" do
       message
     end
 
-    def client
-      message_writer.writer.request.client
+    def session
+      message_writer.writer.request.session
     end
   end
 
