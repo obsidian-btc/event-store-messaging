@@ -36,8 +36,9 @@ describe "Hosting a subscription process" do
       end
     end
 
-    def connect(io)
-      io.socket = session.connect
+    def connect
+      socket = session.connect
+      yield socket if block_given?
     end
 
     def next_message
