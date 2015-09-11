@@ -16,10 +16,8 @@ module EventStore
       end
 
       def self.configure(receiver)
-        logger.trace "Configuring (Receiver: #{receiver.inspect})"
         instance = build
         receiver.writer = instance
-        logger.debug "Configured (Receiver: #{receiver.inspect})"
         instance
       end
 
