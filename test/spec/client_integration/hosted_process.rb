@@ -28,17 +28,12 @@ describe "Hosting a subscription process" do
       @stream_name = stream_name
     end
 
-    def start(io)
-      session.connector = ->{io}
+    def run(&blk)
+      blk.(session.connection) if block_given?
       until events_to_write.zero?
         logger.pass "Wrote event ##{events_to_write}"
         message_writer.write next_message, stream_name
       end
-    end
-
-    def connect
-      socket = session.connect
-      yield socket if block_given?
     end
 
     def next_message
@@ -53,7 +48,7 @@ describe "Hosting a subscription process" do
     end
   end
 
-  events_to_read = (ENV["EVENTS_TO_READ"] || 200).to_i
+  events_to_read = (ENV["EVENTS_TO_READ"] || 3).to_i
   countdown = events_to_read
   stream_name = "testSubscriptionProcess-#{SecureRandom.uuid}"
   subscription_process = nil
@@ -77,17 +72,13 @@ describe "Hosting a subscription process" do
   writer_process = StreamingWriter.build stream_name, events_to_read
   subscription_process = EventStore::Messaging::Subscription::Process.build stream_name, dispatcher
 
-  process_host = ProcessHost.build do |config|
-    config.logger = Telemetry::Logger.get config
-    config.poll_period_ms = 200
-  end
+  process_host = ProcessHost.build
+  process_host.register writer_process
+  process_host.register subscription_process
 
   t0 = Time.now
   begin
-    process_host.run do
-      add "some-subscription", writer_process
-      add "some-subscription", subscription_process
-    end
+    process_host.run
   rescue StopIteration
   end
   t1 = Time.now

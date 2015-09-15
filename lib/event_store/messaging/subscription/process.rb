@@ -20,16 +20,10 @@ module EventStore
         @subscription = subscription
       end
 
-      def start(io)
-        session.connector = ->{io}
+      def run(&blk)
+        blk.call(session.connection) if block_given?
         logger.info "Starting subscription"
         subscription.start
-      end
-
-      def connect
-        socket = session.connect
-        logger.pass "Established connection: #{socket.inspect}"
-        yield socket if block_given?
       end
     end
   end
