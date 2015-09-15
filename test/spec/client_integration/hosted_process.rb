@@ -70,11 +70,11 @@ describe "Hosting a subscription process" do
   dispatcher = dispatcher_cls.new
 
   writer_process = StreamingWriter.build stream_name, events_to_read
-  subscription_process = EventStore::Messaging::Subscription::Process.build stream_name, dispatcher
+  subscription = EventStore::Messaging::Subscription.build stream_name, dispatcher
 
   process_host = ProcessHost.build
   process_host.register writer_process
-  process_host.register subscription_process
+  process_host.register subscription
 
   t0 = Time.now
   begin
