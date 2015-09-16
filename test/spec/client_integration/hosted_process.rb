@@ -28,8 +28,7 @@ describe "Hosting a subscription process" do
       @stream_name = stream_name
     end
 
-    def run(&blk)
-      blk.(session.connection) if block_given?
+    def start
       until events_to_write.zero?
         logger.pass "Wrote event ##{events_to_write}"
         message_writer.write next_message, stream_name
@@ -45,6 +44,12 @@ describe "Hosting a subscription process" do
 
     def session
       message_writer.writer.request.session
+    end
+
+    module ProcessHostIntegration
+      def change_connection_policy(policy)
+        session.connection.policy = policy
+      end
     end
   end
 
@@ -78,7 +83,7 @@ describe "Hosting a subscription process" do
 
   t0 = Time.now
   begin
-    process_host.run
+    process_host.start
   rescue StopIteration
   end
   t1 = Time.now

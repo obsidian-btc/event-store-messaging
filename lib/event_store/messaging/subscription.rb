@@ -5,10 +5,9 @@ module EventStore
         Client::HTTP::Subscription
       end
 
-      module Process
-        def run(&blk)
-          blk.(session.connection)
-          start
+      module ProcessHostIntegration
+        def change_connection_policy(policy)
+          session.connection.policy = policy
         end
       end
     end
