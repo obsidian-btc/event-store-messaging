@@ -15,6 +15,9 @@ prox_gem 'virtual'
 prox_gem 'casing'
 prox_gem 'event_store_client_http'
 prox_gem 'controls'
+prox_gem 'http-protocol'
+prox_gem 'connection'
+prox_gem 'process-host'
 
 source 'https://rubygems.org'
 
@@ -23,3 +26,7 @@ gem 'naught', '1.0.0'
 
 gem 'minitest', '~> 5.5.0'
 gem 'minitest-spec-context', '0.0.3'
+
+group :debug do
+  gem 'pry'
+end
