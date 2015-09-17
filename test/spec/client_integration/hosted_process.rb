@@ -77,13 +77,13 @@ describe "Hosting a subscription process" do
   writer_process = StreamingWriter.build stream_name, events_to_read
   subscription = EventStore::Messaging::Subscription.build stream_name, dispatcher
 
-  process_host = ProcessHost.build
-  process_host.register writer_process
-  process_host.register subscription
+  cooperation = ProcessHost::Cooperation.build
+  cooperation.register writer_process
+  cooperation.register subscription
 
   t0 = Time.now
   begin
-    process_host.start
+    cooperation.start
   rescue StopIteration
   end
   t1 = Time.now
