@@ -95,7 +95,7 @@ module EventStore
         end
 
         def write(msg, stream_id, expected_version: nil, reply_stream_name: nil)
-          if expected_version && expected_version != stream_version
+          if stream_version && expected_version && expected_version != stream_version
             raise EventStore::Client::HTTP::Request::Post::ExpectedVersionError
           end
 
