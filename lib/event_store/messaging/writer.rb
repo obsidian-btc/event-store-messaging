@@ -81,6 +81,7 @@ module EventStore
       end
 
       class Substitute
+        attr_accessor :stream_version
         attr_accessor :writer
 
         def self.build
@@ -93,7 +94,11 @@ module EventStore
           @messages ||= []
         end
 
-        def write(msg, stream_id, reply_stream_name: nil)
+        def write(msg, stream_id, expected_version: nil, reply_stream_name: nil)
+          if expected_version and expected_version != stream_version.to_i
+            raise EventStore::Client::HTTP::Request::Post::ExpectedVersionError
+          end
+
           writer.write(msg, stream_id, reply_stream_name: reply_stream_name).tap do
             messages << msg
           end
