@@ -12,7 +12,7 @@ describe "Message Writer" do
 
     path = "/streams/#{stream_name}"
     get = EventStore::Client::HTTP::Request::Get.build
-    body_text, get_response = get.! "#{path}/0"
+    body_text, get_response = get.("#{path}/0")
 
     refute(body_text.nil?)
   end

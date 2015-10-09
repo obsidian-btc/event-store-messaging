@@ -3,7 +3,7 @@ require_relative 'data_interchange_init.rb'
 describe "Export Message to Event Data" do
   message = EventStore::Messaging::Controls::Message.example
 
-  event_data = EventStore::Messaging::Message::Export::EventData.! message
+  event_data = EventStore::Messaging::Message::Export::EventData.(message)
 
   specify "An ID is assigned to the event data" do
     refute(event_data.id.nil?)
@@ -32,7 +32,7 @@ describe "Metadata with empty fields" do
 
     message = EventStore::Messaging::Controls::Message.example metadata: metadata
 
-    event_data = EventStore::Messaging::Message::Export::EventData.! message
+    event_data = EventStore::Messaging::Message::Export::EventData.(message)
 
     metadata = message.metadata
 

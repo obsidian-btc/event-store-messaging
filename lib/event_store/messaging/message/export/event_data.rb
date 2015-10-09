@@ -7,7 +7,7 @@ module EventStore
             @logger ||= Telemetry::Logger.get self
           end
 
-          def self.!(message)
+          def self.call(message)
             logger.trace "Exporting event data to message (Message Type: #{message.message_type})"
 
             event_data = EventStore::Client::HTTP::EventData::Write.build
@@ -16,15 +16,16 @@ module EventStore
             event_data.type = message.message_type
             event_data.data = message.to_h
 
-            event_data.metadata = Metadata.! message.metadata
+            event_data.metadata = Metadata.(message.metadata)
 
             logger.debug "Exported event data to message (Message Type: #{message.message_type})"
 
             event_data
           end
+          class << self; alias :! :call; end # TODO: Remove deprecated actuator [Kelsey, Thu Oct 08 2015]
 
           module Metadata
-            def self.!(metadata)
+            def self.call(metadata)
               logger.trace "Converting message metadata to event data metadata"
 
               data = metadata.to_h
@@ -36,6 +37,7 @@ module EventStore
 
               data
             end
+            class << self; alias :! :call; end # TODO: Remove deprecated actuator [Kelsey, Thu Oct 08 2015]
 
             def self.logger
               Telemetry::Logger.get self

@@ -62,7 +62,7 @@
       end
 
       module Handle
-        def !(message, stream_item=nil)
+        def call(message, stream_item=nil)
           instance = build
 
           handler_method_name = Info.handler_name(message)
@@ -79,10 +79,11 @@
             instance.send handler_method_name, message, stream_item
           end
         end
+        alias :! :call # TODO: Remove deprecated actuator [Kelsey, Thu Oct 08 2015]
       end
 
       def handle(message, stream_item=nil)
-        self.class.! message, stream_item
+        self.class.(message, stream_item)
       end
     end
   end

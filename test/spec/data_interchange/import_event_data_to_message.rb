@@ -5,7 +5,7 @@ describe "Import Event Data to Message" do
 
   message_class = EventStore::Messaging::Controls::Message.message_class
 
-  message = EventStore::Messaging::Message::Import::EventData.! event_data, message_class
+  message = EventStore::Messaging::Message::Import::EventData.(event_data, message_class)
 
   specify "Message type is the event data type" do
     assert(message.class.message_type == event_data.type)

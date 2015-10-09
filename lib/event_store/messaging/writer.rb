@@ -49,7 +49,7 @@ module EventStore
         messages = [messages] unless messages.is_a? Array
 
         batch = messages.map do |message|
-          EventStore::Messaging::Message::Export::EventData.! message
+          EventStore::Messaging::Message::Export::EventData.(message)
         end
 
         batch

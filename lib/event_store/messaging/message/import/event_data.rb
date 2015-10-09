@@ -7,7 +7,7 @@ module EventStore
             @logger ||= Telemetry::Logger.get self
           end
 
-          def self.!(event_data, message_class)
+          def self.call(event_data, message_class)
             logger.trace "Importing event data to message (Message Class: #{message_class})"
 
             metadata = EventStore::Messaging::Message::Metadata.build event_data.metadata
@@ -21,6 +21,7 @@ module EventStore
               logger.debug "Imported event data to message (Message Class: #{message_class})"
             end
           end
+          class << self; alias :! :call; end # TODO: Remove deprecated actuator [Kelsey, Thu Oct 08 2015]
         end
       end
     end
