@@ -64,7 +64,7 @@ module EventStore
         end
 
         def set_attributes(instance, data)
-          SetAttributes.! instance, data
+          SetAttributes.(instance, data)
         end
 
         ## check if still used after redesign done

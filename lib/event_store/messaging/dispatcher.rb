@@ -73,7 +73,7 @@ module EventStore
 
           unless message_class.nil?
             logger.debug "Building message (Class: #{message_class.name})"
-            message = Message::Import::EventData.! event_data, message_class
+            message = Message::Import::EventData.(event_data, message_class)
           else
             logger.debug "No message class registered (Type: #{type})"
           end
@@ -96,7 +96,7 @@ module EventStore
 
       def dispatch(message, event_data)
         handlers.get(message).each do |handler_class|
-          handler_class.! message, event_data
+          handler_class.(message, event_data)
         end
         nil
       end
