@@ -7,7 +7,6 @@ module EventStore
 
       class Substitute
         attr_reader :messages
-        attr_reader :reader
 
         dependency :dispatcher, EventStore::Messaging::Dispatcher
 
