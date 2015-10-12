@@ -54,7 +54,7 @@ end
 
 describe "Stream ID" do
   specify "Can be derived from the stream name" do
-    id = UUID.random
+    id = Identifier::UUID.random
     stream_name = "someStream-#{id}"
 
     stream_id = EventStore::Messaging::StreamName.get_id stream_name
