@@ -11,14 +11,12 @@ module EventStore
 
         dependency :dispatcher, EventStore::Messaging::Dispatcher
 
-        def initialize(reader)
-          @reader = reader
+        def initialize
           @messages = []
         end
 
         def self.build
-          reader = Messaging::Reader.new "substituteStream"
-          new reader
+          new
         end
 
         def add(message)
