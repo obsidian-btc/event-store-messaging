@@ -8,7 +8,7 @@ module EventStore
       class Substitute
         attr_reader :messages
 
-        dependency :dispatcher, EventStore::Messaging::Dispatcher
+        dependency :dispatcher
 
         def initialize
           @messages = []
