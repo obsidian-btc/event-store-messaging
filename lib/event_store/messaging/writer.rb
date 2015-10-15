@@ -91,7 +91,9 @@ module EventStore
         end
 
         def messages
-          @messages ||= []
+          @messages ||= Hash.new do |hash, stream_id|
+            hash[stream_id] = []
+          end
         end
 
         def write(msg, stream_id, expected_version: nil, reply_stream_name: nil)
@@ -100,18 +102,26 @@ module EventStore
           end
 
           writer.write(msg, stream_id, reply_stream_name: reply_stream_name).tap do
-            messages << msg
+            messages[stream_id] << msg
           end
         end
 
         def reply(msg)
           result = writer.reply(msg).tap do
-            messages << msg
+            reply_stream_name = msg.metadata.reply_stream_name
+            messages[reply_stream_name] << msg
           end
         end
 
-        def written?(msg)
-          messages.include? msg
+        def written?(msg, stream_name=nil)
+          if stream_name
+            messages[stream_name].include? msg
+          else
+            messages.each_key do |stream_name|
+              return true if written? msg, stream_name
+            end
+            false
+          end
         end
       end
     end
