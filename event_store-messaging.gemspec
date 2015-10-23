@@ -2,7 +2,7 @@
 Gem::Specification.new do |s|
   s.name = 'event_store-messaging'
   s.summary = 'Coordinates messaging with Event Store'
-  s.version = '0.0.0'
+  s.version = '0.1.1'
   s.authors = ['']
   s.require_paths = ['lib']
   s.files = Dir.glob('{lib}/**/*')
