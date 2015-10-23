@@ -51,7 +51,7 @@ module EventStore
       end
 
       module Build
-        def build(data=nil, metadata=nil) ## why pass metadata here? when used?
+        def build(data=nil, metadata=nil)
           data ||= {}
           metadata ||= {}
 
@@ -67,7 +67,6 @@ module EventStore
           SetAttributes.(instance, data)
         end
 
-        ## check if still used after redesign done
         def build_metadata(metadata)
           if metadata.nil?
             Metadata.new
