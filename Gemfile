@@ -9,6 +9,7 @@ source 'https://gem.fury.io/obsidian/' do
   gem 'runner'
   gem 'fixture'
   gem 'process_host'
+  gem 'controls'
 end
 
 source 'https://rubygems.org'
