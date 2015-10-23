@@ -10,7 +10,9 @@ module EventStore
           def self.call(event_data, message_class)
             logger.trace "Importing event data to message (Message Class: #{message_class})"
 
-            metadata = EventStore::Messaging::Message::Metadata.build event_data.metadata
+            metadata_data = event_data.metadata || {}
+
+            metadata = EventStore::Messaging::Message::Metadata.build metadata_data
 
             message_class.build(event_data.data).tap do |instance|
               instance.metadata = metadata
