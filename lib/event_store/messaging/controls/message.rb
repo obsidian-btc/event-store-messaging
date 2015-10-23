@@ -53,7 +53,7 @@ module EventStore
           }
         end
 
-        def self.example(time=nil, metadata: nil)
+        def self.example(time=nil, metadata: "")
           time ||= time(time)
           metadata ||= EventStore::Messaging::Controls::Message::Metadata.example
 
