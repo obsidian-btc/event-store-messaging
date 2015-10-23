@@ -3,16 +3,24 @@ module EventStore
     module Controls
       module EventData
         module Read
-          def self.data(number=nil, time: nil, stream_name: nil, metadata: nil, type: nil)
+          def self.data(number=nil, time: nil, stream_name: nil, metadata: nil, type: nil, omit_metadata: nil)
             reference_time = ::Controls::Time.reference
 
             number ||= 0
             time ||= reference_time
             stream_name ||= StreamName.reference
-            metadata ||= EventStore::Messaging::Controls::Message::Metadata.data
+
+            omit_metadata ||= false
+
+            unless omit_metadata
+              metadata ||= EventStore::Messaging::Controls::Message::Metadata.data
+            else
+              metadata = nil
+            end
+
             type ||= 'SomeMessage'
 
-            {
+            data = {
               'type' => type,
               'number' => number,
               'stream_name' => stream_name,
@@ -26,10 +34,16 @@ module EventStore
                 }
               ]
             }
+
+            if metadata.nil?
+              data.delete 'metadata'
+            end
+
+            data
           end
 
-          def self.example
-            data = data()
+          def self.example(omit_metadata: nil)
+            data = data(omit_metadata: omit_metadata)
             data['links'] = EventStore::Client::HTTP::EventData::Read::Links.build data['links']
 
             EventStore::Client::HTTP::EventData::Read.build data
