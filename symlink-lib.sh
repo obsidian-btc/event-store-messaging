@@ -10,27 +10,29 @@ if [ ! -d "$LIBRARIES_DIR" ]; then
   exit 1
 fi
 
-name=event_store/messaging
-dest="$LIBRARIES_DIR/event_store"
+name=messaging
+prefix=event_store
+full_name=$prefix/$name
+dest="$LIBRARIES_DIR/$prefix"
 
 if [ ! -d "$dest" ]; then
   mkdir -p "$dest"
 fi
 
 echo
-echo "Symlinking $name"
+echo "Symlinking $full_name"
 echo "- - -"
 
-if [ -h "$dest/messaging" ]; then
-  for entry in $LIBRARIES_DIR/$name*; do
+if [ -h "$dest/$name" ]; then
+  for entry in $LIBRARIES_DIR/$full_name*; do
     echo "- removing symlink: $entry"
     rm $entry
   done
 fi
 
 echo "- creating symlinks"
-ln -s $(PWD)/lib/$name* $dest
+ln -s $(PWD)/lib/$full_name* $dest
 
 echo "- - -"
-echo "($name done)"
+echo "($full_name done)"
 echo
