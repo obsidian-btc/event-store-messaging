@@ -15,8 +15,8 @@ describe "Read a Stream" do
   end
 
   results.each do |result|
-    logger(__FILE__).data result.message.inspect
-    logger(__FILE__).data result.event_data.inspect
+    __logger.data result.message.inspect
+    __logger.data result.event_data.inspect
   end
 
   specify "Messages are read" do

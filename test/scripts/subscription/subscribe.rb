@@ -13,5 +13,5 @@ dispatcher.register_handler EventStore::Messaging::Controls::Handler::SomeHandle
 reader = EventStore::Messaging::Subscription.build stream_name, dispatcher, slice_size: 1
 
 reader.start do |message|
-  logger(__FILE__).info message.inspect
+  __logger.info message.inspect
 end

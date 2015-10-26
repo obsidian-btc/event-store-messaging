@@ -1,7 +1,7 @@
 require_relative './subscription_init'
 
 stream_name = EventStore::Client::HTTP::Controls::StreamName.get "testSubscription"
-logger(__FILE__).info "Stream name: #{stream_name}"
+__logger.info "Stream name: #{stream_name}"
 
 stream_name_file = 'tmp/stream_name'
 File.write stream_name_file, stream_name
@@ -21,7 +21,7 @@ loop do
 
   result = writer.write message, stream_name
 
-  logger(__FILE__).data result.inspect
+  __logger.data result.inspect
 
   sleep period_seconds
 end
