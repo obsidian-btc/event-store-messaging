@@ -10,9 +10,6 @@ if [ ! -d "$LIBRARIES_DIR" ]; then
   exit 1
 fi
 
-# name=telemetry/errors
-# dest="$LIBRARIES_DIR/telemetry"
-
 name=event_store/messaging
 dest="$LIBRARIES_DIR/event_store"
 
