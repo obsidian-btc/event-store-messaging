@@ -25,8 +25,10 @@ echo "- - -"
 
 if [ -h "$dest/$name" ]; then
   for entry in $LIBRARIES_DIR/$full_name*; do
-    echo "- removing symlink: $entry"
-    rm $entry
+    if [ -e "$entry" ]; then
+      echo "- removing symlink: $entry"
+      rm $entry
+    fi
   done
 fi
 
