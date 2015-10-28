@@ -6,17 +6,17 @@ module EventStore
       dependency :writer, EventStore::Client::HTTP::EventWriter
       dependency :logger, Telemetry::Logger
 
-      def self.build
+      def self.build(session: nil)
         logger.trace "Building"
         new.tap do |instance|
-          EventStore::Client::HTTP::EventWriter.configure instance
+          EventStore::Client::HTTP::EventWriter.configure instance, session: session
           Telemetry::Logger.configure instance
           logger.debug "Built"
         end
       end
 
-      def self.configure(receiver)
-        instance = build
+      def self.configure(receiver, session: nil)
+        instance = build(session: session)
         receiver.writer = instance
         instance
       end
