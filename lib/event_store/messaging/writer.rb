@@ -107,10 +107,9 @@ module EventStore
         end
 
         def reply(msg)
-          result = writer.reply(msg).tap do
-            reply_stream_name = msg.metadata.reply_stream_name
-            messages[reply_stream_name] << msg
-          end
+          reply_stream_name = msg.metadata.reply_stream_name
+          result = writer.reply(msg)
+          messages[reply_stream_name] << msg
         end
 
         def written?(msg, stream_name=nil)
