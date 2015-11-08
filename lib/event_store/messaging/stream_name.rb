@@ -33,6 +33,7 @@ module EventStore
         EventStore::Client::StreamName.stream_name "#{category_name}:command", id
       end
 
+      # TODO: Add optional id parameter (Scott, Fri Nov 06 2015)
       def category_stream_name(category_name=nil)
         category_name ||= self.category_name
         EventStore::Client::StreamName.category_stream_name(category_name)

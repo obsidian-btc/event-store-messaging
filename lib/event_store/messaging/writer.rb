@@ -6,17 +6,17 @@ module EventStore
       dependency :writer, EventStore::Client::HTTP::EventWriter
       dependency :logger, Telemetry::Logger
 
-      def self.build
+      def self.build(session: nil)
         logger.trace "Building"
         new.tap do |instance|
-          EventStore::Client::HTTP::EventWriter.configure instance
+          EventStore::Client::HTTP::EventWriter.configure instance, session: session
           Telemetry::Logger.configure instance
           logger.debug "Built"
         end
       end
 
-      def self.configure(receiver)
-        instance = build
+      def self.configure(receiver, session: nil)
+        instance = build(session: session)
         receiver.writer = instance
         instance
       end
@@ -107,10 +107,9 @@ module EventStore
         end
 
         def reply(msg)
-          result = writer.reply(msg).tap do
-            reply_stream_name = msg.metadata.reply_stream_name
-            messages[reply_stream_name] << msg
-          end
+          reply_stream_name = msg.metadata.reply_stream_name
+          result = writer.reply(msg)
+          messages[reply_stream_name] << msg
         end
 
         def written?(msg, stream_name=nil)
