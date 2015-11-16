@@ -25,15 +25,16 @@ module EventStore
         end
       end
 
-      def stream_name(id)
+      def stream_name(id, category_name=nil)
+        category_name ||= self.category_name
         EventStore::Client::StreamName.stream_name category_name, id
       end
 
-      def command_stream_name(id)
+      def command_stream_name(id, category_name=nil)
+        category_name ||= self.category_name
         EventStore::Client::StreamName.stream_name "#{category_name}:command", id
       end
 
-      # TODO: Add optional id parameter (Scott, Fri Nov 06 2015)
       def category_stream_name(category_name=nil)
         category_name ||= self.category_name
         EventStore::Client::StreamName.category_stream_name(category_name)
