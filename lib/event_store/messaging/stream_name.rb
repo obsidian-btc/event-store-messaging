@@ -47,6 +47,10 @@ module EventStore
         "#{category_stream_name}:command"
       end
 
+      def self.get_category(stream_name)
+        stream_name.split('-')[0]
+      end
+
       def self.get_id(stream_name)
         EventStore::Client::StreamName.get_id stream_name
       end

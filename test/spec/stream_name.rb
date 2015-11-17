@@ -66,3 +66,12 @@ describe "Stream ID" do
     assert(stream_id.nil?)
   end
 end
+
+describe "Stream Category" do
+  specify "Can be derived from the stream name" do
+    stream_name = "someStream-id"
+
+    stream_category = EventStore::Messaging::StreamName.get_category stream_name
+    assert(stream_category == 'someStream')
+  end
+end
