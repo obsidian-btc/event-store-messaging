@@ -4,8 +4,8 @@ module EventStore
       module Copy
         extend self
 
-        def call(receiver, source, *attributes, exclude: nil)
-          return SetAttributes.(receiver, source, include: attributes.flatten, exclude: exclude)
+        def call(receiver, source, include: nil, exclude: nil)
+          return SetAttributes.(receiver, source, include: include, exclude: exclude)
         end
       end
     end

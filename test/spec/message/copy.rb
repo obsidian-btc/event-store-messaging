@@ -14,7 +14,7 @@ describe "Copy Message Attributes" do
     msg_1 = EventStore::Messaging::Controls::Message.example
     msg_2 = msg_1.class.new
 
-    EventStore::Messaging::Message::Copy.(msg_1, msg_2, [
+    EventStore::Messaging::Message::Copy.(msg_1, msg_2, include: [
       :some_attribute,
       :some_time
     ])
@@ -26,7 +26,7 @@ describe "Copy Message Attributes" do
     msg_1 = EventStore::Messaging::Controls::Message.example
     msg_2 = msg_1.class.new
 
-    EventStore::Messaging::Message::Copy.(msg_1, msg_2, :some_attribute)
+    EventStore::Messaging::Message::Copy.(msg_1, msg_2, include: :some_attribute)
 
     assert(msg_1.some_attribute == msg_2.some_attribute)
     refute(msg_1.some_time == msg_2.some_time)
@@ -52,4 +52,3 @@ describe "Copy Message Attributes" do
     refute(msg_1.some_time == msg_2.some_time)
   end
 end
-
