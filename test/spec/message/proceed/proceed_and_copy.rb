@@ -25,6 +25,18 @@ describe "Proceed from Previous Message and Copy Message Attributes" do
     assert(source == receiver)
   end
 
+  context "Alternate syntax using `copy` as include" do
+    specify "Copies attributes" do
+EventStore::Messaging::Message::Proceed.(source, receiver, copy: [
+  :some_attribute,
+  :some_time
+])
+
+      assert(source == receiver)
+    end
+  end
+
+
   specify "Including some attributes" do
     EventStore::Messaging::Message::Proceed.(source, receiver, include: :some_attribute)
 

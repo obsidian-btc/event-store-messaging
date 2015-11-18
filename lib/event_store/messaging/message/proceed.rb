@@ -9,6 +9,10 @@ module EventStore
         end
 
         def proceed(source, receiver=nil, copy: nil, include: nil, exclude: nil, strict: nil)
+          if copy.is_a? Array
+            include = copy
+          end
+
           unless include.nil? && exclude.nil?
             copy = true
           end
