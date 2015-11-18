@@ -24,6 +24,10 @@ module EventStore
         self.class.message_name
       end
 
+      def precedence?(other_message)
+        metadata.precedence?(other_message.metadata)
+      end
+
       def ==(other)
         (
           self.class == other.class &&
