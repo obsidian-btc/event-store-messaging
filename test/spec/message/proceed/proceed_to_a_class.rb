@@ -1,14 +1,15 @@
 require_relative '../message_init'
 
-describe "Proceed from Previous Message" do
+describe "Proceed from Previous Message to a Class" do
   let(:source) { EventStore::Messaging::Controls::Message.example }
-  let(:msg) { source.class.new }
 
   let(:source_metadata) { source.metadata }
   let(:metadata) { msg.metadata }
 
-  before do
-    EventStore::Messaging::Message::Proceed.(source, msg)
+  let(:msg) { EventStore::Messaging::Message::Proceed.(source, source.class) }
+
+  specify "Constructs the class" do
+    assert(msg.class == source.class)
   end
 
   context "Copied metadata attributes" do

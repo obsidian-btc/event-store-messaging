@@ -5,7 +5,7 @@ describe "Copy Message Attributes to a Class" do
   receiver = EventStore::Messaging::Message::Copy.(source, source.class)
 
   specify "Constructs the class" do
-    assert(source.class == receiver.class)
+    assert(receiver.class == source.class)
   end
 
   specify "Copies the attributes" do

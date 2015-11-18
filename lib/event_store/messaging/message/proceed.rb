@@ -9,6 +9,18 @@ module EventStore
         end
 
         def proceed(source, receiver=nil, include: nil, exclude: nil, strict: nil)
+          if receiver.nil?
+            receiver = self
+          end
+
+          if receiver.class == Class
+            if receiver.method_defined? :build
+              receiver = receiver.build
+            else
+              receiver = receiver.new
+            end
+          end
+
           metadata = Metadata.new
 
           metadata.causation_event_uri = source.metadata.source_event_uri

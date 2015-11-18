@@ -7,6 +7,7 @@ module EventStore
         cls.extend Build
         cls.extend Linked
         cls.extend Copy
+        cls.extend Proceed
         cls.extend Initial
       end
 
