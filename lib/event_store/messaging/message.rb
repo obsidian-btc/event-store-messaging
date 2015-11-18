@@ -7,6 +7,7 @@ module EventStore
         cls.extend Build
         cls.extend Linked
         cls.extend Copy
+        cls.extend Proceed
         cls.extend Initial
       end
 
@@ -21,6 +22,10 @@ module EventStore
 
       def message_name
         self.class.message_name
+      end
+
+      def precedence?(other_message)
+        metadata.precedence?(other_message.metadata)
       end
 
       def ==(other)
@@ -79,19 +84,8 @@ module EventStore
 
       module Linked
         def linked(metadata)
-          metadata = copy_metadata(metadata)
-          build(nil, metadata)
-        end
-
-        # TODO Should be self method so's to not have it in interface? [Scott, Wed Nov 18 2015]
-        def copy_metadata(other_metadata)
-          metadata = Metadata.new
-
-          metadata.causation_event_uri = other_metadata.source_event_uri
-          metadata.correlation_stream_name = other_metadata.correlation_stream_name
-          metadata.reply_stream_name = other_metadata.reply_stream_name
-
-          metadata
+          Telemetry::Logger.build(self).obsolete "The `linked' method is obsolete. Consider using the `proceed' method."
+          proceed(metadata)
         end
       end
 
