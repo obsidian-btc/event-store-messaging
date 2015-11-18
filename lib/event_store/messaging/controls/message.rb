@@ -9,6 +9,12 @@ module EventStore
           attribute :some_time
         end
 
+        class FewerAttributesMessage
+          include EventStore::Messaging::Message
+
+          attribute :some_attribute
+        end
+
         class OtherMessage
           include EventStore::Messaging::Message
         end
@@ -57,7 +63,7 @@ module EventStore
           time ||= time(time)
           metadata ||= EventStore::Messaging::Controls::Message::Metadata.example
 
-          msg = SomeMessage.new
+          msg = message_class.new
           msg.some_attribute = attribute
           msg.some_time = time
 

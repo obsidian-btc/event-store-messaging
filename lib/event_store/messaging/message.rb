@@ -6,6 +6,7 @@ module EventStore
         cls.extend Info
         cls.extend Build
         cls.extend Linked
+        cls.extend Copy
         cls.extend Initial
       end
 
@@ -82,6 +83,7 @@ module EventStore
           build(nil, metadata)
         end
 
+        # TODO Should be self method so's to not have it in interface? [Scott, Wed Nov 18 2015]
         def copy_metadata(other_metadata)
           metadata = Metadata.new
 
