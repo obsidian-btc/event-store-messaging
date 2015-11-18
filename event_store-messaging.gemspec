@@ -2,7 +2,7 @@
 Gem::Specification.new do |s|
   s.name = 'event_store-messaging'
   s.summary = 'Messaging primitives for EventStore using the EventStore Client HTTP library'
-  s.version = '0.1.8'
+  s.version = '0.1.9'
   s.authors = ['']
   s.require_paths = ['lib']
   s.files = Dir.glob('{lib}/**/*')
