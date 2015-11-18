@@ -9,6 +9,12 @@ module EventStore
           attribute :some_time
         end
 
+        class FewerAttributesMessage
+          include EventStore::Messaging::Message
+
+          attribute :some_attribute
+        end
+
         class OtherMessage
           include EventStore::Messaging::Message
         end

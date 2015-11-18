@@ -6,7 +6,6 @@ describe "Copy Message Attributes" do
 
   specify "All attributes by default" do
     EventStore::Messaging::Message::Copy.(source, receiver)
-
     assert(source == receiver)
   end
 

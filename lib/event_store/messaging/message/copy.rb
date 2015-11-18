@@ -2,13 +2,15 @@ module EventStore
   module Messaging
     module Message
       module Copy
+        class Error < RuntimeError; end
+
         extend self
 
-        def self.call(source, receiver=nil, include: nil, exclude: nil)
-          copy(source, receiver, include: include, exclude: exclude)
+        def self.call(source, receiver=nil, include: nil, exclude: nil, strict: nil)
+          copy(source, receiver, include: include, exclude: exclude, strict: strict)
         end
 
-        def copy(source, receiver=nil, include: nil, exclude: nil)
+        def copy(source, receiver=nil, include: nil, exclude: nil, strict: nil)
           if receiver.nil?
             receiver = self
           end
@@ -21,7 +23,14 @@ module EventStore
             end
           end
 
-          SetAttributes.(receiver, source, include: include, exclude: exclude)
+          strict = true if strict.nil?
+
+          begin
+            SetAttributes.(receiver, source, include: include, exclude: exclude, strict: strict)
+          rescue SetAttributes::Attribute::Error => e
+            raise Error, e.message, e.backtrace
+          end
+
           receiver
         end
       end
