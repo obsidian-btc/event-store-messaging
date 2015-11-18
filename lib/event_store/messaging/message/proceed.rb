@@ -27,11 +27,17 @@ module EventStore
             end
           end
 
-          metadata = Metadata.new
+          source_metadata = nil
+          if source.is_a? Metadata
+            source_metadata = source
+          else
+            source_metadata = source.metadata
+          end
 
-          metadata.causation_event_uri = source.metadata.source_event_uri
-          metadata.correlation_stream_name = source.metadata.correlation_stream_name
-          metadata.reply_stream_name = source.metadata.reply_stream_name
+          metadata = Metadata.new
+          metadata.causation_event_uri = source_metadata.source_event_uri
+          metadata.correlation_stream_name = source_metadata.correlation_stream_name
+          metadata.reply_stream_name = source_metadata.reply_stream_name
 
           receiver.metadata = metadata
 
