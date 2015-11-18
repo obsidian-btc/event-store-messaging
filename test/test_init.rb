@@ -9,5 +9,6 @@ require_relative '../init.rb'
 require 'runner'
 
 require 'event_store/messaging/controls'
+require 'securerandom'
 
 Telemetry::Logger::AdHoc.activate
