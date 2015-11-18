@@ -4,11 +4,17 @@ module EventStore
       module Proceed
         extend self
 
-        def self.call(source, receiver=nil, include: nil, exclude: nil, strict: nil)
-          proceed(source, receiver, include: include, exclude: exclude, strict: strict)
+        def self.call(source, receiver=nil, copy: nil, include: nil, exclude: nil, strict: nil)
+          proceed(source, receiver, copy: copy, include: include, exclude: exclude, strict: strict)
         end
 
-        def proceed(source, receiver=nil, include: nil, exclude: nil, strict: nil)
+        def proceed(source, receiver=nil, copy: nil, include: nil, exclude: nil, strict: nil)
+          unless include.nil? && exclude.nil?
+            copy = true
+          end
+
+          copy ||= false
+
           if receiver.nil?
             receiver = self
           end
@@ -28,6 +34,10 @@ module EventStore
           metadata.reply_stream_name = source.metadata.reply_stream_name
 
           receiver.metadata = metadata
+
+          if copy
+            Copy.(source, receiver, include: include, exclude: exclude, strict: strict)
+          end
 
           receiver
         end
