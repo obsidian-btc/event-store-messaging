@@ -57,7 +57,7 @@ module EventStore
           time ||= time(time)
           metadata ||= EventStore::Messaging::Controls::Message::Metadata.example
 
-          msg = SomeMessage.new
+          msg = message_class.new
           msg.some_attribute = attribute
           msg.some_time = time
 

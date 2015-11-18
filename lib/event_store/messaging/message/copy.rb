@@ -10,7 +10,7 @@ module EventStore
 
         def copy(source, receiver=nil, include: nil, exclude: nil)
           if receiver.nil?
-            receiver = self.class
+            receiver = self
           end
 
           if receiver.class == Class
