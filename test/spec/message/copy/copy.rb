@@ -1,4 +1,4 @@
-require_relative 'message_init'
+require_relative '../message_init'
 
 describe "Copy Message Attributes" do
   let(:source) { EventStore::Messaging::Controls::Message.example }
