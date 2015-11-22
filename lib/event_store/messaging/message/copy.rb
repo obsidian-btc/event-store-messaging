@@ -6,11 +6,11 @@ module EventStore
 
         extend self
 
-        def self.call(source, receiver=nil, include: nil, exclude: nil, strict: nil)
-          copy(source, receiver, include: include, exclude: exclude, strict: strict)
+        def self.call(source, receiver=nil, copy: nil, include: nil, exclude: nil, strict: nil)
+          copy(source, receiver, copy: copy, include: include, exclude: exclude, strict: strict)
         end
 
-        def copy(source, receiver=nil, include: nil, exclude: nil, strict: nil)
+        def copy(source, receiver=nil, copy: nil, include: nil, exclude: nil, strict: nil)
           if receiver.nil?
             receiver = self
           end
@@ -26,7 +26,7 @@ module EventStore
           strict = true if strict.nil?
 
           begin
-            SetAttributes.(receiver, source, include: include, exclude: exclude, strict: strict)
+            SetAttributes.(receiver, source, copy: copy, include: include, exclude: exclude, strict: strict)
           rescue SetAttributes::Attribute::Error => e
             raise Error, e.message, e.backtrace
           end

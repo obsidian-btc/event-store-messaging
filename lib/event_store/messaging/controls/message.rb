@@ -71,6 +71,24 @@ module EventStore
 
           msg
         end
+
+        module Mapped
+          class Example
+            include EventStore::Messaging::Message
+
+            attribute :an_attribute
+            attribute :some_time
+          end
+
+          def self.example
+            msg = Example.new
+
+            msg.an_attribute = Message.attribute
+            msg.some_time = Message.time
+
+            msg
+          end
+        end
       end
     end
   end
