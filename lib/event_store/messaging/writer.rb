@@ -112,12 +112,16 @@ module EventStore
           messages[reply_stream_name] << msg
         end
 
-        def written?(msg, stream_name=nil)
+        def written?(msg, stream_name=nil, &predicate)
+          if predicate.nil?
+            predicate = Proc.new { |m| m == msg }
+          end
+
           if stream_name
-            messages[stream_name].include? msg
+            messages[stream_name].any? &predicate
           else
             messages.each_key do |stream_name|
-              return true if written? msg, stream_name
+              return true if written? msg, stream_name, &predicate
             end
             false
           end
