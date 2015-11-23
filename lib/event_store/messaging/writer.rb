@@ -112,7 +112,7 @@ module EventStore
           messages[reply_stream_name] << msg
         end
 
-        def written?(msg, stream_name=nil, &predicate)
+        def written?(msg=nil, stream_name=nil, &predicate)
           if predicate.nil?
             predicate = Proc.new { |m| m == msg }
           end
