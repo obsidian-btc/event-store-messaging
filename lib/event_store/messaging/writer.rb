@@ -5,13 +5,14 @@ module EventStore
 
       dependency :writer, EventStore::Client::HTTP::EventWriter
       dependency :logger, Telemetry::Logger
-      dependency :Telemetry, Telemetry
+      dependency :telemetry, Telemetry
 
       def self.build(session: nil)
         logger.trace "Building"
         new.tap do |instance|
           EventStore::Client::HTTP::EventWriter.configure instance, session: session
           Telemetry::Logger.configure instance
+          Telemetry.configure instance
           logger.debug "Built"
         end
       end
@@ -42,6 +43,8 @@ module EventStore
         else
           logger.trace "Wrote batch (Stream Name: #{stream_name}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
         end
+
+        telemetry.record :wrote, { stream_name: stream_name, message: message }
 
         event_data
       end
