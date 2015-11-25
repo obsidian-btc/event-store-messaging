@@ -1,4 +1,5 @@
 require 'event_store/client/http'
+require 'telemetry'
 
 require 'event_store/messaging/message/metadata'
 require 'event_store/messaging/message'

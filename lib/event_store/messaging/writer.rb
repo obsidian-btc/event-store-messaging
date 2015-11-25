@@ -5,6 +5,7 @@ module EventStore
 
       dependency :writer, EventStore::Client::HTTP::EventWriter
       dependency :logger, Telemetry::Logger
+      dependency :Telemetry, Telemetry
 
       def self.build(session: nil)
         logger.trace "Building"
