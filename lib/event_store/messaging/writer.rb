@@ -86,11 +86,15 @@ module EventStore
 
       class Substitute
         attr_accessor :stream_version
-        attr_accessor :writer
+        # attr_accessor :writer
+
+        dependency :writer
+        dependency :telemetry, Telemetry
 
         def self.build
           new.tap do |instance|
             instance.writer = EventStore::Messaging::Writer.new
+            Telemetry.configure instance
           end
         end
 
