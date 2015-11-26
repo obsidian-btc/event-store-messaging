@@ -12,7 +12,7 @@ describe "Writer Telemetry" do
     writer.write message, stream_name
 
     specify "Records written telemetry" do
-      refute(sink.written_records.empty?)
+      assert(sink.recorded_written?)
     end
   end
 
@@ -27,7 +27,7 @@ describe "Writer Telemetry" do
     writer.reply message
 
     specify "Records replied telemetry" do
-      refute(sink.replied_records.empty?)
+      assert(sink.recorded_replied?)
     end
   end
 end
