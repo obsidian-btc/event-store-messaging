@@ -3,6 +3,8 @@ module EventStore
     class Writer
       class Error < StandardError; end
 
+      TelemetryData = Struct.new :stream_name, :message
+
       dependency :writer, EventStore::Client::HTTP::EventWriter
       dependency :logger, Telemetry::Logger
       dependency :telemetry, Telemetry
@@ -44,7 +46,7 @@ module EventStore
           logger.trace "Wrote batch (Stream Name: #{stream_name}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
         end
 
-        telemetry.record :wrote, { stream_name: stream_name, message: message }
+        telemetry.record :written, TelemetryData.new(stream_name, message)
 
         event_data
       end
@@ -77,6 +79,8 @@ module EventStore
 
         logger.debug "Replied (Message Type: #{message.message_type}, Stream Name: #{reply_stream_name})"
 
+        telemetry.record :replied, TelemetryData.new(reply_stream_name, message)
+
         message
       end
 
@@ -86,7 +90,6 @@ module EventStore
 
       class Substitute
         attr_accessor :stream_version
-        # attr_accessor :writer
 
         dependency :writer
         dependency :telemetry, Telemetry
@@ -111,6 +114,7 @@ module EventStore
 
           writer.write(msg, stream_id, reply_stream_name: reply_stream_name).tap do
             messages[stream_id] << msg
+            telemetry.record :written, TelemetryData.new(stream_name, message)
           end
         end
 
@@ -118,6 +122,8 @@ module EventStore
           reply_stream_name = msg.metadata.reply_stream_name
           result = writer.reply(msg)
           messages[reply_stream_name] << msg
+          telemetry.record :replied, TelemetryData.new(reply_stream_name, message)
+          msg
         end
 
         def written?(msg=nil, stream_name=nil, &predicate)

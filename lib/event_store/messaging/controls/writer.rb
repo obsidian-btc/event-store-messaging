@@ -19,6 +19,21 @@ module EventStore
 
           stream_name
         end
+
+        module Telemetry
+          module Sink
+            class Example
+              include ::Telemetry::Sink
+
+              record :written
+              record :replied
+            end
+
+            def self.example
+              Example.new
+            end
+          end
+        end
       end
     end
   end

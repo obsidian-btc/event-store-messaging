@@ -1,3 +1,5 @@
+require 'ostruct'
+
 require 'event_store/client/http'
 require 'telemetry'
 
