@@ -86,6 +86,12 @@ module EventStore
         @logger ||= ::Telemetry::Logger.get self
       end
 
+      def self.register_telemetry_sink(writer)
+        sink = Telemetry.sink
+        writer.telemetry.register sink
+        sink
+      end
+
       module Telemetry
         class Sink
           include ::Telemetry::Sink
