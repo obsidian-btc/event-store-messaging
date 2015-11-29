@@ -116,7 +116,7 @@ module EventStore
         def self.build
           new.tap do |instance|
             instance.writer = EventStore::Messaging::Writer.new
-            Telemetry.configure instance
+            ::Telemetry.configure instance
           end
         end
 
