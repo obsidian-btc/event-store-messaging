@@ -3,18 +3,16 @@ module EventStore
     class Writer
       class Error < StandardError; end
 
-      TelemetryData = Struct.new :stream_name, :message
-
       dependency :writer, EventStore::Client::HTTP::EventWriter
-      dependency :logger, Telemetry::Logger
-      dependency :telemetry, Telemetry
+      dependency :logger, ::Telemetry::Logger
+      dependency :telemetry, ::Telemetry
 
       def self.build(session: nil)
         logger.trace "Building"
         new.tap do |instance|
           EventStore::Client::HTTP::EventWriter.configure instance, session: session
-          Telemetry::Logger.configure instance
-          Telemetry.configure instance
+          ::Telemetry::Logger.configure instance
+          ::Telemetry.configure instance
           logger.debug "Built"
         end
       end
@@ -46,7 +44,7 @@ module EventStore
           logger.trace "Wrote batch (Stream Name: #{stream_name}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
         end
 
-        telemetry.record :written, TelemetryData.new(stream_name, message)
+        telemetry.record :written, Telemetry::Data.new(stream_name, message)
 
         event_data
       end
@@ -79,13 +77,34 @@ module EventStore
 
         logger.debug "Replied (Message Type: #{message.message_type}, Stream Name: #{reply_stream_name})"
 
-        telemetry.record :replied, TelemetryData.new(reply_stream_name, message)
+        telemetry.record :replied, Telemetry::Data.new(reply_stream_name, message)
 
         message
       end
 
       def self.logger
-        @logger ||= Telemetry::Logger.get self
+        @logger ||= ::Telemetry::Logger.get self
+      end
+
+      def self.register_telemetry_sink(writer)
+        sink = Telemetry.sink
+        writer.telemetry.register sink
+        sink
+      end
+
+      module Telemetry
+        class Sink
+          include ::Telemetry::Sink
+
+          record :written
+          record :replied
+        end
+
+        Data = Struct.new :stream_name, :message
+
+        def self.sink
+          Sink.new
+        end
       end
 
       class Substitute
@@ -114,7 +133,7 @@ module EventStore
 
           writer.write(msg, stream_id, reply_stream_name: reply_stream_name).tap do
             messages[stream_id] << msg
-            telemetry.record :written, TelemetryData.new(stream_name, message)
+            telemetry.record :written, Telemetry::Data.new(stream_name, message)
           end
         end
 
@@ -122,7 +141,7 @@ module EventStore
           reply_stream_name = msg.metadata.reply_stream_name
           result = writer.reply(msg)
           messages[reply_stream_name] << msg
-          telemetry.record :replied, TelemetryData.new(reply_stream_name, message)
+          telemetry.record :replied, Telemetry::Data.new(reply_stream_name, message)
           msg
         end
 
