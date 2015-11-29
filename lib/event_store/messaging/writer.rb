@@ -126,35 +126,35 @@ module EventStore
           end
         end
 
-        def write(msg, stream_name, expected_version: nil, reply_stream_name: nil)
+        def write(message, stream_name, expected_version: nil, reply_stream_name: nil)
           if stream_version && expected_version && expected_version != stream_version
             raise EventStore::Client::HTTP::Request::Post::ExpectedVersionError
           end
 
-          writer.write(msg, stream_name, reply_stream_name: reply_stream_name).tap do
-            messages[stream_name] << msg
+          writer.write(message, stream_name, reply_stream_name: reply_stream_name).tap do
+            messages[stream_name] << message
             telemetry.record :written, Telemetry::Data.new(stream_name, message)
           end
         end
 
-        def reply(msg)
-          reply_stream_name = msg.metadata.reply_stream_name
-          result = writer.reply(msg)
-          messages[reply_stream_name] << msg
+        def reply(message)
+          reply_stream_name = message.metadata.reply_stream_name
+          result = writer.reply(message)
+          messages[reply_stream_name] << message
           telemetry.record :replied, Telemetry::Data.new(reply_stream_name, message)
-          msg
+          message
         end
 
-        def written?(msg=nil, stream_name=nil, &predicate)
+        def written?(message=nil, stream_name=nil, &predicate)
           if predicate.nil?
-            predicate = Proc.new { |m| m == msg }
+            predicate = Proc.new { |m| m == message }
           end
 
           if stream_name
             messages[stream_name].any? &predicate
           else
             messages.each_key do |stream_name|
-              return true if written? msg, stream_name, &predicate
+              return true if written? message, stream_name, &predicate
             end
             false
           end
