@@ -6,7 +6,7 @@ describe "Writer Telemetry" do
     writer = EventStore::Messaging::Writer.build
     stream_name = EventStore::Messaging::Controls::StreamName.get 'testWriter'
 
-    sink = EventStore::Messaging::Controls::Writer::Telemetry::Sink.example
+    sink = EventStore::Messaging::Writer::Telemetry.sink
     writer.telemetry.register sink
 
     writer.write message, stream_name
@@ -21,7 +21,7 @@ describe "Writer Telemetry" do
 
     writer = EventStore::Messaging::Writer.build
 
-    sink = EventStore::Messaging::Controls::Writer::Telemetry::Sink.example
+    sink = EventStore::Messaging::Writer::Telemetry.sink
     writer.telemetry.register sink
 
     writer.reply message
