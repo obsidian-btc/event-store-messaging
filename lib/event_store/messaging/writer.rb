@@ -6,15 +6,15 @@ module EventStore
       TelemetryData = Struct.new :stream_name, :message
 
       dependency :writer, EventStore::Client::HTTP::EventWriter
-      dependency :logger, Telemetry::Logger
-      dependency :telemetry, Telemetry
+      dependency :logger, ::Telemetry::Logger
+      dependency :telemetry, ::Telemetry
 
       def self.build(session: nil)
         logger.trace "Building"
         new.tap do |instance|
           EventStore::Client::HTTP::EventWriter.configure instance, session: session
-          Telemetry::Logger.configure instance
-          Telemetry.configure instance
+          ::Telemetry::Logger.configure instance
+          ::Telemetry.configure instance
           logger.debug "Built"
         end
       end
@@ -85,7 +85,12 @@ module EventStore
       end
 
       def self.logger
-        @logger ||= Telemetry::Logger.get self
+        @logger ||= ::Telemetry::Logger.get self
+      end
+
+      module Telemetry
+        class Sink
+        end
       end
 
       class Substitute
