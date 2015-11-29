@@ -121,18 +121,18 @@ module EventStore
         end
 
         def messages
-          @messages ||= Hash.new do |hash, stream_id|
-            hash[stream_id] = []
+          @messages ||= Hash.new do |hash, stream_name|
+            hash[stream_name] = []
           end
         end
 
-        def write(msg, stream_id, expected_version: nil, reply_stream_name: nil)
+        def write(msg, stream_name, expected_version: nil, reply_stream_name: nil)
           if stream_version && expected_version && expected_version != stream_version
             raise EventStore::Client::HTTP::Request::Post::ExpectedVersionError
           end
 
-          writer.write(msg, stream_id, reply_stream_name: reply_stream_name).tap do
-            messages[stream_id] << msg
+          writer.write(msg, stream_name, reply_stream_name: reply_stream_name).tap do
+            messages[stream_name] << msg
             telemetry.record :written, Telemetry::Data.new(stream_name, message)
           end
         end
