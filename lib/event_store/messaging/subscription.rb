@@ -6,8 +6,8 @@ module EventStore
       end
 
       module ProcessHostIntegration
-        def change_connection_policy(policy)
-          session.connection.policy = policy
+        def change_connection_scheduler(scheduler)
+          session.connection.scheduler = scheduler
         end
       end
     end

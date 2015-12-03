@@ -47,8 +47,8 @@ describe "Hosting a subscription process" do
     end
 
     module ProcessHostIntegration
-      def change_connection_policy(policy)
-        session.connection.policy = policy
+      def change_connection_scheduler(scheduler)
+        session.connection.scheduler = scheduler
       end
     end
   end
@@ -78,8 +78,8 @@ describe "Hosting a subscription process" do
   subscription = EventStore::Messaging::Subscription.build stream_name, dispatcher
 
   cooperation = ProcessHost::Cooperation.build
-  cooperation.register writer_process
-  cooperation.register subscription
+  cooperation.register writer_process, 'writer'
+  cooperation.register subscription, 'subscription'
 
   t0 = Time.now
   begin
