@@ -10,22 +10,34 @@ describe "Writer Substitute" do
 
     substitute_writer.write message, stream_name
 
-    specify "Records telemetry about the write" do
-      assert(substitute_writer.written? { |msg| msg == message })
+    context "Records telemetry about the write" do
+      specify "Message argument only" do
+        assert(substitute_writer.written? { |msg| msg == message })
+      end
+
+      specify "Message and stream name arguments" do
+        assert(substitute_writer.written? { |msg, stream| stream == stream_name })
+      end
     end
   end
 
-#   context "Reply" do
-#     message = EventStore::Messaging::Controls::Message.example
+  context "Records replies" do
+    substitute_writer = EventStore::Messaging::Writer::Substitute.build
 
-#     substitute_writer = EventStore::Messaging::Writer.build
+    message = EventStore::Messaging::Controls::Message.example
 
-#     sink = EventStore::Messaging::Writer.register_telemetry_sink(substitute_writer)
+    stream_name = message.metadata.reply_stream_name
 
-#     substitute_writer.reply message
+    substitute_writer.reply message
 
-#     specify "Records replied telemetry" do
-#       assert(sink.recorded_replied?)
-#     end
-#   end
+    context "Records replied telemetry" do
+      specify "Message argument only" do
+        assert(substitute_writer.written? { |msg| msg == message })
+      end
+
+      specify "Message and stream name arguments" do
+        assert(substitute_writer.written? { |msg, stream| stream == stream_name })
+      end
+    end
+  end
 end

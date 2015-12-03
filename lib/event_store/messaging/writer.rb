@@ -44,7 +44,7 @@ module EventStore
           logger.trace "Wrote batch (Stream Name: #{stream_name}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
         end
 
-        telemetry.record :written, Telemetry::Data.new(stream_name, message)
+        telemetry.record :written, Telemetry::Data.new(message, stream_name)
 
         event_data
       end
@@ -77,7 +77,7 @@ module EventStore
 
         logger.debug "Replied (Message Type: #{message.message_type}, Stream Name: #{reply_stream_name})"
 
-        telemetry.record :replied, Telemetry::Data.new(reply_stream_name, message)
+        telemetry.record :replied, Telemetry::Data.new(message, reply_stream_name)
 
         message
       end
@@ -100,7 +100,7 @@ module EventStore
           record :replied
         end
 
-        Data = Struct.new :stream_name, :message
+        Data = Struct.new :message, :stream_name
 
         def self.sink
           Sink.new
@@ -121,8 +121,14 @@ module EventStore
         class Writer < EventStore::Messaging::Writer
           attr_accessor :sink
 
+          def writes(&blk)
+            sink.records.select do |record|
+              blk.call(record.data.message, record.data.stream_name)
+            end
+          end
+
           def written?(&blk)
-            sink.records.any? do |record|
+            sink.recorded? do |record|
               blk.call(record.data.message, record.data.stream_name)
             end
           end
