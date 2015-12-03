@@ -1,9 +1,12 @@
-require_relative './client_integration_init'
+require_relative '../spec_init'
 
 describe "Writer Telemetry" do
   context "Write" do
     message = EventStore::Messaging::Controls::Message.example
     writer = EventStore::Messaging::Writer.build
+
+    SubstAttr::Substitute.(:writer, writer)
+
     stream_name = EventStore::Messaging::Controls::StreamName.get 'testWriter'
 
     sink = EventStore::Messaging::Writer.register_telemetry_sink(writer)
@@ -17,8 +20,9 @@ describe "Writer Telemetry" do
 
   context "Reply" do
     message = EventStore::Messaging::Controls::Message.example
-
     writer = EventStore::Messaging::Writer.build
+
+    SubstAttr::Substitute.(:writer, writer)
 
     sink = EventStore::Messaging::Writer.register_telemetry_sink(writer)
 

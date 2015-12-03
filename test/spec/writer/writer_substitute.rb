@@ -1,4 +1,4 @@
-require_relative 'spec_init'
+require_relative '../spec_init'
 
 describe "Writer Substitute" do
   context "Records writes" do
