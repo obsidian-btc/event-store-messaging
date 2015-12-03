@@ -24,7 +24,7 @@ describe "Writer Substitute" do
       end
     end
 
-    context "Records the data written" do
+    context "Access the data recorded" do
       specify "No block arguments" do
         assert(substitute_writer.writes.length == 1)
       end
@@ -39,25 +39,27 @@ describe "Writer Substitute" do
     end
   end
 
-  ## detector calls without block args
+  context "Records replies" do
+    substitute_writer = EventStore::Messaging::Writer::Substitute.build
 
-  # context "Records replies" do
-  #   substitute_writer = EventStore::Messaging::Writer::Substitute.build
+    message = EventStore::Messaging::Controls::Message.example
 
-  #   message = EventStore::Messaging::Controls::Message.example
+    stream_name = message.metadata.reply_stream_name
 
-  #   stream_name = message.metadata.reply_stream_name
+    substitute_writer.reply message
 
-  #   substitute_writer.reply message
+    context "Records replied telemetry" do
+      specify "No block arguments" do
+        assert(substitute_writer.written?)
+      end
 
-  #   context "Records replied telemetry" do
-  #     specify "Message argument only" do
-  #       assert(substitute_writer.written? { |msg| msg == message })
-  #     end
+      specify "Message argument only" do
+        assert(substitute_writer.replied? { |msg| msg == message })
+      end
 
-  #     specify "Message and stream name arguments" do
-  #       assert(substitute_writer.written? { |msg, stream| stream == stream_name })
-  #     end
-  #   end
-  # end
+      specify "Message and stream name arguments" do
+        assert(substitute_writer.replied? { |msg, stream| stream == stream_name })
+      end
+    end
+  end
 end

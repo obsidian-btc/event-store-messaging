@@ -111,9 +111,7 @@ module EventStore
         def self.build
           Substitute::Writer.build.tap do |substitute_writer|
             SubstAttr::Substitute.(:writer, substitute_writer)
-
             sink = Messaging::Writer.register_telemetry_sink(substitute_writer)
-
             substitute_writer.sink = sink
           end
         end
@@ -137,6 +135,16 @@ module EventStore
             end
 
             sink.recorded_written? do |record|
+              blk.call(record.data.message, record.data.stream_name)
+            end
+          end
+
+          def replied?(&blk)
+            if blk.nil?
+              return sink.recorded_replied?
+            end
+
+            sink.recorded_replied? do |record|
               blk.call(record.data.message, record.data.stream_name)
             end
           end
