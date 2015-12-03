@@ -11,15 +11,21 @@ describe "Writer Substitute" do
     substitute_writer.write message, stream_name
 
     context "Records telemetry about the write" do
-      specify "Message argument only" do
+      specify "No block arguments" do
+        assert(substitute_writer.written?)
+      end
+
+      specify "Message block argument only" do
         assert(substitute_writer.written? { |msg| msg == message })
       end
 
-      specify "Message and stream name arguments" do
+      specify "Message and stream name block arguments" do
         assert(substitute_writer.written? { |msg, stream| stream == stream_name })
       end
     end
   end
+
+  ## detector calls without block args
 
   context "Records replies" do
     substitute_writer = EventStore::Messaging::Writer::Substitute.build

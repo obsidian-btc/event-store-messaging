@@ -122,13 +122,17 @@ module EventStore
           attr_accessor :sink
 
           def writes(&blk)
-            sink.records.select do |record|
+            sink.written_records.select do |record|
               blk.call(record.data.message, record.data.stream_name)
             end
           end
 
           def written?(&blk)
-            sink.recorded? do |record|
+            if blk.nil?
+              return sink.recorded_written?
+            end
+
+            sink.recorded_written? do |record|
               blk.call(record.data.message, record.data.stream_name)
             end
           end
