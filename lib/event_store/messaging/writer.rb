@@ -122,7 +122,7 @@ module EventStore
           attr_accessor :sink
 
           def written?(&blk)
-            sink.records.each do |record|
+            sink.records.any? do |record|
               blk.call(record.data.message, record.data.stream_name)
             end
           end
