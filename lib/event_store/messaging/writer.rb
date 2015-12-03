@@ -139,6 +139,16 @@ module EventStore
             end
           end
 
+          def replies(&blk)
+            if blk.nil?
+              return sink.replied_records
+            end
+
+            sink.replied_records.select do |record|
+              blk.call(record.data.message, record.data.stream_name)
+            end
+          end
+
           def replied?(&blk)
             if blk.nil?
               return sink.recorded_replied?

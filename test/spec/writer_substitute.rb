@@ -61,5 +61,19 @@ describe "Writer Substitute" do
         assert(substitute_writer.replied? { |msg, stream| stream == stream_name })
       end
     end
+
+    context "Access the data recorded" do
+      specify "No block arguments" do
+        assert(substitute_writer.replies.length == 1)
+      end
+
+      specify "Message block argument only" do
+        assert(substitute_writer.replies { |msg| msg == message }.length == 1 )
+      end
+
+      specify "Message and stream name block arguments" do
+        assert(substitute_writer.replies { |msg, stream| stream == stream_name }.length == 1)
+      end
+    end
   end
 end
