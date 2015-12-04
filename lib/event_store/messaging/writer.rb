@@ -110,7 +110,6 @@ module EventStore
       module Substitute
         def self.build
           Substitute::Writer.build.tap do |substitute_writer|
-            SubstAttr::Substitute.(:writer, substitute_writer)
             sink = Messaging::Writer.register_telemetry_sink(substitute_writer)
             substitute_writer.sink = sink
           end
@@ -118,6 +117,15 @@ module EventStore
 
         class Writer < EventStore::Messaging::Writer
           attr_accessor :sink
+
+          def self.build(session: nil)
+            logger.trace "Building substitute"
+            new.tap do |instance|
+              ::Telemetry::Logger.configure instance
+              ::Telemetry.configure instance
+              logger.debug "Built substitute"
+            end
+          end
 
           def writes(&blk)
             if blk.nil?
