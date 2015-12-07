@@ -23,7 +23,7 @@ module EventStore
         instance
       end
 
-      def write(message, stream_name, reply_stream_name: nil, expected_version: nil)
+      def write(message, stream_name, expected_version: nil, reply_stream_name: nil)
         unless message.is_a? Array
           logger.trace "Writing (Message Type: #{message.message_type}, Stream Name: #{stream_name}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
         else
@@ -44,7 +44,7 @@ module EventStore
           logger.trace "Wrote batch (Stream Name: #{stream_name}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
         end
 
-        telemetry.record :written, Telemetry::Data.new(message, stream_name)
+        telemetry.record :written, Telemetry::Data.new(message, stream_name, expected_version, reply_stream_name)
 
         event_data
       end
@@ -100,7 +100,7 @@ module EventStore
           record :replied
         end
 
-        Data = Struct.new :message, :stream_name
+        Data = Struct.new :message, :stream_name, :expected_version, :reply_stream_name
 
         def self.sink
           Sink.new
