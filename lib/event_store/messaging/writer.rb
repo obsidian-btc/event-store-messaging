@@ -133,7 +133,7 @@ module EventStore
             end
 
             sink.written_records.select do |record|
-              blk.call(record.data.message, record.data.stream_name)
+              blk.call(record.data.message, record.data.stream_name, record.data.expected_version, record.data.reply_stream_name)
             end
           end
 
@@ -143,7 +143,7 @@ module EventStore
             end
 
             sink.recorded_written? do |record|
-              blk.call(record.data.message, record.data.stream_name)
+              blk.call(record.data.message, record.data.stream_name, record.data.expected_version, record.data.reply_stream_name)
             end
           end
 
