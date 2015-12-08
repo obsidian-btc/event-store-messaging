@@ -49,6 +49,10 @@ module EventStore
         event_data
       end
 
+      def write_initial(message, stream_name)
+        write(message, stream_name, expected_version: :no_stream)
+      end
+
       def event_data_batch(messages)
         messages = [messages] unless messages.is_a? Array
 
