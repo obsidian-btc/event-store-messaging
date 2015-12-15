@@ -10,7 +10,7 @@ module EventStore
 
       module Macro
         def category_macro(category_name)
-          category_name = Casing::Camel.(category_name)
+          category_name = Casing::Camel.(category_name, symbol_to_string: true)
           self.send :define_method, :category_name do
             @category_name || category_name
           end
