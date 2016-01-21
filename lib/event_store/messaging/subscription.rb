@@ -12,9 +12,9 @@ module EventStore
 
         def start
           loop do
-            logger.trace 'Starting Subscription'
+            logger.trace "Starting subscription (Stream Name: #{stream_name.inspect})"
             super
-            logger.debug 'Subscription Stopped'
+            logger.debug "Subscription stopped (Stream Name: #{stream_name.inspect})"
           end
         end
       end
