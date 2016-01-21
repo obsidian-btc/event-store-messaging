@@ -9,6 +9,14 @@ module EventStore
         def change_connection_scheduler(scheduler)
           session.connection.scheduler = scheduler
         end
+
+        def start
+          loop do
+            logger.trace "Starting subscription (Stream Name: #{stream_name.inspect})"
+            super
+            logger.debug "Subscription stopped (Stream Name: #{stream_name.inspect})"
+          end
+        end
       end
     end
   end
