@@ -1,7 +1,7 @@
 require_relative 'dispatcher_init'
 
-describe "Dispatcher" do
-  it "Registers classes of messages that its handlers handle" do
+context "Dispatcher" do
+  test "Registers classes of messages that its handlers handle" do
     dispatcher = EventStore::Messaging::Controls::Dispatcher.example
 
     message_registry = dispatcher.class.message_registry

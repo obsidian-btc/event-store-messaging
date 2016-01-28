@@ -1,6 +1,6 @@
 require_relative 'client_integration_init'
 
-describe "Writing the Expected Version Number" do
+context "Writing the Expected Version Number" do
   stream_name = EventStore::Messaging::Controls::StreamName.get 'testWrongVersion'
   writer = EventStore::Messaging::Writer.build
 
@@ -9,17 +9,20 @@ describe "Writing the Expected Version Number" do
 
   message_2 = EventStore::Messaging::Controls::Message.example
 
-  describe "Right Version" do
-    specify "Succeeds" do
+  context "Right Version" do
+    test "Succeeds" do
       writer.write message_2, stream_name, expected_version: 0
     end
   end
 
-  describe "Wrong Version" do
-    specify "Fails" do
-      assert_raises(EventStore::Client::HTTP::Request::Post::ExpectedVersionError) do
+  context "Wrong Version" do
+    test "Fails" do
+      begin
         writer.write message_2, stream_name, expected_version: 11
+      rescue EventStore::Client::HTTP::Request::Post::ExpectedVersionError => error
       end
+
+      assert error
     end
   end
 end

@@ -1,6 +1,6 @@
 require_relative './client_integration_init'
 
-describe "Initial Event" do
+context "Initial Event" do
   context "Writing the initial event to a stream that has not been created yet" do
     substitute_writer = EventStore::Messaging::Writer::Substitute.build
 
@@ -9,7 +9,7 @@ describe "Initial Event" do
 
     substitute_writer.write_initial message, stream_name
 
-    specify "Has an expected version of :no_stream" do
+    test "Has an expected version of :no_stream" do
       assert(substitute_writer.written? { |msg, stream, expected_version | message == msg && expected_version == :no_stream })
     end
   end
@@ -22,10 +22,13 @@ describe "Initial Event" do
 
     writer.write message, stream_name
 
-    specify "Is an error" do
-      assert_raises EventStore::Client::HTTP::Request::Post::ExpectedVersionError do
+    test "Is an error" do
+      begin
         writer.write_initial message, stream_name
+      rescue EventStore::Client::HTTP::Request::Post::ExpectedVersionError => error
       end
+
+      assert error
     end
   end
 end

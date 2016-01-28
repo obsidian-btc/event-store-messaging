@@ -1,6 +1,6 @@
 require_relative 'client_integration_init'
 
-describe "Read a Stream" do
+context "Read a Stream" do
   stream_name = EventStore::Messaging::Controls::Writer.write 2, 'testMessageReader'
 
   dispatcher = EventStore::Messaging::Controls::Dispatcher.unique
@@ -19,7 +19,7 @@ describe "Read a Stream" do
     __logger.data result.event_data.inspect
   end
 
-  specify "Messages are read" do
+  test "Messages are read" do
     assert(results.length == 2)
   end
 end

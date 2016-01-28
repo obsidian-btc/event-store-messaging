@@ -1,12 +1,12 @@
 require_relative '../message_init'
 
-describe "Proceed from Previous Message and Copy Message Attributes with Strictness" do
+context "Proceed from Previous Message and Copy Message Attributes with Strictness" do
   context "Strict" do
     context "Receiver has same attributes as source" do
       source = EventStore::Messaging::Controls::Message.example
       receiver = source.class.new
 
-      specify "No error" do
+      test "No error" do
         EventStore::Messaging::Message::Proceed.(source, receiver, copy: true)
       end
     end
@@ -15,10 +15,13 @@ describe "Proceed from Previous Message and Copy Message Attributes with Strictn
       source = EventStore::Messaging::Controls::Message.example
       receiver = EventStore::Messaging::Controls::Message::FewerAttributesMessage.new
 
-      specify "Is an error" do
-        assert_raises EventStore::Messaging::Message::Copy::Error do
+      test "Is an error" do
+        begin
           EventStore::Messaging::Message::Proceed.(source, receiver, copy: true)
+        rescue EventStore::Messaging::Message::Copy::Error => error
         end
+
+        assert error
       end
     end
   end
@@ -30,7 +33,7 @@ describe "Proceed from Previous Message and Copy Message Attributes with Strictn
 
       EventStore::Messaging::Message::Proceed.(source, receiver, copy: true, strict: false)
 
-      specify "Copies the attributes supported by the receiver" do
+      test "Copies the attributes supported by the receiver" do
         assert(source.some_attribute == receiver.some_attribute)
       end
     end

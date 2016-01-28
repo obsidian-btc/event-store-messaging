@@ -1,6 +1,6 @@
 require_relative 'client_integration_init'
 
-describe "Read a Stream" do
+context "Read a Stream" do
   stream_name = EventStore::Messaging::Controls::StreamName.get 'testStreamNotFound'
 
   dispatcher = EventStore::Messaging::Controls::Dispatcher.unique
@@ -13,7 +13,7 @@ describe "Read a Stream" do
     enumerated = true
   end
 
-  specify "Messages are not enumerated" do
-    refute(enumerated)
+  test "Messages are not enumerated" do
+    assert(!enumerated)
   end
 end

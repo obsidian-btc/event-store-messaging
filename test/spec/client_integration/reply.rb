@@ -1,6 +1,6 @@
 require_relative 'client_integration_init'
 
-describe "Replying to a Message" do
+context "Replying to a Message" do
   message = EventStore::Messaging::Controls::Message.example
 
   writer = EventStore::Messaging::Writer.build
@@ -13,11 +13,11 @@ describe "Replying to a Message" do
 
   writer.reply message
 
-  specify "Writes the message to the reply stream" do
+  test "Writes the message to the reply stream" do
     path = "/streams/#{reply_stream_name}"
     get = EventStore::Client::HTTP::Request::Get.build
     body_text, get_response = get.("#{path}/0")
 
-    refute(body_text.nil?)
+    assert(!body_text.nil?)
   end
 end

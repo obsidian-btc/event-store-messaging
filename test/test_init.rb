@@ -6,7 +6,7 @@ puts RUBY_DESCRIPTION
 
 require_relative '../init.rb'
 
-require 'runner'
+require 'test_bench'; TestBench.activate
 
 require 'event_store/messaging/controls'
 require 'securerandom'

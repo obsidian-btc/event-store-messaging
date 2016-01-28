@@ -1,7 +1,7 @@
 require_relative 'dispatcher_init'
 
-describe "Dispatcher" do
-  it "Determines handlers that it can dispatch a message to" do
+context "Dispatcher" do
+  test "Determines handlers that it can dispatch a message to" do
     dispatcher = EventStore::Messaging::Controls::Dispatcher.example
     message = EventStore::Messaging::Controls::Message.example
 
@@ -13,6 +13,6 @@ describe "Dispatcher" do
 
     assert(names.include? 'SomeHandler')
     assert(names.include? 'OtherHandler')
-    refute(names.include? 'AnotherHandler')
+    assert(!(names.include? 'AnotherHandler'))
   end
 end

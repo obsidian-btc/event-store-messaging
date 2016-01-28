@@ -1,7 +1,7 @@
 require_relative 'handler_init'
 
-describe "Handle Message" do
-  it "Handles" do
+context "Handle Message" do
+  test "Handles" do
     handler = EventStore::Messaging::Controls::Handler::HandlesHandledMessage.new
     message = EventStore::Messaging::Controls::Message::HandledMessage.new
 

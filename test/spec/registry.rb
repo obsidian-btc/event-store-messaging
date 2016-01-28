@@ -1,9 +1,9 @@
 require_relative 'spec_init'
 
-describe "Registry" do
+context "Registry" do
   registry = EventStore::Messaging::Controls::Registry.example
 
-  it "Registers items" do
+  test "Registers items" do
     item = Object.new
 
     registry.register item
@@ -11,16 +11,19 @@ describe "Registry" do
     assert(registry.registered? item)
   end
 
-  it "Registers items once only" do
+  test "Registers items once only" do
     item = Object.new
     registry.register item
 
-    assert_raises EventStore::Messaging::Registry::Error do
+    begin
       registry.register item
+    rescue EventStore::Messaging::Registry::Error => error
     end
+
+    assert error
   end
 
-  it "Optional, specialized work is done after registration" do
+  test "Optional, specialized work is done after registration" do
     item = Object.new
 
     record = []

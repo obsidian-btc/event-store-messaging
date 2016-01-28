@@ -1,7 +1,7 @@
 require_relative 'client_integration_init'
 
-describe "Message Writer" do
-  specify "Write a message with a reply stream" do
+context "Message Writer" do
+  test "Write a message with a reply stream" do
     message = EventStore::Messaging::Controls::Message.example
 
     writer = EventStore::Messaging::Writer.build

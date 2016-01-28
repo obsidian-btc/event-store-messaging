@@ -1,18 +1,17 @@
 require_relative '../message_init'
 
-describe "Proceed from Previous Message to a Class" do
-  let(:source) { EventStore::Messaging::Controls::Message.example }
+context "Proceed from Previous Message to a Class" do
+  source = EventStore::Messaging::Controls::Message.example
+  msg = EventStore::Messaging::Message::Proceed.(source, source.class)
 
-  let(:source_metadata) { source.metadata }
-  let(:metadata) { msg.metadata }
+  source_metadata = source.metadata
+  metadata = msg.metadata
 
-  let(:msg) { EventStore::Messaging::Message::Proceed.(source, source.class) }
-
-  specify "Constructs the class" do
+  test "Constructs the class" do
     assert(msg.class == source.class)
   end
 
-  specify "Metadata have precedence" do
+  test "Metadata have precedence" do
     assert(metadata.precedence?(source_metadata))
   end
 end

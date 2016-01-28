@@ -1,6 +1,6 @@
 require_relative 'client_integration_init'
 
-describe "Write Batch of Events" do
+context "Write Batch of Events" do
   message = EventStore::Messaging::Controls::Message.example
 
   stream_name = EventStore::Messaging::Controls::StreamName.get 'testBatch'
@@ -32,7 +32,7 @@ describe "Write Batch of Events" do
     i += 1
     event_data = eval("read_data_#{i}")
 
-    specify "Individual events are written" do
+    test "Individual events are written" do
       assert(event_data.data['some_attribute'] == eval("token_#{i}"))
     end
   end
