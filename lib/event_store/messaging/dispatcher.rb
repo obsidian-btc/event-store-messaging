@@ -101,24 +101,30 @@ module EventStore
         nil
       end
 
-      class Substitute
-        def build_message(event_data)
-          substitute_msg = Object.new.extend(EventStore::Messaging::Message)
-          return substitute_msg
+      module Substitute
+        def self.build
+          Dispatcher.new
         end
 
-        def dispatch(message, event_data)
-          record = Struct.new(:message, :event_data).new(message, event_data)
-          dispatches << record
-        end
+        class Dispatcher
+          def build_message(event_data)
+            substitute_msg = Object.new.extend(EventStore::Messaging::Message)
+            return substitute_msg
+          end
 
-        def dispatches
-          @dispatches ||= []
-        end
+          def dispatch(message, event_data)
+            record = Struct.new(:message, :event_data).new(message, event_data)
+            dispatches << record
+          end
 
-        def dispatched?(entry_data)
-          dispatches.any? do |record|
-            record.event_data == entry_data
+          def dispatches
+            @dispatches ||= []
+          end
+
+          def dispatched?(entry_data)
+            dispatches.any? do |record|
+              record.event_data == entry_data
+            end
           end
         end
       end
