@@ -1,4 +1,4 @@
-require_relative 'spec_init'
+require_relative 'bench_init'
 
 context "Registry" do
   registry = EventStore::Messaging::Controls::Registry.example
