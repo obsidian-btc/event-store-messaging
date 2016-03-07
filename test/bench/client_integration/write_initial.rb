@@ -23,12 +23,9 @@ context "Initial Event" do
     writer.write message, stream_name
 
     test "Is an error" do
-      begin
-        writer.write_initial message, stream_name
-      rescue EventStore::Client::HTTP::Request::Post::ExpectedVersionError => error
+      assert proc { writer.write_initial message, stream_name } do
+        raises_error? EventStore::Client::HTTP::Request::Post::ExpectedVersionError
       end
-
-      assert error
     end
   end
 end

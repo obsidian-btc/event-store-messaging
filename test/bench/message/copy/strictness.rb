@@ -16,12 +16,9 @@ context "Message Copying Strictness" do
       receiver = EventStore::Messaging::Controls::Message::FewerAttributesMessage.new
 
       test "Is an error" do
-        begin
-          EventStore::Messaging::Message::Copy.(source, receiver)
-        rescue EventStore::Messaging::Message::Copy::Error => error
+        assert proc { EventStore::Messaging::Message::Copy.(source, receiver) } do
+          raises_error? EventStore::Messaging::Message::Copy::Error
         end
-
-        assert error
       end
     end
   end
