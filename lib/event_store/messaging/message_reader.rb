@@ -6,7 +6,6 @@ module EventStore
       dependency :reader, EventStore::Client::HTTP::EventReader
       dependency :dispatcher, EventStore::Messaging::Dispatcher
       dependency :logger, Telemetry::Logger
-      dependency :session, EventStore::Client::HTTP::Session
 
       def starting_position
         @starting_position ||= 0
@@ -24,13 +23,11 @@ module EventStore
 
       def self.build(stream_name, dispatcher, starting_position: nil, slice_size: nil, session: nil)
         logger.trace "Building message reader"
-        session ||= EventStore::Client::HTTP::Session.build
 
         new(stream_name, starting_position, slice_size).tap do |instance|
           http_reader.configure instance, stream_name, starting_position: starting_position, slice_size: slice_size, session: session
           Telemetry::Logger.configure instance
 
-          instance.session = session if session
           instance.dispatcher = dispatcher
 
           logger.debug "Built message reader"
