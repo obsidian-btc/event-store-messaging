@@ -15,12 +15,9 @@ context "Registry" do
     item = Object.new
     registry.register item
 
-    begin
-      registry.register item
-    rescue EventStore::Messaging::Registry::Error => error
+    assert proc { registry.register item } do
+      raises_error? EventStore::Messaging::Registry::Error
     end
-
-    assert error
   end
 
   test "Optional, specialized work is done after registration" do
