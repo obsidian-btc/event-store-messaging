@@ -23,7 +23,7 @@ module EventStore
       end
 
       def self.build(stream_name, dispatcher, starting_position: nil, slice_size: nil, session: nil)
-        logger.trace "Building message reader"
+        logger.trace "Building message reader (Stream Name: #{stream_name}, Starting Position: #{starting_position.inspect}, Slice Size: #{slice_size})"
         session ||= EventStore::Client::HTTP::Session.build
 
         new(stream_name, starting_position, slice_size).tap do |instance|
@@ -33,7 +33,7 @@ module EventStore
           instance.session = session if session
           instance.dispatcher = dispatcher
 
-          logger.debug "Built message reader"
+          logger.debug "Built message reader (Stream Name: #{stream_name}, Starting Position: #{starting_position.inspect}, Slice Size: #{slice_size})"
         end
       end
 
