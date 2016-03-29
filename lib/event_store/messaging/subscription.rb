@@ -7,7 +7,7 @@ module EventStore
 
       module ProcessHostIntegration
         def change_connection_scheduler(scheduler)
-          session.connection.scheduler = scheduler
+          reader.change_connection_scheduler scheduler
         end
 
         def start

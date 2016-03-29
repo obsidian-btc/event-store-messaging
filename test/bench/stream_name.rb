@@ -1,4 +1,4 @@
-require_relative 'spec_init'
+require_relative 'bench_init'
 
 context "Stream Name" do
   example = EventStore::Messaging::Controls::StreamName.example

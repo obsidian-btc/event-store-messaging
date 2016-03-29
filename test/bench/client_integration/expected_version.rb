@@ -17,12 +17,9 @@ context "Writing the Expected Version Number" do
 
   context "Wrong Version" do
     test "Fails" do
-      begin
-        writer.write message_2, stream_name, expected_version: 11
-      rescue EventStore::Client::HTTP::Request::Post::ExpectedVersionError => error
+      assert proc { writer.write message_2, stream_name, expected_version: 11 } do
+        raises_error? EventStore::Client::HTTP::Request::Post::ExpectedVersionError
       end
-
-      assert error
     end
   end
 end
