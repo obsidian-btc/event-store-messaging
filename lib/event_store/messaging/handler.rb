@@ -7,6 +7,7 @@
         cls.extend Info
         cls.extend Handle
         cls.extend Build
+        cls.extend Virtual::Macro
 
         cls.send :virtual, :configure_dependencies
         cls.send :dependency, :logger, Telemetry::Logger
