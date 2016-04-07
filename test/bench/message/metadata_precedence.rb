@@ -17,7 +17,7 @@ context "Metadata Precedence" do
   context "Any of the relevant attributes are not equal" do
     [:causation_event_uri, :correlation_stream_name, :reply_stream_name].each do |attribute|
 
-      test attribute do
+      test attribute.to_s do
         metadata.causation_event_uri = source_metadata.source_event_uri
         metadata.correlation_stream_name = source_metadata.correlation_stream_name
         metadata.reply_stream_name = source_metadata.reply_stream_name
