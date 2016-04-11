@@ -8,6 +8,7 @@ module EventStore
           extend HandlerRegistry
           extend BuildMessage
           extend Build
+          extend Configure
           extend Logger
 
           dependency :logger, Telemetry::Logger
@@ -55,6 +56,16 @@ module EventStore
           new.tap do |instance|
             Telemetry::Logger.configure instance
           end
+        end
+      end
+
+      module Configure
+        def configure(receiver, attr_name: nil)
+          attr_name ||= :dispatcher
+
+          instance = build
+          receiver.public_send "#{attr_name}=", instance
+          instance
         end
       end
 
