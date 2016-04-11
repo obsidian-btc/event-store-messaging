@@ -34,9 +34,11 @@ module EventStore
         end
       end
 
-      def self.configure(receiver, stream_name, dispatcher, starting_position: nil, slice_size: nil, session: nil)
+      def self.configure(receiver, stream_name, dispatcher, starting_position: nil, slice_size: nil, session: nil, attr_name: nil)
+        attr_name ||= :reader
+
         instance = build(stream_name, dispatcher, starting_position: starting_position, slice_size: slice_size, session: session)
-        receiver.reader = instance
+        receiver.public_send "#{attr_name}=", instance
         instance
       end
 
@@ -65,12 +67,12 @@ module EventStore
 
         message = dispatcher.build_message(event_data)
 
-        if !!message
-          dispatcher.dispatch(message, event_data)
-        else
+        if message.nil?
           logger.debug "Cannot dispatch \"#{event_data.type}\". The \"#{dispatcher}\" dispatcher has no handlers that handle it."
+          return nil
         end
 
+        dispatcher.dispatch(message, event_data)
         logger.debug "Dispatched event data (Type: #{event_data.type})"
 
         message
