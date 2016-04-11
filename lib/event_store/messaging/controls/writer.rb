@@ -5,7 +5,7 @@ module EventStore
         def self.write(count=nil, stream_name=nil, stream_metadata: nil)
           count ||= 1
 
-          stream_name = Controls::StreamName.get stream_name
+          stream_name ||= Controls::StreamName.get stream_name
           path = "/streams/#{stream_name}"
 
           writer = EventStore::Messaging::Writer.build
