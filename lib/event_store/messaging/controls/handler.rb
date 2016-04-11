@@ -52,6 +52,15 @@ module EventStore
           end
         end
 
+        class FailsWhenHandlingMessage
+          include EventStore::Messaging::Handler
+          include EventStore::Messaging::Controls::Message
+
+          handle SomeMessage do
+            fail
+          end
+        end
+
         def self.example
           SomeHandler.new
         end

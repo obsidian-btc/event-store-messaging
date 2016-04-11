@@ -22,19 +22,19 @@ module EventStore
           register :failed, &observer
         end
 
-        def notify(event, message)
-          logger.trace "Notifying observers (Event: #{event.inspect}, Message Type: #{message.message_type.inspect})"
+        def notify(event, notification)
+          logger.trace "Notifying observers (Event: #{event.inspect}, Message Type: #{notification.message_type.inspect})"
 
           observer_count = 0
 
           registry.each_value do |registration|
             if registration.event == event
-              registration.observer.(message)
+              registration.observer.(notification)
               observer_count += 1
             end
           end
 
-          logger.debug "Notified observers (Event: #{event.inspect}, Message Type: #{message.message_type.inspect}, Observers Notified: #{observer_count})"
+          logger.debug "Notified observers (Event: #{event.inspect}, Message Type: #{notification.message_type.inspect}, Observers Notified: #{observer_count})"
 
           observer_count
         end
@@ -57,6 +57,16 @@ module EventStore
 
         def unregister(id)
           registry.delete id
+        end
+
+        class Notification < Struct.new :message, :event_data
+          def message_type
+            message.message_type
+          end
+
+          class Failure < Notification
+            attr_accessor :error
+          end
         end
 
         module Assertions
@@ -82,6 +92,35 @@ module EventStore
         Registration = Struct.new :observer, :event do
           def id
             observer.object_id
+          end
+        end
+
+        module Substitute
+          def self.build
+            Observers.build
+          end
+
+          class Observers < Dispatcher::Observers
+            def notify(event, notification)
+              notifications[event] << notification
+            end
+
+            def notified?(event, message, event_data: nil, error: nil)
+              notifications[event].any? do |notification|
+                next unless notification.message == message
+
+                next if event_data && notification.event_data != event_data
+                next if error && notification.error != error
+
+                true
+              end
+            end
+
+            def notifications
+              @notifications ||= Hash.new do |hash, event|
+                hash[event] = []
+              end
+            end
           end
         end
       end

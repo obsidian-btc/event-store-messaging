@@ -2,14 +2,17 @@ module EventStore
   module Messaging
     module Dispatcher
       def self.included(cls)
-        cls.extend HandlerMacro
-        cls.extend MessageRegistry
-        cls.extend HandlerRegistry
-        cls.extend BuildMessage
-        cls.extend Build
-        cls.extend Logger
+        cls.class_exec do
+          extend HandlerMacro
+          extend MessageRegistry
+          extend HandlerRegistry
+          extend BuildMessage
+          extend Build
+          extend Logger
 
-        cls.send :dependency, :logger, Telemetry::Logger
+          dependency :logger, Telemetry::Logger
+          dependency :observers, Observers
+        end
       end
 
       module HandlerMacro
@@ -95,10 +98,41 @@ module EventStore
       end
 
       def dispatch(message, event_data)
+        notification = Observers::Notification.new message, event_data
+
+        observers.notify :dispatching, notification
+
         handlers.get(message).each do |handler_class|
           handler_class.(message, event_data)
         end
+
+        observers.notify :dispatched, notification
+
         nil
+
+      rescue => error
+        notification = Observers::Notification::Failure.new message, event_data
+        notification.error = error
+
+        observers.notify :failed, notification
+
+        raise error
+      end
+
+      def dispatched(&observer)
+        observers.dispatched &observer
+      end
+
+      def dispatching(&observer)
+        observers.dispatching &observer
+      end
+
+      def failed(&observer)
+        observers.failed &observer
+      end
+
+      def unregister(observer_id)
+        observers.unregister observer_id
       end
 
       module Substitute

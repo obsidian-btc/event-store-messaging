@@ -3,47 +3,47 @@ require_relative '../../bench_init'
 context "Notifying observers" do
   observers = EventStore::Messaging::Dispatcher::Observers.build
 
-  control_message = EventStore::Messaging::Controls::Message.example
+  control_notification = EventStore::Messaging::Controls::Dispatcher::Observers::Notification.example
 
   context "Message is about to be dispatched" do
-    message = nil
+    notification = nil
 
-    observers.dispatching do |msg|
-      message = msg
+    observers.dispatching do |n|
+      notification = n
     end
 
-    observers.notify :dispatching, control_message
+    observers.notify :dispatching, control_notification
 
     test do
-      assert message == control_message
+      assert notification == control_notification
     end
   end
 
   test "Message was dispatched" do
-    message = nil
+    notification = nil
 
-    observers.dispatched do |msg|
-      message = msg
+    observers.dispatched do |n|
+      notification = n
     end
 
-    observers.notify :dispatched, control_message
+    observers.notify :dispatched, control_notification
 
     test do
-      assert message == control_message
+      assert notification == control_notification
     end
   end
 
   test "An error occurred during a message dispatch" do
-    message = nil
+    notification = nil
 
-    observers.failed do |msg|
-      message = msg
+    observers.failed do |n|
+      notification = n
     end
 
-    observers.notify :failed, control_message
+    observers.notify :failed, control_notification
 
     test do
-      assert message == control_message
+      assert notification == control_notification
     end
   end
 
@@ -54,7 +54,7 @@ context "Notifying observers" do
     observers.register(event) {}
     observers.register(event) {}
 
-    observers_notified = observers.notify event, control_message
+    observers_notified = observers.notify event, control_notification
 
     assert observers_notified == 3
   end
@@ -68,7 +68,7 @@ context "Notifying observers" do
       message = msg
     end
 
-    observers.notify notified_event, control_message
+    observers.notify notified_event, control_notification
 
     test do
       assert message.nil?
@@ -85,7 +85,7 @@ context "Notifying observers" do
         notified = true
       end
 
-      observers.notify event, control_message
+      observers.notify event, control_notification
 
       assert notified
     end
@@ -93,11 +93,11 @@ context "Notifying observers" do
     test "1-arity" do
       notified = false
 
-      observers.register event do |_|
+      observers.register event do
         notified = true
       end
 
-      observers.notify event, control_message
+      observers.notify event, control_notification
 
       assert notified
     end
