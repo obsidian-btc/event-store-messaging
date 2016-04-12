@@ -138,8 +138,8 @@ module EventStore
         observers.failed &observer
       end
 
-      def unregister(observer_id)
-        observers.unregister observer_id
+      def remove_observer(registration)
+        observers.unregister registration
       end
 
       module Substitute

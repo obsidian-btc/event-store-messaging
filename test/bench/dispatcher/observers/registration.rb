@@ -8,10 +8,10 @@ context "Observer registration" do
   context do
     event = EventStore::Messaging::Controls::Dispatcher::Observers::Event.example
 
-    id = observers.register event, &observer
+    registration = observers.register event, &observer
 
     test "Registering an observer" do
-      assert observers.registry[id].observer == observer
+      assert observers.registry[registration.id].observer == observer
     end
 
     test "Assertions" do
@@ -21,9 +21,9 @@ context "Observer registration" do
     end
 
     test "Unregistering an observer" do
-      observers.unregister id
+      observers.unregister registration
 
-      assert observers.registry[id].nil?
+      assert observers.registry[registration.id].nil?
     end
   end
 

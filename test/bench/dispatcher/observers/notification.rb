@@ -35,7 +35,6 @@ context "Notifying observers" do
 
   context "An error occurred during a message dispatch" do
     notified = false
-    control_error = RuntimeError.new
 
     observers.failed do
       notified = true
@@ -48,16 +47,18 @@ context "Notifying observers" do
     end
   end
 
-  test "Number of observers notified is returned" do
+  test "Returns list of observers notified" do
     event = EventStore::Messaging::Controls::Dispatcher::Observers::Event.example
 
-    observers.register(event) {}
-    observers.register(event) {}
-    observers.register(event) {}
+    observer1 = proc {}
+    observer2 = proc {}
+
+    observers.register event, &observer1
+    observers.register event, &observer2
 
     observers_notified = observers.notify event, control_message
 
-    assert observers_notified == 3
+    assert observers_notified == [observer1, observer2]
   end
 
   context "Observers do not receive notifications for unrelated events" do

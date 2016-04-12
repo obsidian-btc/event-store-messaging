@@ -12,13 +12,13 @@ context "Observing dispatcher events" do
 
       test "Observers are notified when message is about to be dispatched" do
         assert dispatcher.observers do
-          notified? :dispatching, message, :event_data => event_data
+          notified? :dispatching, message, event_data: event_data
         end
       end
 
       test "Observers are notified when message has been dispatched" do
         assert dispatcher.observers do
-          notified? :dispatched, message, :event_data => event_data
+          notified? :dispatched, message, event_data: event_data
         end
       end
     end
@@ -33,13 +33,13 @@ context "Observing dispatcher events" do
 
       test "Observers are notified when message is about to be dispatched" do
         assert dispatcher.observers do
-          notified? :dispatching, message, :event_data => event_data
+          notified? :dispatching, message, event_data: event_data
         end
       end
 
       test "Observers are notified when message dispatch has failed" do
         assert dispatcher.observers do
-          notified? :failed, message, :event_data => event_data, :error => error
+          notified? :failed, message, event_data: event_data, error: error
         end
       end
     end
@@ -76,11 +76,11 @@ context "Observing dispatcher events" do
       end
     end
 
-    test "Unergistering" do
+    test "Removing observers" do
       observer = proc { }
 
-      id = dispatcher.dispatching &observer
-      dispatcher.unregister id
+      registration = dispatcher.dispatching &observer
+      dispatcher.remove_observer registration
 
       refute dispatcher.observers do
         notify_dispatching? observer

@@ -18,8 +18,7 @@ module EventStore
           end
 
           if stream_metadata
-            update_metadata = EventStore::Client::HTTP::StreamMetadata.build stream_name
-            update_metadata.update do |metadata|
+            EventStore::Client::HTTP::StreamMetadata::Update.(stream_name) do |metadata|
               metadata.update stream_metadata
             end
           end

@@ -33,18 +33,21 @@ module EventStore
         def notify(event, message, event_data=nil, error=nil)
           logger.trace "Notifying observers (Event: #{event.inspect}, Message Type: #{message.message_type.inspect})"
 
-          observer_count = 0
+          observers_notified = []
 
           registry.each_value do |registration|
             if registration.event == event
-              registration.observer.(message, event_data, error)
-              observer_count += 1
+              observer = registration.observer
+
+              observers_notified << observer
+
+              observer.(message, event_data, error)
             end
           end
 
-          logger.debug "Notified observers (Event: #{event.inspect}, Message Type: #{message.message_type.inspect}, Observers Notified: #{observer_count})"
+          logger.debug "Notified observers (Event: #{event.inspect}, Message Type: #{message.message_type.inspect}, Observers Notified: #{observers_notified.length})"
 
-          observer_count
+          observers_notified
         end
 
         def register(event, &observer)
@@ -56,15 +59,19 @@ module EventStore
 
           logger.debug "Registered observer (Event: #{event.inspect}, ID: #{registration.id.inspect})"
 
-          registration.id
+          registration
         end
 
         def registry
           @registry ||= {}
         end
 
-        def unregister(id)
-          registry.delete id
+        def unregister(registration)
+          logger.trace "Unregistering observer (ID: #{registration.id.inspect})"
+
+          registry.delete registration.id
+
+          logger.debug "Unregistered observer (ID: #{registration.id.inspect})"
         end
 
         module Assertions
