@@ -12,20 +12,6 @@ module EventStore
               Identifier::UUID::Random.get
             end
           end
-
-          module Notification
-            def self.example
-              Messaging::Dispatcher::Observers::Notification.new message, event_data
-            end
-
-            def self.message
-              Message.example
-            end
-
-            def self.event_data
-              EventData::Read.example
-            end
-          end
         end
       end
     end

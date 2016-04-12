@@ -3,47 +3,48 @@ require_relative '../../bench_init'
 context "Notifying observers" do
   observers = EventStore::Messaging::Dispatcher::Observers.build
 
-  control_notification = EventStore::Messaging::Controls::Dispatcher::Observers::Notification.example
+  control_message = EventStore::Messaging::Controls::Message.example
 
   context "Message is about to be dispatched" do
-    notification = nil
+    notified = false
 
-    observers.dispatching do |n|
-      notification = n
+    observers.dispatching do
+      notified = true
     end
 
-    observers.notify :dispatching, control_notification
+    observers.notify :dispatching, control_message
 
-    test do
-      assert notification == control_notification
+    test "Observer is notified" do
+      assert notified
     end
   end
 
-  test "Message was dispatched" do
-    notification = nil
+  context "Message was dispatched" do
+    notified = false
 
     observers.dispatched do |n|
-      notification = n
+      notified = true
     end
 
-    observers.notify :dispatched, control_notification
+    observers.notify :dispatched, control_message
 
-    test do
-      assert notification == control_notification
+    test "Observer is notified" do
+      assert notified
     end
   end
 
-  test "An error occurred during a message dispatch" do
-    notification = nil
+  context "An error occurred during a message dispatch" do
+    notified = false
+    control_error = RuntimeError.new
 
-    observers.failed do |n|
-      notification = n
+    observers.failed do
+      notified = true
     end
 
-    observers.notify :failed, control_notification
+    observers.notify :failed, control_message
 
-    test do
-      assert notification == control_notification
+    test "Observer is notified" do
+      assert notified
     end
   end
 
@@ -54,12 +55,12 @@ context "Notifying observers" do
     observers.register(event) {}
     observers.register(event) {}
 
-    observers_notified = observers.notify event, control_notification
+    observers_notified = observers.notify event, control_message
 
     assert observers_notified == 3
   end
 
-  test "Observers do not receive notifications for unrelated events" do
+  context "Observers do not receive notifications for unrelated events" do
     message = nil
     observed_event = EventStore::Messaging::Controls::Dispatcher::Observers::Event.unique
     notified_event = EventStore::Messaging::Controls::Dispatcher::Observers::Event.unique
@@ -68,7 +69,7 @@ context "Notifying observers" do
       message = msg
     end
 
-    observers.notify notified_event, control_notification
+    observers.notify notified_event, control_message
 
     test do
       assert message.nil?
@@ -77,6 +78,7 @@ context "Notifying observers" do
 
   context "Arity" do
     event = EventStore::Messaging::Controls::Dispatcher::Observers::Event.example
+    control_event_data = EventStore::Messaging::Controls::EventData::Read.example
 
     test "0-arity" do
       notified = false
@@ -85,21 +87,46 @@ context "Notifying observers" do
         notified = true
       end
 
-      observers.notify event, control_notification
+      observers.notify event, control_message
 
       assert notified
     end
 
     test "1-arity" do
-      notified = false
+      message = nil
 
-      observers.register event do
-        notified = true
+      observers.register event do |msg|
+        message = msg
       end
 
-      observers.notify event, control_notification
+      observers.notify event, control_message
 
-      assert notified
+      assert message == control_message
+    end
+
+    test "2-arity" do
+      event_data = nil
+
+      observers.register event do |_, data|
+        event_data = data
+      end
+
+      observers.notify event, control_message, control_event_data
+
+      assert event_data == control_event_data
+    end
+
+    test "3-arity" do
+      control_error = RuntimeError.new
+      error = nil
+
+      observers.register event do |_, _, _error|
+        error = _error
+      end
+
+      observers.notify event, control_message, control_event_data, control_error
+
+      assert error == control_error
     end
   end
 end

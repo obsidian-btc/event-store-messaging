@@ -110,23 +110,18 @@ module EventStore
       end
 
       def dispatch(message, event_data)
-        notification = Observers::Notification.new message, event_data
-
-        observers.notify :dispatching, notification
+        observers.notify :dispatching, message, event_data
 
         handlers.get(message).each do |handler_class|
           handler_class.(message, event_data)
         end
 
-        observers.notify :dispatched, notification
+        observers.notify :dispatched, message, event_data
 
         nil
 
       rescue => error
-        notification = Observers::Notification::Failure.new message, event_data
-        notification.error = error
-
-        observers.notify :failed, notification
+        observers.notify :failed, message, event_data, error
 
         raise error
       end

@@ -30,19 +30,19 @@ module EventStore
           register :failed, &observer
         end
 
-        def notify(event, notification)
-          logger.trace "Notifying observers (Event: #{event.inspect}, Message Type: #{notification.message_type.inspect})"
+        def notify(event, message, event_data=nil, error=nil)
+          logger.trace "Notifying observers (Event: #{event.inspect}, Message Type: #{message.message_type.inspect})"
 
           observer_count = 0
 
           registry.each_value do |registration|
             if registration.event == event
-              registration.observer.(notification)
+              registration.observer.(message, event_data, error)
               observer_count += 1
             end
           end
 
-          logger.debug "Notified observers (Event: #{event.inspect}, Message Type: #{notification.message_type.inspect}, Observers Notified: #{observer_count})"
+          logger.debug "Notified observers (Event: #{event.inspect}, Message Type: #{message.message_type.inspect}, Observers Notified: #{observer_count})"
 
           observer_count
         end
@@ -65,16 +65,6 @@ module EventStore
 
         def unregister(id)
           registry.delete id
-        end
-
-        class Notification < Struct.new :message, :event_data
-          def message_type
-            message.message_type
-          end
-
-          class Failure < Notification
-            attr_accessor :error
-          end
         end
 
         module Assertions
@@ -109,24 +99,37 @@ module EventStore
           end
 
           class Observers < Dispatcher::Observers
-            def notify(event, notification)
+            def notify(event, message, event_data=nil, error=nil)
+              notification = Notification.new message, event_data, error
+
               notifications[event] << notification
             end
 
             def notified?(event, message, event_data: nil, error: nil)
               notifications[event].any? do |notification|
-                next unless notification.message == message
-
-                next if event_data && notification.event_data != event_data
-                next if error && notification.error != error
-
-                true
+                notification.match? message, event_data, error
               end
             end
 
             def notifications
               @notifications ||= Hash.new do |hash, event|
                 hash[event] = []
+              end
+            end
+
+            class Notification < Struct.new :message, :event_data, :error
+              def match?(message, event_data=nil, error=nil)
+                return false unless self.message == message
+
+                unless event_data.nil?
+                  return false unless self.event_data == event_data
+                end
+
+                unless error.nil?
+                  return false unless self.error == error
+                end
+
+                true
               end
             end
           end
