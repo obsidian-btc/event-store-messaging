@@ -55,6 +55,7 @@ module EventStore
         def build
           new.tap do |instance|
             Telemetry::Logger.configure instance
+            Observers.configure instance
           end
         end
       end
