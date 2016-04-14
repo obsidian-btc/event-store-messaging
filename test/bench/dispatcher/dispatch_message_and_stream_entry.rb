@@ -1,7 +1,7 @@
 require_relative 'dispatcher_init'
 
 context "Dispatcher" do
-  test "Dispatchers messages and event data if the handler receives the event data" do
+  test "Dispatches messages and event data if the handler receives the event data" do
     dispatcher = EventStore::Messaging::Controls::Dispatcher::DispatcherChangesEventData.new
     message = EventStore::Messaging::Controls::Message.example
     event_data = EventStore::Messaging::Controls::EventData::Read.example

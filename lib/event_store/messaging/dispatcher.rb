@@ -84,16 +84,13 @@ module EventStore
 
           message_class = message_registry.get(type)
 
-          message = nil
-
-          unless message_class.nil?
-            logger.debug "Building message (Class: #{message_class.name})"
-            message = Message::Import::EventData.(event_data, message_class)
-          else
+          if message_class.nil?
             logger.debug "No message class registered (Type: #{type})"
+            return nil
           end
 
-          return message
+          logger.debug "Building message (Class: #{message_class.name})"
+          Message::Import::EventData.(event_data, message_class)
         end
       end
 
