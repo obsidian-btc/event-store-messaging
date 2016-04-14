@@ -1,6 +1,6 @@
 require_relative '../../bench_init'
 
-context "Configure a Receiver" do
+context "Configure a Receiver of Observers" do
   receiver = OpenStruct.new
 
   context "Default attribute name" do
