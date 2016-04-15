@@ -80,7 +80,7 @@ module EventStore
         def build_message(event_data)
           type = event_data.type
 
-          logger.trace "Building message (Type: #{type})"
+          logger.opt_trace "Building message (Type: #{type})"
 
           message_class = message_registry.get(type)
 
@@ -89,7 +89,7 @@ module EventStore
             return nil
           end
 
-          logger.debug "Building message (Class: #{message_class.name})"
+          logger.opt_debug "Built message (Type: #{type}, Class: #{message_class.name})"
           Message::Import::EventData.(event_data, message_class)
         end
       end

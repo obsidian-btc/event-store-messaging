@@ -22,7 +22,7 @@ module EventStore
       end
 
       def self.build(stream_name, dispatcher, starting_position: nil, slice_size: nil, session: nil)
-        logger.trace "Building message reader (Stream Name: #{stream_name}, Starting Position: #{starting_position.inspect}, Slice Size: #{slice_size})"
+        logger.opt_trace "Building message reader (Stream Name: #{stream_name}, Starting Position: #{starting_position.inspect}, Slice Size: #{slice_size})"
 
         new(stream_name, starting_position, slice_size).tap do |instance|
           http_reader.configure instance, stream_name, starting_position: starting_position, slice_size: slice_size, session: session
@@ -30,7 +30,7 @@ module EventStore
 
           instance.dispatcher = dispatcher
 
-          logger.debug "Built message reader (Stream Name: #{stream_name}, Starting Position: #{starting_position.inspect}, Slice Size: #{slice_size})"
+          logger.opt_debug "Built message reader (Stream Name: #{stream_name}, Starting Position: #{starting_position.inspect}, Slice Size: #{slice_size})"
         end
       end
 
@@ -43,13 +43,13 @@ module EventStore
       end
 
       def start(&supplemental_action)
-        logger.trace "Reading messages (Stream Name: #{stream_name})"
+        logger.opt_trace "Reading messages (Stream Name: #{stream_name})"
 
         reader.each do |event_data|
           dispatch_event_data event_data, &supplemental_action
         end
 
-        logger.debug "Read messages (Stream Name: #{stream_name})"
+        logger.opt_debug "Read messages (Stream Name: #{stream_name})"
         nil
       end
 
@@ -62,8 +62,8 @@ module EventStore
       end
 
       def dispatch(event_data)
-        logger.trace "Dispatching event data (Type: #{event_data.type})"
-        logger.data event_data.inspect
+        logger.opt_trace "Dispatching event data (Type: #{event_data.type})"
+        logger.opt_data event_data.inspect
 
         message = dispatcher.build_message(event_data)
 
@@ -73,7 +73,7 @@ module EventStore
         end
 
         dispatcher.dispatch(message, event_data)
-        logger.debug "Dispatched event data (Type: #{event_data.type})"
+        logger.opt_debug "Dispatched event data (Type: #{event_data.type})"
 
         message
       end

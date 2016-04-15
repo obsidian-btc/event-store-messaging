@@ -31,7 +31,7 @@ module EventStore
         end
 
         def notify(event, message, event_data=nil, error=nil)
-          logger.trace "Notifying observers (Event: #{event.inspect}, Message Type: #{message.message_type.inspect})"
+          logger.opt_trace "Notifying observers (Event: #{event.inspect}, Message Type: #{message.message_type.inspect})"
 
           observers_notified = []
 
@@ -45,7 +45,7 @@ module EventStore
             end
           end
 
-          logger.debug "Notified observers (Event: #{event.inspect}, Message Type: #{message.message_type.inspect}, Observers Notified: #{observers_notified.length})"
+          logger.opt_debug "Notified observers (Event: #{event.inspect}, Message Type: #{message.message_type.inspect}, Observers Notified: #{observers_notified.length})"
 
           observers_notified
         end
@@ -53,11 +53,11 @@ module EventStore
         def register(event, &observer)
           registration = Registration.new observer, event
 
-          logger.trace "Registering observer (Event: #{event.inspect}, ID: #{registration.id.inspect})"
+          logger.opt_trace "Registering observer (Event: #{event.inspect}, ID: #{registration.id.inspect})"
 
           registry[registration.id] = registration
 
-          logger.debug "Registered observer (Event: #{event.inspect}, ID: #{registration.id.inspect})"
+          logger.opt_debug "Registered observer (Event: #{event.inspect}, ID: #{registration.id.inspect})"
 
           registration
         end

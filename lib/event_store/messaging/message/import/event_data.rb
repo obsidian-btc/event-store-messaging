@@ -8,7 +8,7 @@ module EventStore
           end
 
           def self.call(event_data, message_class)
-            logger.trace "Importing event data to message (Message Class: #{message_class})"
+            logger.opt_trace "Importing event data to message (Message Class: #{message_class})"
 
             metadata_data = event_data.metadata || {}
 
@@ -20,7 +20,7 @@ module EventStore
               logger.data event_data.inspect
               logger.data instance.inspect
 
-              logger.debug "Imported event data to message (Message Class: #{message_class})"
+              logger.opt_debug "Imported event data to message (Message Class: #{message_class})"
             end
           end
           class << self; alias :! :call; end # TODO: Remove deprecated actuator [Kelsey, Thu Oct 08 2015]

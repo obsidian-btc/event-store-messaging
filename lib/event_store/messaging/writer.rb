@@ -8,12 +8,12 @@ module EventStore
       dependency :telemetry, ::Telemetry
 
       def self.build(session: nil)
-        logger.trace "Building"
+        logger.opt_trace "Building"
         new.tap do |instance|
           EventStore::Client::HTTP::EventWriter.configure instance, session: session
           ::Telemetry::Logger.configure instance
           ::Telemetry.configure instance
-          logger.debug "Built"
+          logger.opt_debug "Built"
         end
       end
 
