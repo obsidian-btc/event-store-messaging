@@ -22,15 +22,11 @@ module EventStore
       end
 
       def self.build(stream_name, dispatcher, starting_position: nil, slice_size: nil, session: nil)
-        logger.opt_trace "Building message reader (Stream Name: #{stream_name}, Starting Position: #{starting_position.inspect}, Slice Size: #{slice_size})"
-
         new(stream_name, starting_position, slice_size).tap do |instance|
           http_reader.configure instance, stream_name, starting_position: starting_position, slice_size: slice_size, session: session
           Telemetry::Logger.configure instance
 
           instance.dispatcher = dispatcher
-
-          logger.opt_debug "Built message reader (Stream Name: #{stream_name}, Starting Position: #{starting_position.inspect}, Slice Size: #{slice_size})"
         end
       end
 
