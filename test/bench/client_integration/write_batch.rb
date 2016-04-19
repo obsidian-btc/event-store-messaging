@@ -25,8 +25,8 @@ context "Write Batch of Events" do
   body_text_1, get_response = get.("#{path}/0")
   body_text_2, get_response = get.("#{path}/1")
 
-  read_data_1 = EventStore::Client::HTTP::EventData::Read.parse body_text_1
-  read_data_2 = EventStore::Client::HTTP::EventData::Read.parse body_text_2
+  read_data_1 = Serialize::Read.(body_text_1, EventStore::Client::HTTP::EventData::Read, :json)
+  read_data_2 = Serialize::Read.(body_text_2, EventStore::Client::HTTP::EventData::Read, :json)
 
   2.times do |i|
     i += 1

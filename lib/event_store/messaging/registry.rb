@@ -18,7 +18,7 @@ module EventStore
       def register(item)
         logger = Telemetry::Logger.get self
 
-        logger.trace "Registering #{item}"
+        logger.opt_trace "Registering #{item}"
 
         if registered?(item)
           raise Error, "#{item} is already registered"
@@ -29,6 +29,8 @@ module EventStore
         if after_register_hook
           after_register_hook.call item
         end
+
+        logger.opt_debug "Registered #{item}"
 
         items
       end

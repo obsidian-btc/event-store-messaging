@@ -2,14 +2,18 @@ module EventStore
   module Messaging
     module Dispatcher
       def self.included(cls)
-        cls.extend HandlerMacro
-        cls.extend MessageRegistry
-        cls.extend HandlerRegistry
-        cls.extend BuildMessage
-        cls.extend Build
-        cls.extend Logger
+        cls.class_exec do
+          extend HandlerMacro
+          extend MessageRegistry
+          extend HandlerRegistry
+          extend BuildMessage
+          extend Build
+          extend Configure
+          extend Logger
 
-        cls.send :dependency, :logger, Telemetry::Logger
+          dependency :logger, Telemetry::Logger
+          dependency :observers, Observers
+        end
       end
 
       module HandlerMacro
@@ -51,7 +55,18 @@ module EventStore
         def build
           new.tap do |instance|
             Telemetry::Logger.configure instance
+            Observers.configure instance
           end
+        end
+      end
+
+      module Configure
+        def configure(receiver, attr_name: nil)
+          attr_name ||= :dispatcher
+
+          instance = build
+          receiver.public_send "#{attr_name}=", instance
+          instance
         end
       end
 
@@ -65,20 +80,17 @@ module EventStore
         def build_message(event_data)
           type = event_data.type
 
-          logger.trace "Building message (Type: #{type})"
+          logger.opt_trace "Building message (Type: #{type})"
 
           message_class = message_registry.get(type)
 
-          message = nil
-
-          unless message_class.nil?
-            logger.debug "Building message (Class: #{message_class.name})"
-            message = Message::Import::EventData.(event_data, message_class)
-          else
-            logger.debug "No message class registered (Type: #{type})"
+          if message_class.nil?
+            logger.warn "No message class registered (Type: #{type})"
+            return nil
           end
 
-          return message
+          logger.opt_debug "Built message (Type: #{type}, Class: #{message_class.name})"
+          Message::Import::EventData.(event_data, message_class)
         end
       end
 
@@ -95,10 +107,36 @@ module EventStore
       end
 
       def dispatch(message, event_data)
+        observers.notify :dispatching, message, event_data
+
         handlers.get(message).each do |handler_class|
           handler_class.(message, event_data)
         end
+
+        observers.notify :dispatched, message, event_data
+
         nil
+
+      rescue => error
+        observers.notify :failed, message, event_data, error
+
+        raise error
+      end
+
+      def dispatched(&observer)
+        observers.dispatched &observer
+      end
+
+      def dispatching(&observer)
+        observers.dispatching &observer
+      end
+
+      def failed(&observer)
+        observers.failed &observer
+      end
+
+      def remove_observer(registration)
+        observers.unregister registration
       end
 
       module Substitute

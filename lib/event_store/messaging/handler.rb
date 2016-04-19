@@ -25,11 +25,11 @@
         def define_handler_method(message_class, &blk)
           logger = Telemetry::Logger.get self
 
-          logger.trace "Defining handler method (Message: #{message_class})"
+          logger.opt_trace "Defining handler method (Message: #{message_class})"
 
           handler_method_name = handler_name(message_class)
           send(:define_method, handler_method_name, &blk).tap do
-            logger.debug "Defined handler method (Method Name: #{handler_method_name}, Message: #{message_class})"
+            logger.opt_debug "Defined handler method (Method Name: #{handler_method_name}, Message: #{message_class})"
           end
         end
       end
