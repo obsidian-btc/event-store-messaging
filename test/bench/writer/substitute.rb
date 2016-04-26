@@ -55,6 +55,27 @@ context "Writer Substitute" do
     end
   end
 
+  context "Records batch writes" do
+    substitute_writer = EventStore::Messaging::Writer::Substitute.build
+
+    message_1 = EventStore::Messaging::Controls::Message.example
+    message_2 = EventStore::Messaging::Controls::Message.example
+
+    stream_name = 'some stream name'
+
+    substitute_writer.write [message_1, message_2], stream_name
+
+    context "Records telemetry about each message written" do
+      assert substitute_writer do
+        written? { |msg| msg == message_1 }
+      end
+
+      assert substitute_writer do
+        written? { |msg| msg == message_2 }
+      end
+    end
+  end
+
   context "Records replies" do
     substitute_writer = EventStore::Messaging::Writer::Substitute.build
 

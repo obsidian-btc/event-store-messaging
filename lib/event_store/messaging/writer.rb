@@ -39,10 +39,12 @@ module EventStore
         unless message.is_a? Array
           logger.debug "Wrote (Message Type: #{message.message_type}, Stream Name: #{stream_name}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
         else
-          logger.trace "Wrote batch (Stream Name: #{stream_name}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
+          logger.debug "Wrote batch (Stream Name: #{stream_name}, Expected Version: #{!!expected_version ? expected_version : '(none)'})"
         end
 
-        telemetry.record :written, Telemetry::Data.new(message, stream_name, expected_version, reply_stream_name)
+        Array(message).each do |written_message|
+          telemetry.record :written, Telemetry::Data.new(written_message, stream_name, expected_version, reply_stream_name)
+        end
 
         event_data
       end
